@@ -1,13 +1,9 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
 });
 
@@ -19,10 +15,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${dmSans.variable}  antialiased overflow-x-hidden bg-(--background) text-(--primary-text)`}>
+        <div className="w-screen h-fit  px-8 sm:px-14">
+          <Navbar />
+          {children}
+        </div>
       </body>
     </html>
   );
