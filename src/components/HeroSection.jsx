@@ -31,7 +31,6 @@ function HeroSection() {
                 </div>
             </div>
             <div className="relative flex tablet:flex-row flex-col tablet:gap-0 gap-4 justify-between text-4xl font-light text-(--primary-text) py-4">
-                <hr className=' inset-0 m-auto w-full rotate-2 text-(--accent-text) absolute -z-10 tablet:visible hidden' />
                 <div>
                     <p>
                         <span className="font-bold text-(--accent-text)">6K+</span> customers
@@ -39,14 +38,15 @@ function HeroSection() {
                 </div>
                 <div>
                     <p>
-                        <span className="font-bold text-(--accent-text)">4+</span> years on the<br className="tablet:visible hidden"/> market
+                        <span className="font-bold text-(--accent-text)">4+</span> years on the<br className="tablet:visible hidden" /> market
                     </p>
                 </div>
                 <div>
                     <p>
-                        <span className="font-bold text-(--accent-text)">99%</span> positive <br className="tablet:visible hidden"/>rating
+                        <span className="font-bold text-(--accent-text)">99%</span> positive <br className="tablet:visible hidden" />rating
                     </p>
                 </div>
+                <hr className='tablet:absolute block inset-0 m-auto w-full tablet:rotate-2 rotate-0 pt-5 text-(--accent-text) -z-10  ' />
             </div>
         </div>
     )
