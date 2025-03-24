@@ -19,7 +19,7 @@ function AboutUsSection() {
         },
     ]
     return (
-        <div className='relative w-full flex flex-col py-10 gap-20 border-b-[1px] border-y-gray-800'>
+        <div className='about-section relative w-full flex flex-col gap-20 border-b-[1px] border-y-gray-800'>
             <img id="mesh" className="absolute top-0 -z-10 scale-90" src="https://cdn.prod.website-files.com/678294ec876dfc9faed1440c/6782ca8f6309baf6ea837124_Hero-Grid.svg"></img>
             <div className="w-full flex tablet:flex-row flex-col tablet:gap-0 gap-10 tablet:justify-between">
                 <div className="flex flex-col">

@@ -8,7 +8,7 @@ import TutorialSection from "@/components/TutorialSection"
 
 export default function Home() {
   return (
-    <div className="w-full h-fit font-[family-name:var(--font-dm-sans)] flex flex-col gap-20">
+    <div className="w-full h-fit font-[family-name:var(--font-dm-sans)] flex flex-col tablet:gap-20 gap-10">
       <HeroSection /> 
       <BestSellersSection/>
       <HowItWorksSection/>

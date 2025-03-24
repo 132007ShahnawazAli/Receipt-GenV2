@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Instagram, Link2, Plus, X } from "lucide-react"
+import { HiOutlinePlus } from "react-icons/hi2";
 import { usePathname } from "next/navigation"
 import Image from "next/image"
 
@@ -39,7 +40,7 @@ export default function Navbar() {
                         <div className="flex-shrink-0">
                             <Link href="/" className="">
                                 <Image
-                                    src="/assets/logo.png"
+                                    src="/assets/Logo.png"
                                     alt="Logo"
                                     width={36}
                                     height={36}
@@ -85,8 +86,8 @@ export default function Navbar() {
                         >
                             <span className="sr-only">Open main menu</span>
                             <div className="relative w-6 h-6">
-                                <Plus
-                                    className={`absolute inset-0 h-6 w-6 transition-all duration-300 ${isMenuOpen ? "opacity-0 rotate-45" : "opacity-100 rotate-0"
+                                <HiOutlinePlus
+                                    className={`absolute inset-0 h-8 w-8 transition-all duration-300 text-(--secondary-text) ${isMenuOpen ? "opacity-0 rotate-45" : "opacity-100 rotate-0"
                                         }`}
                                 />
                                 <X
@@ -105,7 +106,7 @@ export default function Navbar() {
                     }`}
                 style={{ top: "85px" }}
             >
-                <div className="flex flex-col gap-6 py-2 px-14 bg-(--background)">
+                <div className="flex flex-col gap-6 py-10 px-8 bg-(--background)">
                     {navLinks.map((link) => (
                         <Link
                             key={link.href}

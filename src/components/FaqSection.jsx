@@ -26,9 +26,8 @@ const accordionData = [
 
 const AccordionItem = ({ title, content, isOpen, onClick, isLast }) => {
     return (
-        <div className={`border-t-(--secondary-text) border-t-[1px] ${
-            isLast ? 'border-b-(--secondary-text) border-b-[1px]' : ''
-        }`}>
+        <div className={`border-t-(--secondary-text) border-t-[1px] ${isLast ? 'border-b-(--secondary-text) border-b-[1px]' : ''
+            }`}>
             <button
                 className="flex items-center justify-between w-full py-7  text-left focus:outline-none "
                 onClick={onClick}
@@ -63,11 +62,9 @@ function FaqSection() {
     }
 
     return (
-        <div className="flex tablet:flex-row flex-col tablet:justify-between w-full items-start pb-5 gap-10" id='faq'>
-            <div className="flex flex-col gap-10">
-                <span className="text-(--accent-text) text-[1.2rem] font-light">Frequently asked questions
-
-                </span>
+        <div className="faq-section flex tablet:flex-row flex-col tablet:justify-between w-full items-start pb-5 gap-10" id='faq'>
+            <div className="flex flex-col gap-10 w-full">
+                <span className="text-(--accent-text) text-[1.2rem] font-light">Frequently asked questions</span>
                 <h1 className='tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20'>
                     Get to know <br />HYPECEIPT
                 </h1>
