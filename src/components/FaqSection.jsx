@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiOutlinePlus } from "react-icons/hi2";
-import Link from 'next/link';
+import PrimaryButton from './PrimaryButton'
 
 const accordionData = [
     {
@@ -66,13 +66,12 @@ function FaqSection() {
             <div className="flex flex-col gap-10 w-full">
                 <span className="text-(--accent-text) text-[1.2rem] font-light">Frequently asked questions</span>
                 <h1 className='tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20'>
-                    Get to know <br />HYPECEIPT
+                    FAQ & Contact
                 </h1>
-                <div className="flex justify-center items-center tablet:w-fit w-full h-fit py-3 px-7 rounded-xl bg-(--accent-text)">
-                    <Link href='/' className='text-[1.2rem] font-light tracking-tight'>
-                        Buy Receipts
-                    </Link>
-                </div>
+                <p className='tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl tablet:pt-10'>
+                    Here you can find frequently asked questions. If you didn't find the one you were looking for, you can jump to the contact page.
+                </p>
+                <PrimaryButton />
             </div>
             <div className="accordion flex flex-col  overflow-hidden tablet:w-[45%] w-full">
                 {accordionData.map((item, index) => (

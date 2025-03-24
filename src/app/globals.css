@@ -4,7 +4,7 @@
   --background: #121212;
   --primary-text: #EDEDED;
   --secondary-text: #ededed80;
-  --accent-text:#e0ef09;
+  --accent-text:#a2bef7;
   --primary-button-text-color: #0000;
 }
 
@@ -23,7 +23,7 @@ body {
   --background: #121212;
   --primary-text: #EDEDED;
   --secondary-text: #ededed80;
-  --accent-text: #D0FD01;
+  --accent-text: #a2bef7;
   --primary-button-text-color: #0000;
   --breakpoint-tablet: 800px;
 }

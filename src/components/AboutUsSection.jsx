@@ -25,12 +25,12 @@ function AboutUsSection() {
                 <div className="flex flex-col">
                     <span className="text-(--accent-text) text-[1.2rem] font-light">About Us</span>
                     <h1 className='tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20'>
-                        Get to know <br />HYPECEIPT
+                        Get to know <br />RESELLORA
                     </h1>
                 </div>
                 <div className="w-fit h-fit ">
-                    <p className='tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl tablet:w-sm tablet:pt-10'>
-                        We are HYPECEIPT. Since 2019, we have been providing 1:1 receipts for your sneakers, clothes, and more. We offer both physical (printout) and digital receipts. Over the years, we have served more than 6,000 customers and created over 10,000 receipts. Quality and accuracy are our top priorities for all our customers.
+                    <p className='tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl '>
+                        We are RESELLORA. Since 2019, we have been providing 1:1 receipts for your sneakers, clothes, and more. We offer both physical (printout) and digital receipts. Over the years, we have served more than 6,000 customers and created over 10,000 receipts. Quality and accuracy are our top priorities for all our customers.
                     </p>
                 </div>
             </div>

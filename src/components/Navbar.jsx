@@ -70,10 +70,10 @@ export default function Navbar() {
                         >
                             Login
                         </Link>
-                        <Link href="https://instagram.com" className="">
+                        <Link href="https://www.instagram.com/resellora.store/" className="">
                             <Instagram className="h-5 w-5" />
                         </Link>
-                        <Link href="#" className="">
+                        <Link href="https://t.me/resellora" className="">
                             <Link2 className="h-5 w-5" />
                         </Link>
                     </div>
@@ -126,10 +126,10 @@ export default function Navbar() {
                         Login
                     </Link>
                     <div className="flex gap-4">
-                        <Link href="https://instagram.com">
+                        <Link href="https://www.instagram.com/resellora.store/">
                             <Instagram className="h-6 w-6" />
                         </Link>
-                        <Link href="#">
+                        <Link href="https://t.me/resellora">
                             <Link2 className="h-6 w-6" />
                         </Link>
                     </div>
