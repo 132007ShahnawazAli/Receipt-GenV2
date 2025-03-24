@@ -46,7 +46,7 @@ function HeroSection() {
                         <span className="font-bold text-(--accent-text)">99%</span> positive <br className="tablet:visible hidden" />rating
                     </p>
                 </div>
-                <hr className='tablet:absolute block inset-0 m-auto w-full tablet:rotate-2 rotate-0 pt-5 text-(--accent-text) -z-10  ' />
+                <hr className='absolute bottom-0 left-0 w-full border-t-[1px] border-(--accent-text) -z-10' />
             </div>
         </div>
     )
