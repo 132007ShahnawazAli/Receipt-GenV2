@@ -30,7 +30,7 @@ function HowItWorksSection() {
                     </h1>
                 </div>
                 <div className="w-fit h-fit ">
-                    <p className='tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl w-sm tablet:pt-10'>
+                    <p className='tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl w-full  tablet:pt-10'>
                         In just four simple steps, you can easily generate your own customized receipt. See how below.
                     </p>
                 </div>
