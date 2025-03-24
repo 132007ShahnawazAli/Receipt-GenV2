@@ -10,7 +10,10 @@ function TutorialSection() {
                 <PrimaryButton />
             </div>
             <div className="flex flex-col h-full gap-10">
-                <iframe className="tablet:w-xl tablet:h-96 w-full h-72" src="https://www.youtube.com/embed/kQzavUaxAh8" title="StockX Receipt Generator by HYPECEIPT" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+                <div className="relative w-fit h-fit">
+                    <iframe className="tablet:w-xl tablet:h-96 w-full h-72" src="https://www.youtube.com/embed/kQzavUaxAh8" title="StockX Receipt Generator by HYPECEIPT" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+                    <div className="absolute inset-0 m-auto h-100 w-90 rounded-full bg-(--accent-text) opacity-40 blur-[100px] -z-10" />
+                </div>
                 <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl w-full  tablet:pt-10">Our generator software contains more than 60 stores, including luxury ones such as DIOR, Louis Vuitton, Moncler & more!</p>
             </div>
         </div>
