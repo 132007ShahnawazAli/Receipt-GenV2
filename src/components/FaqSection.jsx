@@ -33,7 +33,7 @@ const AccordionItem = ({ title, content, isOpen, onClick, isLast }) => {
                 className="flex items-center justify-between w-full py-7  text-left focus:outline-none "
                 onClick={onClick}
             >
-                <h2 className="text-3xl font-semibold text-(--primary-text) tracking-tight">{title}</h2>
+                <h2 className="tablet:text-3xl text-2xl font-semibold text-(--primary-text) tracking-tight">{title}</h2>
                 <HiOutlinePlus
                     className={`w-7 h-7 transition-transform duration-200 text-(--accent-text) ${isOpen ? 'transform rotate-45' : ''
                         }`}
@@ -63,21 +63,21 @@ function FaqSection() {
     }
 
     return (
-        <div className="flex justify-between w-full items-start pb-5 gap-10" id='faq'>
+        <div className="flex tablet:flex-row flex-col tablet:justify-between w-full items-start pb-5 gap-10" id='faq'>
             <div className="flex flex-col gap-10">
                 <span className="text-(--accent-text) text-[1.2rem] font-light">Frequently asked questions
 
                 </span>
-                <h1 className='font-bold text-(--primary-text) text-7xl tracking-tighter leading-20'>
+                <h1 className='tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20'>
                     Get to know <br />HYPECEIPT
                 </h1>
-                <div className="flex justify-center items-center w-fit h-fit py-3 px-7 rounded-xl bg-(--accent-text)">
+                <div className="flex justify-center items-center tablet:w-fit w-full h-fit py-3 px-7 rounded-xl bg-(--accent-text)">
                     <Link href='/' className='text-[1.2rem] font-light tracking-tight'>
                         Buy Receipts
                     </Link>
                 </div>
             </div>
-            <div className="accordion flex flex-col  overflow-hidden w-[45%]">
+            <div className="accordion flex flex-col  overflow-hidden tablet:w-[45%] w-full">
                 {accordionData.map((item, index) => (
                     <AccordionItem
                         key={index}

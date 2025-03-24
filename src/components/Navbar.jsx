@@ -31,9 +31,9 @@ export default function Navbar() {
     if (!mounted) return null
 
     return (
-        <nav className="relative w-full bg-(--background) tablet:h-fit h-screen text-white font-light font-[family-name:var(--font-dm-sans)]">
+        <nav className="relative w-full bg-(--background) tablet:h-fit h-fit text-white font-light font-[family-name:var(--font-dm-sans)]">
             {/* Desktop Navigation */}
-            <div className="py-10 text-[1.2rem] flex w-full">
+            <div className=" py-5 tablet:py-10 text-[1.2rem] flex w-full">
                 <div className="flex justify-between  items-center w-full">
                     <div className="flex items-center gap-6">
                         <div className="flex-shrink-0">
