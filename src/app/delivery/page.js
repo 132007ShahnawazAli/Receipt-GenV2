@@ -3,7 +3,7 @@ import React from 'react'
 
 function Delivery() {
     return (
-        <div className="w-full flex tablet:flex-row flex-col gap-10 tablet:justify-between tablet:pt-10 ">
+        <div className="px-8 sm:px-14 w-full flex tablet:flex-row flex-col gap-10 tablet:justify-between tablet:pt-10 ">
             <div className="relative h-fit w-fit">
                 <div className="absolute h-64 w-64 rounded-full bg-(--accent-text) opacity-40 blur-[100px]" />
                 <h1 className=' font-semibold text-(--primary-text) text-5xl tablet:w-[33vw] tablet:text-7xl tracking-tighter tablet:leading-20 drop-shadow-[0px_0px_50px_var(--accent-text)]'>Earn by promoting our products!</h1>

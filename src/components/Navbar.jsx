@@ -26,13 +26,14 @@ export default function Navbar() {
         { href: "/affiliate", label: "Affiliate" },
         { href: "/delivery", label: "Delivery" },
         { href: "/reviews", label: "Reviews" },
+        { href: "/pricing", label: "Pricing" },
         { href: "/contact", label: "Contact" },
     ]
 
     if (!mounted) return null
 
     return (
-        <nav className="relative w-full bg-(--background) tablet:h-fit h-fit text-white font-light font-[family-name:var(--font-dm-sans)]">
+        <nav className=" px-8 sm:px-14 relative w-full bg-(--background) tablet:h-fit h-fit text-white font-light font-[family-name:var(--font-dm-sans)]">
             {/* Desktop Navigation */}
             <div className=" py-5 tablet:py-10 text-[1.2rem] flex w-full">
                 <div className="flex justify-between  items-center w-full">

@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${dmSans.variable}  antialiased overflow-x-hidden bg-(--background) text-(--primary-text)`}>
-        <div className="w-screen h-fit  px-8 sm:px-14">
+        <div className="w-screen h-fit ">
           <Navbar />
           {children}
         </div>

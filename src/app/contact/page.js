@@ -24,7 +24,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen w-full items-start flex flex-col md:flex-row">
+    <div className="px-8 sm:px-14 min-h-screen w-full items-start flex flex-col md:flex-row">
       {/* Left side - Title */}
       <div className="md:w-1/2 flex items-center  p-8">
         <h1 className=" font-semibold text-(--primary-text) text-5xl tablet:w-1/3 tablet:text-7xl tracking-tighter tablet:leading-20">
