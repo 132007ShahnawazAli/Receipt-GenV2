@@ -71,6 +71,12 @@ export default function Navbar() {
                         >
                             Login
                         </Link>
+                        <Link
+                            href="/signup"
+                            className=" cursor-pointer"
+                        >
+                            Sign-up
+                        </Link>
                         <Link href="https://www.instagram.com/resellora.store/" className="">
                             <Instagram className="h-5 w-5" />
                         </Link>
