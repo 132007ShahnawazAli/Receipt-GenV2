@@ -22,7 +22,7 @@ export default function Navbar() {
 
     const navLinks = [
         { href: "/", label: "Home" },
-        { href: "/store", label: "Store" },
+        // SHUKLA CHANGE THIS
         { href: "/affiliate", label: "Affiliate" },
         { href: "/delivery", label: "Delivery" },
         { href: "/reviews", label: "Reviews" },

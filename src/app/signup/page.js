@@ -1,3 +1,4 @@
+import Link from 'next/link' //SHUKLA DONT FORGOT TO IMPORT THIS
 import React from 'react'
 
 function Signup() {
@@ -9,13 +10,13 @@ function Signup() {
                 </h2>
                 <p className="mt-2 text-center text-sm text-(--secondary-text) max-w">
                     Or{" "}
-                    <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                    <Link href="/login" className="font-medium text-(--accent-text) hover:text-(--accent-text)/80">
                         sign in to your account
-                    </a>
+                    </Link>
                 </p>
             </div>
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-black/50 py-8 px-4 shadow sm:rounded-lg sm:px-10">
+                <div className="bg-(--background) py-8 px-4 shadow sm:rounded-lg sm:px-10">
                     <form className="space-y-6" action="#" method="POST">
                         <div>
                             <label
@@ -96,7 +97,7 @@ function Signup() {
                         <div>
                             <button
                                 type="submit"
-                                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-(--accent-text) hover:bg-(--accent-text)/80  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Sign up
                             </button>
@@ -104,7 +105,7 @@ function Signup() {
                     </form>
                 </div>
             </div>
-        </div>
+        </div>  
     )
 }
 
