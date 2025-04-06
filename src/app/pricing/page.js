@@ -2,14 +2,14 @@ import { Check } from "lucide-react"
 
 export default function PricingSection() {
     const pricingPlans = [
-        {
-            title: "1 Day",
-            price: "$9.99",
-            originalPrice: "$14.99",
-            features: ["Unlimited Receipts", "70+ Stores", "Physical Receipts", "App Emulators", "View Bots"],
-            cta: "Get 1 Day",
-            featured: false,
-        },
+        // {
+        //     title: "1 Day",
+        //     price: "$9.99",
+        //     originalPrice: "$14.99",
+        //     features: ["Unlimited Receipts", "70+ Stores", "Physical Receipts", "App Emulators", "View Bots"],
+        //     cta: "Get 1 Day",
+        //     featured: false,
+        // },
         {
             title: "1 Month",
             price: "$24.99",
