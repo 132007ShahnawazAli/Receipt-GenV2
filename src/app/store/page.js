@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 function Store() {
@@ -72,7 +73,7 @@ function Store() {
                     {/* Products Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-14 mt-16 w-full">
                         {/* Product 1 */}   
-                        <div className="flex flex-col w-full">
+                        <Link href={"/unlimited-generator"} className="flex flex-col w-full">
                             <div className="flex items-center justify-center h-48 mb-4 w-full">
                                 <div className="relative w-full h-full">
                                     <img
@@ -84,7 +85,7 @@ function Store() {
                             </div>
                             <h2 className="text-3xl font-semibold text-(--primary-text) mb-2">Unlimited Generator</h2>
                             <p className="text-gray-400">from $54.95</p>
-                        </div>
+                        </Link>
 
                         {/* Product 2 */}
                         <div className="flex flex-col w-full">
