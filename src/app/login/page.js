@@ -1,30 +1,76 @@
 import React from 'react'
-import Link from 'next/link' //SHUKLA DONT FORGOT TO IMPORT THIS
+import Link from 'next/link'
 
 function Login() {
     return (
-        <div className=" bg-(--background) flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-            <div className="sm:mx-auto sm:w-full flex flex-col items-center w-full">
-                <h2 className="tablet:font-medium font-semibold text-(--primary-text) tablet:w-full text-5xl tablet:text-5xl tracking-tighter text-center">
-                    Sign in to your account
-                </h2>
-                <p className="mt-2 text-center text-sm text-(--secondary-text) max-w">
-                    Or{" "}
-                    {/* SHUKLA CHANGE THIS */}
-                    <Link href="/signup" className="font-medium text-(--accent-text) hover:text-(--accent-text)/80">
-                        create an account
-                    </Link>
-                </p>
+        <div className="px-8 sm:px-14 w-full bg-[var(--background)] font-[family-name:var(--font-dm-sans)] flex flex-col md:flex-row  justify-between">
+            <div className="w-full md:w-2/3 py-8 md:py-16 flex items-center ">
+                <div className="relative w-full flex flex-col pt-10 md:py-20 gap-10 md:gap-14">
+                    <div className="w-fit ">
+                        <h1 className="font-medium md:font-semibold text-[var(--primary-text)] tablet:w-[50vw] text-5xl md:text-5xl tracking-tighter">
+                            Step up your{" "}
+                            <span className="text-[var(--accent-text)] drop-shadow-[0px_0px_10px_var(--accent-text)]">resell</span>{" "}
+                            game!
+                        </h1>
+                        <p className="mt-6 text-[var(--primary-text)] text-lg tablet:w-[36vw]">
+                            You can access the generator by purchasing a license key through one of the links below.
+                        </p>
+                    </div>
+
+                    <div className="flex flex-col tablet:w-fit  md:flex-row gap-4 tablet:gap-9   border-y-2 border-[var(--primary-text)]/10 py-4">
+                        <Link
+                            href="#"
+                            className="tablet:px-14 px-6 py-4 border border-[var(--primary-text)]/10 rounded-md text-xl text-center text-[var(--primary-text)] hover:bg-[var(--accent-text)]/10 transition-all shadow-[0px_0px_10px_-1px_#000000]"
+                        >
+                            Main website
+                        </Link>
+                        <Link
+                            href="#"
+                            className="tablet:px-14 px-6 py-4 border border-[var(--primary-text)]/10 rounded-md text-xl text-center text-[var(--primary-text)] hover:bg-[var(--accent-text)]/10 transition-all shadow-[0px_0px_10px_-1px_#000000]"
+                        >
+                            Instant access
+                        </Link>
+                    </div>
+
+                    <div className="relative flex md:flex-row flex-col md:gap-7 gap-4 text-2xl md:text-3xl font-light text-[var(--primary-text)] py-4 border-b-2 border-(--accent-text) w-fit">
+                        <div>
+                            <p>
+                                <span className="font-bold text-[var(--accent-text)]">75+</span> templates
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                <span className="font-bold text-[var(--accent-text)]">1,000+</span> users
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                <span className="font-bold text-[var(--accent-text)]">#1</span> on the market
+                            </p>
+                        </div>
+                        <hr className="absolute bottom-0 left-0 w-full border-t-[1px] border-[var(--accent-text)] -z-10" />
+                    </div>
+                </div>
             </div>
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                {/* SHUKLA CHANGE THIS */}
-                <div className="bg-(--background) py-8 px-4 shadow sm:rounded-lg sm:px-10">
+
+
+            <div className="w-full md:w-1/3 p-8 flex items-center justify-center ">
+                <div className=" w-full max-w-md bg-[var(--background)] py-8 px-4 shadow-[inset_0px_0px_15px_2px_rgba(71,_85,_105,_0.08)] rounded-lg border border-[var(--accent-text)]/10">
+                    <div className="flex flex-col items-center w-full mb-8">
+                        <h2 className="font-semibold text-[var(--primary-text)] text-4xl md:text-5xl tracking-tighter text-center">
+                            Log in
+                        </h2>
+                        <p className="mt-2 text-center text-sm text-[var(--secondary-text)]">
+                            Or{" "}
+                            <Link href="/signup" className="font-medium text-[var(--accent-text)] hover:text-[var(--accent-text)]/80">
+                                create an account
+                            </Link>
+                        </p>
+                    </div>
+
                     <form className="space-y-6" action="#" method="POST">
                         <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-(--secondary-text)"
-                            >
+                            <label htmlFor="email" className="block text-sm font-medium text-[var(--secondary-text)]">
                                 Email address
                             </label>
                             <div className="mt-1">
@@ -34,17 +80,13 @@ function Login() {
                                     type="email"
                                     autoComplete="email"
                                     required=""
-                                    // SHUKLA CHANGE THIS 
-                                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-(--secondary-text)/70 placeholder-(--secondary-text)/70 text-(--primary-text) focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-[var(--secondary-text)]/70 placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                     placeholder="Enter your email address"
                                 />
                             </div>
                         </div>
                         <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-(--secondary-text)"
-                            >
+                            <label htmlFor="password" className="block text-sm font-medium text-[var(--secondary-text)]">
                                 Password
                             </label>
                             <div className="mt-1">
@@ -54,8 +96,7 @@ function Login() {
                                     type="password"
                                     autoComplete="current-password"
                                     required=""
-                                    // SHUKLA CHANGE THIS 
-                                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-(--secondary-text)/70 placeholder-(--secondary-text)/70 text-(--primary-text) focus:outline-none  focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                    className="appearance-none rounded-md relative block w-full px-3 py-2 border border-[var(--secondary-text)]/70 placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:border-indigo-500 focus:z-10 sm:text-sm"
                                     placeholder="Enter your password"
                                 />
                             </div>
@@ -68,10 +109,7 @@ function Login() {
                                     type="checkbox"
                                     className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                                 />
-                                <label
-                                    htmlFor="remember_me"
-                                    className="ml-2 block text-sm text-(--secondary-text)/80"
-                                >
+                                <label htmlFor="remember_me" className="ml-2 block text-sm text-[var(--secondary-text)]/80">
                                     Remember me
                                 </label>
                             </div>
@@ -79,66 +117,16 @@ function Login() {
                         <div>
                             <button
                                 type="submit"
-                                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-(--accent-text) hover:bg-(--accent-text)/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
                                 Sign in
                             </button>
                         </div>
                     </form>
-                    <div className="mt-6 hidden ">
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-gray-300" />
-                            </div>
-                            <div className="relative flex justify-center text-sm">
-                                <span className="px-2 bg-gray-100 text-gray-500">
-                                    Or continue with
-                                </span>
-                            </div>
-                        </div>
-                        <div className="mt-6 grid grid-cols-3 gap-3">
-                            <div>
-                                <a
-                                    href="#"
-                                    className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-(--secondary-text) bg-white hover:bg-gray-50"
-                                >
-                                    <img
-                                        className="h-5 w-5"
-                                        src="https://www.svgrepo.com/show/512120/facebook-176.svg"
-                                        alt=""
-                                    />
-                                </a>
-                            </div>
-                            <div>
-                                <a
-                                    href="#"
-                                    className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-(--secondary-text) bg-white hover:bg-gray-50"
-                                >
-                                    <img
-                                        className="h-5 w-5"
-                                        src="https://www.svgrepo.com/show/513008/twitter-154.svg"
-                                        alt=""
-                                    />
-                                </a>
-                            </div>
-                            <div>
-                                <a
-                                    href="#"
-                                    className="w-full flex items-center justify-center px-8 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-(--secondary-text) bg-white hover:bg-gray-50"
-                                >
-                                    <img
-                                        className="h-6 w-6"
-                                        src="https://www.svgrepo.com/show/506498/google.svg"
-                                        alt=""
-                                    />
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
-
     )
 }
 

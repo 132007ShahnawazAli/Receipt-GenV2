@@ -87,7 +87,6 @@ export default function Dashboard() {
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-semibold">Overview</h1>
             <RefreshCw className="w-5 h-5 text-(--accent-text) cursor-pointer hover:rotate-180 transition-transform duration-300"
-            // SHUKLA CHANGE THIS
               onClick={() => window.location.reload()}
             />
           </div>
