@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 function HowItWorksSection() {
     const steps = [
@@ -16,21 +16,21 @@ function HowItWorksSection() {
         },
         {
             title: "Receive your receipt",
-            description: "Your receipt will be sent to your email inbox within 24 hours. Don't forget to check your spam folder."
+            description: "Your receipt will be sent to your email inbox within 24 hours. Don&apos;t forget to check your spam folder."
         }
     ]
     return (
-        <div className='process-steps-section relative w-full flex flex-col py-10 gap-20 border-b-[1px] border-y-gray-800'>
+        <div className="process-steps-section relative w-full flex flex-col py-10 gap-20 border-b-[1px] border-y-gray-800">
             <img id="mesh" className="absolute top-0 -z-10 scale-90" src="https://cdn.prod.website-files.com/678294ec876dfc9faed1440c/6782ca8f6309baf6ea837124_Hero-Grid.svg"></img>
             <div className="w-full flex tablet:flex-row flex-col tablet:gap-0 gap-10 justify-between">
                 <div className="flex flex-col gap-4">
                     <span className="text-(--accent-text) text-[1.2rem] font-light">How it works</span>
-                    <h1 className='tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20'>
+                    <h1 className="tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20">
                         How to order a <br />receipt?
                     </h1>
                 </div>
                 <div className="w-fit h-fit ">
-                    <p className='tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl w-full  tablet:pt-10'>
+                    <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl w-full  tablet:pt-10">
                         In just four simple steps, you can easily generate your own customized receipt. See how below.
                     </p>
                 </div>
