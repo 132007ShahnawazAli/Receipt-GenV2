@@ -21,9 +21,14 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    // If not authenticated and not loading, redirect to login
     if (status === "unauthenticated") {
       router.push("/login")
-    } else if (status === "authenticated") {
+      return
+    }
+
+    // If authenticated, fetch user data
+    if (status === "authenticated") {
       // Check if user has active subscription from session
       if (session?.user?.hasActiveSubscription) {
         setIsSubscribed(true)
@@ -37,8 +42,6 @@ export default function Dashboard() {
         // Force refresh user session to get updated subscription status
         refreshSession()
       }
-    } else {
-      setIsLoading(false)
     }
   }, [status, router, session])
 
@@ -127,12 +130,18 @@ export default function Dashboard() {
     { id: 20, name: "corteiz", logo: "corteiz.png" },
   ]
 
+  // Show loading state while checking authentication
   if (status === "loading" || isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
       </div>
     )
+  }
+
+  // If not authenticated, don't render anything (middleware will redirect)
+  if (status === "unauthenticated") {
+    return null
   }
 
   return (

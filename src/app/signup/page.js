@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 export default function Signup() {
   const [name, setName] = useState("")
@@ -43,7 +44,20 @@ export default function Signup() {
         throw new Error(data.message || "Something went wrong")
       }
 
-      router.push("/login?registered=true")
+      // Auto login after successful registration
+      const signInResult = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      })
+
+      if (signInResult?.error) {
+        console.error("Auto-login failed:", signInResult.error)
+        router.push("/login?registered=true")
+      } else {
+        // Redirect to dashboard on successful login
+        router.push("/dashboard")
+      }
     } catch (error) {
       setError(error.message)
       setLoading(false)

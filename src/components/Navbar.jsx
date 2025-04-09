@@ -13,6 +13,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -23,7 +24,13 @@ export default function Navbar() {
   }
 
   const handleSignOut = async () => {
-    await signOut({ redirect: true, callbackUrl: "/" })
+    setIsLoggingOut(true)
+    try {
+      await signOut({ redirect: true, callbackUrl: "/" })
+    } catch (error) {
+      console.error("Error signing out:", error)
+      setIsLoggingOut(false)
+    }
   }
 
   const navLinks = [
@@ -47,7 +54,7 @@ export default function Navbar() {
             <div className="flex-shrink-0">
               <Link href="/" className="">
                 <Image
-                  src="/assets/Logo_1.png"
+                  src="/placeholder.svg?height=36&width=36"
                   alt="Logo"
                   width={36}
                   height={36}
@@ -68,6 +75,16 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+                {status === "authenticated" && (
+                  <Link
+                    href="/dashboard"
+                    className={`px-3 cursor-pointer ${
+                      pathname === "/dashboard" ? "underline underline-offset-8 decoration-1" : ""
+                    }`}
+                  >
+                    Dashboard
+                  </Link>
+                )}
               </div>
             </div>
           </div>
@@ -75,8 +92,8 @@ export default function Navbar() {
             {status === "authenticated" ? (
               <>
                 <span className="cursor-pointer">{session.user.name || session.user.email}</span>
-                <button onClick={handleSignOut} className="cursor-pointer">
-                  Logout
+                <button onClick={handleSignOut} className="cursor-pointer" disabled={isLoggingOut}>
+                  {isLoggingOut ? "Logging out..." : "Logout"}
                 </button>
               </>
             ) : (
@@ -139,7 +156,16 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          {session ? (
+          {status === "authenticated" && (
+            <Link
+              href="/dashboard"
+              className={`text-5xl ${pathname === "/dashboard" ? "underline underline-offset-8 decoration-1" : ""}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Dashboard
+            </Link>
+          )}
+          {status === "authenticated" ? (
             <>
               <button
                 onClick={() => {
@@ -147,8 +173,9 @@ export default function Navbar() {
                   setIsMenuOpen(false)
                 }}
                 className="text-5xl text-left"
+                disabled={isLoggingOut}
               >
-                Logout
+                {isLoggingOut ? "Logging out..." : "Logout"}
               </button>
             </>
           ) : (

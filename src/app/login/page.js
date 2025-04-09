@@ -1,16 +1,39 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { signIn, useSession } from "next-auth/react"
+import { useRouter, useSearchParams } from "next/navigation"
 
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState("")
   const router = useRouter()
+  const { data: session, status } = useSession()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    // If user is already authenticated, redirect to dashboard
+    if (status === "authenticated") {
+      router.push("/dashboard")
+    }
+
+    // Check for registration success message
+    const registered = searchParams.get("registered")
+    if (registered === "true") {
+      setMessage("Registration successful! Please log in.")
+    }
+
+    // Check for callbackUrl
+    const callbackUrl = searchParams.get("callbackUrl")
+    if (callbackUrl) {
+      // Store it for later redirect
+      sessionStorage.setItem("callbackUrl", callbackUrl)
+    }
+  }, [status, router, searchParams])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -18,23 +41,39 @@ export default function Login() {
     setError("")
 
     try {
+      const callbackUrl = sessionStorage.getItem("callbackUrl") || "/dashboard"
+
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       })
 
-      if (result.error) {
+      if (result?.error) {
         setError("Invalid email or password")
         setLoading(false)
         return
       }
 
-      router.push("/dashboard")
+      // Clear any stored callback URL
+      sessionStorage.removeItem("callbackUrl")
+
+      // Redirect to dashboard or callback URL
+      router.push(callbackUrl)
     } catch (error) {
+      console.error("Login error:", error)
       setError("Something went wrong. Please try again.")
       setLoading(false)
     }
+  }
+
+  // If already authenticated, show loading state
+  if (status === "loading" || status === "authenticated") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
+      </div>
+    )
   }
 
   return (
@@ -101,6 +140,12 @@ export default function Login() {
               </Link>
             </p>
           </div>
+
+          {message && (
+            <div className="mb-4 p-2 bg-green-500/10 border border-green-500 text-green-500 rounded text-sm">
+              {message}
+            </div>
+          )}
 
           {error && (
             <div className="mb-4 p-2 bg-red-500/10 border border-red-500 text-red-500 rounded text-sm">{error}</div>

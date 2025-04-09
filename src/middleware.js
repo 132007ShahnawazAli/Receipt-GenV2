@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server"
 import { getToken } from "next-auth/jwt"
 
-// Define protected routes
-const protectedRoutes = ["/dashboard"]
-
 export async function middleware(request) {
   const { pathname } = request.nextUrl
 
-  // Only check authentication for protected routes
-  if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+  // Check if the path is protected
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/generate-receipt")) {
     const token = await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
@@ -22,9 +19,21 @@ export async function middleware(request) {
     }
   }
 
+  // Redirect authenticated users away from login/signup pages
+  if (pathname === "/login" || pathname === "/signup") {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    })
+
+    if (token) {
+      return NextResponse.redirect(new URL("/dashboard", request.url))
+    }
+  }
+
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/api/generate-receipt/:path*", "/login", "/signup"],
 }
