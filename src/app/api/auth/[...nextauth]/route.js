@@ -117,13 +117,26 @@ export const authOptions = {
   debug: process.env.NODE_ENV === "development",
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: process.env.NODE_ENV === "production" 
+        ? `__Secure-next-auth.session-token` 
+        : `next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: 'lax',
         path: '/',
-        secure: true
+        secure: process.env.NODE_ENV === "production"
       }
+    }
+  },
+  events: {
+    async signIn({ user }) {
+      console.log("User signed in:", user.email)
+    },
+    async signOut({ token }) {
+      console.log("User signed out:", token?.email)
+    },
+    async session({ session, token }) {
+      console.log("Session updated:", session?.user?.email)
     }
   }
 }

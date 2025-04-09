@@ -11,6 +11,9 @@ export async function middleware(request) {
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
     })
+    
+    // Log token status for debugging
+    console.log(`Middleware - Path: ${pathname}, Token exists: ${!!token}`)
   } catch (error) {
     console.error("Error getting token in middleware:", error)
     // Continue without token on error
@@ -20,6 +23,7 @@ export async function middleware(request) {
   if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/generate-receipt")) {
     // Redirect to login if not authenticated
     if (!token) {
+      console.log(`Redirecting to login from ${pathname} - No token found`)
       const url = new URL("/login", request.url)
       // Store the original URL as the callback URL
       url.searchParams.set("callbackUrl", pathname)
@@ -43,6 +47,7 @@ export async function middleware(request) {
       try {
         const callbackUrlObj = new URL(callbackUrl, request.url)
         if (callbackUrlObj.origin === request.nextUrl.origin) {
+          console.log(`Redirecting authenticated user to callback URL: ${callbackUrl}`)
           return NextResponse.redirect(callbackUrlObj)
         }
       } catch (error) {
@@ -51,10 +56,25 @@ export async function middleware(request) {
     }
     
     // Otherwise, redirect to dashboard
+    console.log(`Redirecting authenticated user to dashboard from ${pathname}`)
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
-  return NextResponse.next()
+  // Add security headers
+  const response = NextResponse.next()
+  response.headers.set("x-frame-options", "DENY")
+  response.headers.set("x-content-type-options", "nosniff")
+  response.headers.set("referrer-policy", "strict-origin-when-cross-origin")
+  
+  // Only add CSP in production
+  if (process.env.NODE_ENV === "production") {
+    response.headers.set(
+      "content-security-policy",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
+    )
+  }
+
+  return response
 }
 
 export const config = {

@@ -19,14 +19,19 @@ export default function Login() {
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
 
   useEffect(() => {
+    console.log("Login page - Session status:", status)
+    console.log("Login page - Session data:", session)
+    
     // If user is already authenticated, redirect to dashboard or callback URL
-    if (status === "authenticated") {
+    if (status === "authenticated" && session?.user) {
+      console.log("User is authenticated, redirecting to:", callbackUrl)
       // Ensure the callback URL is from the same origin
       try {
         const callbackUrlObj = new URL(callbackUrl, window.location.origin)
         if (callbackUrlObj.origin === window.location.origin) {
           router.push(callbackUrl)
         } else {
+          console.log("Callback URL origin mismatch, redirecting to dashboard")
           router.push("/dashboard")
         }
       } catch (error) {
@@ -40,7 +45,7 @@ export default function Login() {
     if (registered === "true") {
       setMessage("Registration successful! Please log in.")
     }
-  }, [status, router, callbackUrl, searchParams])
+  }, [status, session, router, callbackUrl, searchParams])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -48,6 +53,7 @@ export default function Login() {
     setError("")
 
     try {
+      console.log("Attempting to sign in with:", email)
       const result = await signIn("credentials", {
         redirect: false,
         email,
@@ -55,7 +61,10 @@ export default function Login() {
         callbackUrl,
       })
 
+      console.log("Sign in result:", result)
+
       if (result?.error) {
+        console.error("Sign in error:", result.error)
         setError("Invalid email or password")
         setLoading(false)
         return
@@ -63,17 +72,36 @@ export default function Login() {
 
       // If login was successful, manually redirect to the callback URL
       if (result?.ok) {
-        // Ensure the callback URL is from the same origin
+        console.log("Sign in successful, refreshing session")
+        // Force a session refresh
         try {
-          const callbackUrlObj = new URL(callbackUrl, window.location.origin)
-          if (callbackUrlObj.origin === window.location.origin) {
-            router.push(callbackUrl)
+          const response = await fetch("/api/auth/session?update=true")
+          console.log("Session refresh response:", response.status)
+          
+          if (response.ok) {
+            // Ensure the callback URL is from the same origin
+            try {
+              const callbackUrlObj = new URL(callbackUrl, window.location.origin)
+              if (callbackUrlObj.origin === window.location.origin) {
+                console.log("Redirecting to callback URL:", callbackUrl)
+                router.push(callbackUrl)
+              } else {
+                console.log("Callback URL origin mismatch, redirecting to dashboard")
+                router.push("/dashboard")
+              }
+            } catch (error) {
+              console.error("Invalid callback URL:", error)
+              router.push("/dashboard")
+            }
           } else {
-            router.push("/dashboard")
+            console.error("Failed to refresh session:", response.status)
+            setError("Failed to refresh session. Please try again.")
+            setLoading(false)
           }
         } catch (error) {
-          console.error("Invalid callback URL:", error)
-          router.push("/dashboard")
+          console.error("Error refreshing session:", error)
+          setError("Failed to refresh session. Please try again.")
+          setLoading(false)
         }
       }
     } catch (error) {
