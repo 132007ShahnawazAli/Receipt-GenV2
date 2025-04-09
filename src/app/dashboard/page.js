@@ -131,7 +131,7 @@ export default function Dashboard() {
   ]
 
   // Show loading state while checking authentication
-  if (status === "loading" || isLoading) {
+  if (status === "loading") {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
@@ -165,81 +165,89 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
-          <div className="bg-zinc-900 p-6 rounded-lg">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm">Available templates</span>
-            </div>
-            <div className="text-6xl font-bold text-[var(--accent-text)]">{brands.length}</div>
+        {isLoading ? (
+          <div className="flex justify-center items-center p-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
           </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+              <div className="bg-zinc-900 p-6 rounded-lg">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm">Available templates</span>
+                </div>
+                <div className="text-6xl font-bold text-[var(--accent-text)]">{brands.length}</div>
+              </div>
 
-          <div className="bg-zinc-900 p-6 rounded-lg">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm">Generated receipts</span>
-            </div>
-            <div className="text-6xl font-bold text-[var(--accent-text)]">{userStats.receiptsGenerated}</div>
-          </div>
+              <div className="bg-zinc-900 p-6 rounded-lg">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm">Generated receipts</span>
+                </div>
+                <div className="text-6xl font-bold text-[var(--accent-text)]">{userStats.receiptsGenerated}</div>
+              </div>
 
-          <div className="bg-zinc-900 p-6 rounded-lg">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm">Days left</span>
-            </div>
-            <div className="text-6xl font-bold text-[var(--accent-text)]">
-              {userStats.subscriptionStatus === "lifetime" ? "∞" : userStats.daysLeft || "0"}
-            </div>
-          </div>
-        </div>
-
-        {!isSubscribed && (
-          <div className="mx-6 mb-6 p-4 bg-zinc-900 rounded-lg border border-[var(--accent-text)]/30">
-            <h3 className="text-xl font-semibold mb-2">Subscription Required</h3>
-            <p className="mb-4">You need an active subscription to generate receipts. Choose a plan to continue.</p>
-            <Link
-              href="/pricing"
-              className="inline-block px-4 py-2 bg-[var(--accent-text)] text-black rounded-md hover:bg-[var(--accent-text)]/80 transition-colors"
-            >
-              View Plans
-            </Link>
-          </div>
-        )}
-
-        <div className="p-6">
-          <div className="mb-4">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xl">Email Receipts</h3>
-              <Mail className="w-5 h-5 text-[var(--accent-text)]" />
-            </div>
-            <div className="flex justify-between items-center mb-6">
-              <p className="text-sm text-[var(--accent-text)]">Some receipts may arrive in the spam folder</p>
-              <p className="text-sm">StockX R</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-            {brands.map((brand) => (
-              <div
-                key={brand.id}
-                className={`aspect-square ${
-                  isSubscribed ? "bg-[var(--accent-text)]" : "bg-[var(--accent-text)]/50"
-                } rounded-lg flex items-center justify-center p-3 cursor-pointer hover:bg-[var(--accent-text)]/80 transition-colors`}
-                onClick={() => handleBrandClick(brand)}
-              >
-                <div className="w-full h-full flex items-center justify-center">
-                  <img
-                    src={`https://res.cloudinary.com/drbew77vx/image/upload/v1743604967/resolora-receipt-logos/${brand.logo}`}
-                    className="h-8 max-w-full object-contain"
-                    alt={brand.name}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.onerror = null
-                      e.target.src = "/placeholder.svg?height=32&width=32"
-                    }}
-                  />
+              <div className="bg-zinc-900 p-6 rounded-lg">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm">Days left</span>
+                </div>
+                <div className="text-6xl font-bold text-[var(--accent-text)]">
+                  {userStats.subscriptionStatus === "lifetime" ? "∞" : userStats.daysLeft || "0"}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+
+            {!isSubscribed && (
+              <div className="mx-6 mb-6 p-4 bg-zinc-900 rounded-lg border border-[var(--accent-text)]/30">
+                <h3 className="text-xl font-semibold mb-2">Subscription Required</h3>
+                <p className="mb-4">You need an active subscription to generate receipts. Choose a plan to continue.</p>
+                <Link
+                  href="/pricing"
+                  className="inline-block px-4 py-2 bg-[var(--accent-text)] text-black rounded-md hover:bg-[var(--accent-text)]/80 transition-colors"
+                >
+                  View Plans
+                </Link>
+              </div>
+            )}
+
+            <div className="p-6">
+              <div className="mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="text-xl">Email Receipts</h3>
+                  <Mail className="w-5 h-5 text-[var(--accent-text)]" />
+                </div>
+                <div className="flex justify-between items-center mb-6">
+                  <p className="text-sm text-[var(--accent-text)]">Some receipts may arrive in the spam folder</p>
+                  <p className="text-sm">StockX R</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+                {brands.map((brand) => (
+                  <div
+                    key={brand.id}
+                    className={`aspect-square ${
+                      isSubscribed ? "bg-[var(--accent-text)]" : "bg-[var(--accent-text)]/50"
+                    } rounded-lg flex items-center justify-center p-3 cursor-pointer hover:bg-[var(--accent-text)]/80 transition-colors`}
+                    onClick={() => handleBrandClick(brand)}
+                  >
+                    <div className="w-full h-full flex items-center justify-center">
+                      <img
+                        src={`https://res.cloudinary.com/drbew77vx/image/upload/v1743604967/resolora-receipt-logos/${brand.logo}`}
+                        className="h-8 max-w-full object-contain"
+                        alt={brand.name}
+                        loading="lazy"
+                        onError={(e) => {
+                          e.target.onerror = null
+                          e.target.src = "/placeholder.svg?height=32&width=32"
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {showForm && (

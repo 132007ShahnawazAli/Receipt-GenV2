@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { signIn, useSession } from "next-auth/react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 export default function Login() {
   const [email, setEmail] = useState("")
@@ -13,27 +13,13 @@ export default function Login() {
   const [message, setMessage] = useState("")
   const router = useRouter()
   const { data: session, status } = useSession()
-  const searchParams = useSearchParams()
 
   useEffect(() => {
     // If user is already authenticated, redirect to dashboard
     if (status === "authenticated") {
       router.push("/dashboard")
     }
-
-    // Check for registration success message
-    const registered = searchParams.get("registered")
-    if (registered === "true") {
-      setMessage("Registration successful! Please log in.")
-    }
-
-    // Check for callbackUrl
-    const callbackUrl = searchParams.get("callbackUrl")
-    if (callbackUrl) {
-      // Store it for later redirect
-      sessionStorage.setItem("callbackUrl", callbackUrl)
-    }
-  }, [status, router, searchParams])
+  }, [status, router])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -41,8 +27,6 @@ export default function Login() {
     setError("")
 
     try {
-      const callbackUrl = sessionStorage.getItem("callbackUrl") || "/dashboard"
-
       const result = await signIn("credentials", {
         redirect: false,
         email,
@@ -55,11 +39,8 @@ export default function Login() {
         return
       }
 
-      // Clear any stored callback URL
-      sessionStorage.removeItem("callbackUrl")
-
-      // Redirect to dashboard or callback URL
-      router.push(callbackUrl)
+      // Successful login - redirect to dashboard
+      router.push("/dashboard")
     } catch (error) {
       console.error("Login error:", error)
       setError("Something went wrong. Please try again.")
@@ -68,12 +49,17 @@ export default function Login() {
   }
 
   // If already authenticated, show loading state
-  if (status === "loading" || status === "authenticated") {
+  if (status === "loading") {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
       </div>
     )
+  }
+
+  // If already authenticated, don't render the login form
+  if (status === "authenticated") {
+    return null
   }
 
   return (

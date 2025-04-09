@@ -60,21 +60,6 @@ export const authOptions = {
         token.subscriptionEndDate = session.subscriptionEndDate
       }
 
-      // If token is about to expire, refresh user data from database
-      if (token?.exp && Date.now() / 1000 > token.exp - 300) {
-        try {
-          await connectToDatabase()
-          const user = await User.findById(token.id)
-          if (user) {
-            token.hasActiveSubscription = user.hasActiveSubscription
-            token.subscriptionType = user.subscriptionType
-            token.subscriptionEndDate = user.subscriptionEndDate
-          }
-        } catch (error) {
-          console.error("Error refreshing token data:", error)
-        }
-      }
-
       return token
     },
     async session({ session, token }) {
@@ -92,9 +77,6 @@ export const authOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-  jwt: {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,

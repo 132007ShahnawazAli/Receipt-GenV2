@@ -14,7 +14,7 @@ export async function middleware(request) {
     // Redirect to login if not authenticated
     if (!token) {
       const url = new URL("/login", request.url)
-      url.searchParams.set("callbackUrl", encodeURI(pathname))
+      // Don't add callbackUrl as it's causing issues with the redirect loop
       return NextResponse.redirect(url)
     }
   }
