@@ -50,8 +50,10 @@ export default function Login() {
         return
       }
 
-      // The session will be updated automatically by NextAuth
-      // We don't need to manually redirect as useSession will trigger the useEffect above
+      // If login was successful, manually redirect to the callback URL
+      if (result?.ok) {
+        router.push(callbackUrl)
+      }
     } catch (error) {
       console.error("Login error:", error)
       setError("Something went wrong. Please try again.")

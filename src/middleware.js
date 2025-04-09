@@ -28,13 +28,21 @@ export async function middleware(request) {
   }
 
   // Redirect authenticated users away from login/signup pages
-  // But only do this for direct navigation, not for API calls or callbacks
-  if ((pathname === "/login" || pathname === "/signup") && token && !pathname.includes("api")) {
-    // Don't redirect if there's a specific callback URL
+  if ((pathname === "/login" || pathname === "/signup") && token) {
+    // Check if this is an API route or callback
+    if (pathname.includes("api") || pathname.includes("callback")) {
+      return NextResponse.next()
+    }
+
+    // Get the callback URL from the query parameters
     const callbackUrl = request.nextUrl.searchParams.get("callbackUrl")
+    
+    // If there's a callback URL, redirect to it
     if (callbackUrl) {
       return NextResponse.redirect(new URL(callbackUrl, request.url))
     }
+    
+    // Otherwise, redirect to dashboard
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
