@@ -61,8 +61,12 @@ export default function Signup() {
           console.error("Auto-login failed:", signInResult.error)
           router.push("/login?registered=true")
         } else {
-          // Redirect to dashboard or callback URL on successful login
-          router.push(callbackUrl)
+          // If login was successful, manually redirect
+          if (signInResult?.ok) {
+            console.log("Auto-login successful, redirecting to:", callbackUrl)
+            // Use window.location.href for a hard redirect
+            window.location.href = callbackUrl
+          }
         }
       } catch (signInError) {
         console.error("Sign-in error:", signInError)

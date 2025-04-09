@@ -14,6 +14,8 @@ export default function Login() {
   const router = useRouter()
   const { data: session, status } = useSession()
   const searchParams = useSearchParams()
+  const [debugMode, setDebugMode] = useState(false)
+  const [debugInfo, setDebugInfo] = useState({})
 
   // Get the callback URL from the URL parameters
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
@@ -25,19 +27,8 @@ export default function Login() {
     // If user is already authenticated, redirect to dashboard or callback URL
     if (status === "authenticated" && session?.user) {
       console.log("User is authenticated, redirecting to:", callbackUrl)
-      // Ensure the callback URL is from the same origin
-      try {
-        const callbackUrlObj = new URL(callbackUrl, window.location.origin)
-        if (callbackUrlObj.origin === window.location.origin) {
-          router.push(callbackUrl)
-        } else {
-          console.log("Callback URL origin mismatch, redirecting to dashboard")
-          router.push("/dashboard")
-        }
-      } catch (error) {
-        console.error("Invalid callback URL:", error)
-        router.push("/dashboard")
-      }
+      // Use window.location.href for a hard redirect
+      window.location.href = callbackUrl
     }
 
     // Check for registration success message
@@ -45,12 +36,22 @@ export default function Login() {
     if (registered === "true") {
       setMessage("Registration successful! Please log in.")
     }
-  }, [status, session, router, callbackUrl, searchParams])
+
+    if (debugMode) {
+      setDebugInfo({
+        sessionStatus: status,
+        sessionData: session,
+        callbackUrl,
+        timestamp: new Date().toISOString()
+      })
+    }
+  }, [status, session, callbackUrl, searchParams, debugMode])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError("")
+    setDebugInfo(prev => ({ ...prev, loginAttempt: new Date().toISOString() }))
 
     try {
       console.log("Attempting to sign in with:", email)
@@ -62,51 +63,32 @@ export default function Login() {
       })
 
       console.log("Sign in result:", result)
+      setDebugInfo(prev => ({ ...prev, signInResult: result }))
 
       if (result?.error) {
         console.error("Sign in error:", result.error)
-        setError("Invalid email or password")
+        // More detailed error messages
+        if (result.error.includes("No user found")) {
+          setError("No account found with this email address. Please check your email or sign up.")
+        } else if (result.error.includes("Invalid password")) {
+          setError("Incorrect password. Please try again or reset your password.")
+        } else {
+          setError("Invalid email or password. Please check your credentials and try again.")
+        }
         setLoading(false)
         return
       }
 
-      // If login was successful, manually redirect to the callback URL
+      // If login was successful, use a hard redirect
       if (result?.ok) {
-        console.log("Sign in successful, refreshing session")
-        // Force a session refresh
-        try {
-          const response = await fetch("/api/auth/session?update=true")
-          console.log("Session refresh response:", response.status)
-          
-          if (response.ok) {
-            // Ensure the callback URL is from the same origin
-            try {
-              const callbackUrlObj = new URL(callbackUrl, window.location.origin)
-              if (callbackUrlObj.origin === window.location.origin) {
-                console.log("Redirecting to callback URL:", callbackUrl)
-                router.push(callbackUrl)
-              } else {
-                console.log("Callback URL origin mismatch, redirecting to dashboard")
-                router.push("/dashboard")
-              }
-            } catch (error) {
-              console.error("Invalid callback URL:", error)
-              router.push("/dashboard")
-            }
-          } else {
-            console.error("Failed to refresh session:", response.status)
-            setError("Failed to refresh session. Please try again.")
-            setLoading(false)
-          }
-        } catch (error) {
-          console.error("Error refreshing session:", error)
-          setError("Failed to refresh session. Please try again.")
-          setLoading(false)
-        }
+        console.log("Sign in successful, using hard redirect to:", callbackUrl)
+        // Use window.location.href for a hard redirect
+        window.location.href = callbackUrl
       }
     } catch (error) {
       console.error("Login error:", error)
-      setError("Something went wrong. Please try again.")
+      setDebugInfo(prev => ({ ...prev, error: error.message }))
+      setError("An unexpected error occurred. Please try again later.")
       setLoading(false)
     }
   }
