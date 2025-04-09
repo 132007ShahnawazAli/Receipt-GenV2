@@ -10,17 +10,18 @@ export async function middleware(request) {
     secret: process.env.NEXTAUTH_SECRET,
   })
 
+  const isAuthenticated = !!token
+
   // Protected routes - redirect to login if not authenticated
   if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/generate-receipt")) {
-    if (!token) {
-      // Simple redirect to login without any query parameters
+    if (!isAuthenticated) {
       return NextResponse.redirect(new URL("/login", request.url))
     }
   }
 
   // Redirect authenticated users away from login/signup pages
   if (pathname === "/login" || pathname === "/signup") {
-    if (token) {
+    if (isAuthenticated) {
       return NextResponse.redirect(new URL("/dashboard", request.url))
     }
   }

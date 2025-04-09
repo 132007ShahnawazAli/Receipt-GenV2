@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 export default function Login() {
@@ -11,20 +11,21 @@ export default function Login() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { status } = useSession()
+
+  // If already authenticated, redirect to dashboard immediately
+  useEffect(() => {
+    if (status === "authenticated") {
+      window.location.href = "/dashboard"
+    }
+  }, [status])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
-    if (!email || !password) {
-      setError("Email and password are required")
-      return
-    }
-
     setLoading(true)
     setError("")
 
     try {
-      // Simple sign in with redirect: false to handle errors
       const result = await signIn("credentials", {
         redirect: false,
         email,
@@ -34,15 +35,26 @@ export default function Login() {
       if (result?.error) {
         setError("Invalid email or password")
         setLoading(false)
-      } else {
-        // Successful login - redirect to dashboard
-        router.push("/dashboard")
+        return
       }
+
+      // Force redirect to dashboard on successful login
+      window.location.href = "/dashboard"
     } catch (error) {
       console.error("Login error:", error)
       setError("Something went wrong. Please try again.")
       setLoading(false)
     }
+  }
+
+  // If already authenticated, show minimal content while redirecting
+  if (status === "authenticated") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
+        <p className="ml-3 text-[var(--primary-text)]">Redirecting to dashboard...</p>
+      </div>
+    )
   }
 
   return (

@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { signIn } from "next-auth/react"
+import { signIn, useSession } from "next-auth/react"
 
 export default function Signup() {
   const [name, setName] = useState("")
@@ -13,6 +13,14 @@ export default function Signup() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { status } = useSession()
+
+  // If already authenticated, redirect to dashboard immediately
+  useEffect(() => {
+    if (status === "authenticated") {
+      window.location.href = "/dashboard"
+    }
+  }, [status])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -54,15 +62,25 @@ export default function Signup() {
 
       if (signInResult?.error) {
         // If auto-login fails, redirect to login page
-        router.push("/login?registered=true")
+        window.location.href = "/login?registered=true"
       } else {
-        // Redirect to dashboard on successful login
-        router.push("/dashboard")
+        // Force redirect to dashboard on successful login
+        window.location.href = "/dashboard"
       }
     } catch (error) {
       setError(error.message)
       setLoading(false)
     }
+  }
+
+  // If already authenticated, show minimal content while redirecting
+  if (status === "authenticated") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
+        <p className="ml-3 text-[var(--primary-text)]">Redirecting to dashboard...</p>
+      </div>
+    )
   }
 
   return (
