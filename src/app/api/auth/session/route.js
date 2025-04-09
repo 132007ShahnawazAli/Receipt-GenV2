@@ -17,10 +17,14 @@ export async function GET(request) {
 
     if (update === "true") {
       // Refresh user data from database
-      await connectToDatabase()
-      const user = await User.findById(session.user.id)
+      try {
+        await connectToDatabase()
+        const user = await User.findById(session.user.id)
 
-      if (user) {
+        if (!user) {
+          return NextResponse.json({ message: "User not found" }, { status: 404 })
+        }
+
         // Return updated user data
         return NextResponse.json({
           user: {
@@ -32,6 +36,10 @@ export async function GET(request) {
             subscriptionEndDate: user.subscriptionEndDate,
           },
         })
+      } catch (error) {
+        console.error("Database error when refreshing session:", error)
+        // Return the current session if database refresh fails
+        return NextResponse.json(session)
       }
     }
 

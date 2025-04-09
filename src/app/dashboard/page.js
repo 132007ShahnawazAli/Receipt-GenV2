@@ -18,35 +18,74 @@ export default function Dashboard() {
     daysLeft: 0,
   })
   const [isSubscribed, setIsSubscribed] = useState(false)
-  const [isLoadingStats, setIsLoadingStats] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [dataFetchAttempted, setDataFetchAttempted] = useState(false)
 
-  // Handle authentication status
+  // Handle authentication and data fetching
   useEffect(() => {
-    // If authentication is still loading, do nothing
+    // If authentication is still loading, wait
     if (status === "loading") return
 
-    // If not authenticated, redirect to login
+    // If not authenticated, let middleware handle the redirect
     if (status === "unauthenticated") {
-      router.push("/login")
       return
     }
 
-    // If authenticated, check subscription and fetch stats
-    if (status === "authenticated" && session?.user) {
-      setIsSubscribed(!!session.user.hasActiveSubscription)
+    // If authenticated and we haven't tried to fetch data yet
+    if (status === "authenticated" && !dataFetchAttempted) {
+      setDataFetchAttempted(true)
+
+      // Check if user has active subscription from session
+      if (session?.user?.hasActiveSubscription) {
+        setIsSubscribed(true)
+      }
+
       fetchUserStats()
+
+      // Check URL parameters for payment success
+      const urlParams = new URLSearchParams(window.location.search)
+      if (urlParams.get("payment") === "success") {
+        // Force refresh user session to get updated subscription status
+        refreshSession()
+      }
     }
-  }, [status, session, router])
+  }, [status, session, dataFetchAttempted])
+
+  const refreshSession = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch("/api/auth/session?update=true")
+
+      if (!response.ok) {
+        throw new Error(`Failed to refresh session: ${response.status}`)
+      }
+
+      const data = await response.json()
+
+      if (data.user) {
+        setIsSubscribed(data.user.hasActiveSubscription)
+        // Refresh the page stats without full reload
+        fetchUserStats()
+
+        // Remove the query parameter without page reload
+        const url = new URL(window.location.href)
+        url.searchParams.delete("payment")
+        window.history.replaceState({}, document.title, url.toString())
+      }
+    } catch (error) {
+      console.error("Failed to refresh session:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const fetchUserStats = async () => {
-    if (status !== "authenticated") return
-
     try {
-      setIsLoadingStats(true)
+      setIsLoading(true)
       const response = await fetch("/api/user/stats")
 
       if (!response.ok) {
-        throw new Error("Failed to fetch user stats")
+        throw new Error(`Failed to fetch user stats: ${response.status}`)
       }
 
       const data = await response.json()
@@ -60,11 +99,13 @@ export default function Dashboard() {
       // Update subscription status based on user stats
       if (data.subscriptionStatus === "lifetime" || data.subscriptionStatus === "monthly") {
         setIsSubscribed(true)
+      } else {
+        setIsSubscribed(false)
       }
     } catch (error) {
       console.error("Failed to fetch user stats:", error)
     } finally {
-      setIsLoadingStats(false)
+      setIsLoading(false)
     }
   }
 
@@ -106,7 +147,7 @@ export default function Dashboard() {
   ]
 
   // Show loading state while checking authentication
-  if (status === "loading") {
+  if (status === "loading" || (status === "authenticated" && isLoading && !dataFetchAttempted)) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
@@ -135,94 +176,86 @@ export default function Dashboard() {
             <h1 className="text-2xl font-semibold">Overview</h1>
             <RefreshCw
               className="w-5 h-5 text-[var(--accent-text)] cursor-pointer hover:rotate-180 transition-transform duration-300"
-              onClick={fetchUserStats}
+              onClick={() => fetchUserStats()}
             />
           </div>
         </div>
 
-        {isLoadingStats ? (
-          <div className="flex justify-center items-center p-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+          <div className="bg-zinc-900 p-6 rounded-lg">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm">Available templates</span>
+            </div>
+            <div className="text-6xl font-bold text-[var(--accent-text)]">{brands.length}</div>
           </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
-              <div className="bg-zinc-900 p-6 rounded-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm">Available templates</span>
-                </div>
-                <div className="text-6xl font-bold text-[var(--accent-text)]">{brands.length}</div>
-              </div>
 
-              <div className="bg-zinc-900 p-6 rounded-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm">Generated receipts</span>
-                </div>
-                <div className="text-6xl font-bold text-[var(--accent-text)]">{userStats.receiptsGenerated}</div>
-              </div>
-
-              <div className="bg-zinc-900 p-6 rounded-lg">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-sm">Days left</span>
-                </div>
-                <div className="text-6xl font-bold text-[var(--accent-text)]">
-                  {userStats.subscriptionStatus === "lifetime" ? "∞" : userStats.daysLeft || "0"}
-                </div>
-              </div>
+          <div className="bg-zinc-900 p-6 rounded-lg">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm">Generated receipts</span>
             </div>
+            <div className="text-6xl font-bold text-[var(--accent-text)]">{userStats.receiptsGenerated}</div>
+          </div>
 
-            {!isSubscribed && (
-              <div className="mx-6 mb-6 p-4 bg-zinc-900 rounded-lg border border-[var(--accent-text)]/30">
-                <h3 className="text-xl font-semibold mb-2">Subscription Required</h3>
-                <p className="mb-4">You need an active subscription to generate receipts. Choose a plan to continue.</p>
-                <Link
-                  href="/pricing"
-                  className="inline-block px-4 py-2 bg-[var(--accent-text)] text-black rounded-md hover:bg-[var(--accent-text)]/80 transition-colors"
-                >
-                  View Plans
-                </Link>
-              </div>
-            )}
-
-            <div className="p-6">
-              <div className="mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-xl">Email Receipts</h3>
-                  <Mail className="w-5 h-5 text-[var(--accent-text)]" />
-                </div>
-                <div className="flex justify-between items-center mb-6">
-                  <p className="text-sm text-[var(--accent-text)]">Some receipts may arrive in the spam folder</p>
-                  <p className="text-sm">StockX R</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-                {brands.map((brand) => (
-                  <div
-                    key={brand.id}
-                    className={`aspect-square ${
-                      isSubscribed ? "bg-[var(--accent-text)]" : "bg-[var(--accent-text)]/50"
-                    } rounded-lg flex items-center justify-center p-3 cursor-pointer hover:bg-[var(--accent-text)]/80 transition-colors`}
-                    onClick={() => handleBrandClick(brand)}
-                  >
-                    <div className="w-full h-full flex items-center justify-center">
-                      <img
-                        src={`https://res.cloudinary.com/drbew77vx/image/upload/v1743604967/resolora-receipt-logos/${brand.logo}`}
-                        className="h-8 max-w-full object-contain"
-                        alt={brand.name}
-                        loading="lazy"
-                        onError={(e) => {
-                          e.target.onerror = null
-                          e.target.src = "/placeholder.svg?height=32&width=32"
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div className="bg-zinc-900 p-6 rounded-lg">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm">Days left</span>
             </div>
-          </>
+            <div className="text-6xl font-bold text-[var(--accent-text)]">
+              {userStats.subscriptionStatus === "lifetime" ? "∞" : userStats.daysLeft || "0"}
+            </div>
+          </div>
+        </div>
+
+        {!isSubscribed && (
+          <div className="mx-6 mb-6 p-4 bg-zinc-900 rounded-lg border border-[var(--accent-text)]/30">
+            <h3 className="text-xl font-semibold mb-2">Subscription Required</h3>
+            <p className="mb-4">You need an active subscription to generate receipts. Choose a plan to continue.</p>
+            <Link
+              href="/pricing"
+              className="inline-block px-4 py-2 bg-[var(--accent-text)] text-black rounded-md hover:bg-[var(--accent-text)]/80 transition-colors"
+            >
+              View Plans
+            </Link>
+          </div>
         )}
+
+        <div className="p-6">
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-xl">Email Receipts</h3>
+              <Mail className="w-5 h-5 text-[var(--accent-text)]" />
+            </div>
+            <div className="flex justify-between items-center mb-6">
+              <p className="text-sm text-[var(--accent-text)]">Some receipts may arrive in the spam folder</p>
+              <p className="text-sm">StockX R</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+            {brands.map((brand) => (
+              <div
+                key={brand.id}
+                className={`aspect-square ${
+                  isSubscribed ? "bg-[var(--accent-text)]" : "bg-[var(--accent-text)]/50"
+                } rounded-lg flex items-center justify-center p-3 cursor-pointer hover:bg-[var(--accent-text)]/80 transition-colors`}
+                onClick={() => handleBrandClick(brand)}
+              >
+                <div className="w-full h-full flex items-center justify-center">
+                  <img
+                    src={`https://res.cloudinary.com/drbew77vx/image/upload/v1743604967/resolora-receipt-logos/${brand.logo}`}
+                    className="h-8 max-w-full object-contain"
+                    alt={brand.name}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.onerror = null
+                      e.target.src = "/placeholder.svg?height=32&width=32"
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {showForm && (

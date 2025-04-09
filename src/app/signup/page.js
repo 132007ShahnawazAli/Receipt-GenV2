@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { signIn, useSession } from "next-auth/react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 export default function Signup() {
   const [name, setName] = useState("")
@@ -13,14 +13,10 @@ export default function Signup() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const { status } = useSession()
+  const searchParams = useSearchParams()
 
-  // If already authenticated, redirect to dashboard immediately
-  useEffect(() => {
-    if (status === "authenticated") {
-      window.location.href = "/dashboard"
-    }
-  }, [status])
+  // Get the callback URL from the URL parameters
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -34,7 +30,6 @@ export default function Signup() {
     }
 
     try {
-      // Create user account
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
@@ -53,34 +48,30 @@ export default function Signup() {
         throw new Error(data.message || "Something went wrong")
       }
 
-      // Auto login after successful registration
-      const signInResult = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-      })
+      // Auto login after successful registration with better error handling
+      try {
+        const signInResult = await signIn("credentials", {
+          redirect: false,
+          email,
+          password,
+          callbackUrl,
+        })
 
-      if (signInResult?.error) {
-        // If auto-login fails, redirect to login page
-        window.location.href = "/login?registered=true"
-      } else {
-        // Force redirect to dashboard on successful login
-        window.location.href = "/dashboard"
+        if (signInResult?.error) {
+          console.error("Auto-login failed:", signInResult.error)
+          router.push("/login?registered=true")
+        } else {
+          // Redirect to dashboard or callback URL on successful login
+          router.push(callbackUrl)
+        }
+      } catch (signInError) {
+        console.error("Sign-in error:", signInError)
+        router.push("/login?registered=true")
       }
     } catch (error) {
       setError(error.message)
       setLoading(false)
     }
-  }
-
-  // If already authenticated, show minimal content while redirecting
-  if (status === "authenticated") {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
-        <p className="ml-3 text-[var(--primary-text)]">Redirecting to dashboard...</p>
-      </div>
-    )
   }
 
   return (

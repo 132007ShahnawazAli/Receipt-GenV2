@@ -14,38 +14,42 @@ export const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null
+          throw new Error("Email and password required")
         }
 
-        await connectToDatabase()
+        try {
+          await connectToDatabase()
 
-        const user = await User.findOne({ email: credentials.email })
+          const user = await User.findOne({ email: credentials.email })
 
-        if (!user) {
-          return null
-        }
+          if (!user) {
+            throw new Error("No user found with this email")
+          }
 
-        const isPasswordValid = await compare(credentials.password, user.password)
+          const isPasswordValid = await compare(credentials.password, user.password)
 
-        if (!isPasswordValid) {
-          return null
-        }
+          if (!isPasswordValid) {
+            throw new Error("Invalid password")
+          }
 
-        // Return user data that will be stored in the token
-        return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name,
-          hasActiveSubscription: user.hasActiveSubscription,
-          subscriptionType: user.subscriptionType,
-          subscriptionEndDate: user.subscriptionEndDate,
+          return {
+            id: user._id.toString(),
+            email: user.email,
+            name: user.name,
+            hasActiveSubscription: user.hasActiveSubscription,
+            subscriptionType: user.subscriptionType,
+            subscriptionEndDate: user.subscriptionEndDate,
+          }
+        } catch (error) {
+          console.error("Authorization error:", error)
+          throw new Error(error.message || "Authentication failed")
         }
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      // Initial sign in - add user data to token
+    async jwt({ token, user, trigger, session }) {
+      // Initial sign in
       if (user) {
         token.id = user.id
         token.email = user.email
@@ -54,26 +58,59 @@ export const authOptions = {
         token.subscriptionType = user.subscriptionType
         token.subscriptionEndDate = user.subscriptionEndDate
       }
+
+      // Handle session updates
+      if (trigger === "update" && session) {
+        // Update the token with the new session data
+        Object.keys(session).forEach((key) => {
+          if (key !== "iat" && key !== "exp" && key !== "jti") {
+            token[key] = session[key]
+          }
+        })
+      }
+
+      // If token is about to expire, refresh user data from database
+      if (token?.exp && Date.now() / 1000 > token.exp - 300) {
+        try {
+          await connectToDatabase()
+          const user = await User.findById(token.id)
+          if (user) {
+            token.hasActiveSubscription = user.hasActiveSubscription
+            token.subscriptionType = user.subscriptionType
+            token.subscriptionEndDate = user.subscriptionEndDate
+          }
+        } catch (error) {
+          console.error("Error refreshing token data:", error)
+          // Continue with existing token data on error
+        }
+      }
+
       return token
     },
     async session({ session, token }) {
-      // Add user data from token to session
       if (token) {
-        session.user.id = token.id
-        session.user.email = token.email
-        session.user.name = token.name
-        session.user.hasActiveSubscription = token.hasActiveSubscription
-        session.user.subscriptionType = token.subscriptionType
-        session.user.subscriptionEndDate = token.subscriptionEndDate
+        session.user = {
+          ...session.user,
+          id: token.id,
+          email: token.email,
+          name: token.name,
+          hasActiveSubscription: token.hasActiveSubscription,
+          subscriptionType: token.subscriptionType,
+          subscriptionEndDate: token.subscriptionEndDate,
+        }
       }
       return session
     },
   },
   pages: {
     signIn: "/login",
+    error: "/login", // Error code passed in query string as ?error=
   },
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  jwt: {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,

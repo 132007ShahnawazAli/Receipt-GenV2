@@ -3,22 +3,33 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { signIn, useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState("")
   const router = useRouter()
-  const { status } = useSession()
+  const { data: session, status } = useSession()
+  const searchParams = useSearchParams()
 
-  // If already authenticated, redirect to dashboard immediately
+  // Get the callback URL from the URL parameters
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
+
   useEffect(() => {
+    // If user is already authenticated, redirect to dashboard or callback URL
     if (status === "authenticated") {
-      window.location.href = "/dashboard"
+      router.push(callbackUrl)
     }
-  }, [status])
+
+    // Check for registration success message
+    const registered = searchParams.get("registered")
+    if (registered === "true") {
+      setMessage("Registration successful! Please log in.")
+    }
+  }, [status, router, callbackUrl, searchParams])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -30,6 +41,7 @@ export default function Login() {
         redirect: false,
         email,
         password,
+        callbackUrl,
       })
 
       if (result?.error) {
@@ -38,8 +50,8 @@ export default function Login() {
         return
       }
 
-      // Force redirect to dashboard on successful login
-      window.location.href = "/dashboard"
+      // The session will be updated automatically by NextAuth
+      // We don't need to manually redirect as useSession will trigger the useEffect above
     } catch (error) {
       console.error("Login error:", error)
       setError("Something went wrong. Please try again.")
@@ -47,12 +59,11 @@ export default function Login() {
     }
   }
 
-  // If already authenticated, show minimal content while redirecting
-  if (status === "authenticated") {
+  // If already authenticated, show loading state
+  if (status === "loading") {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
-        <p className="ml-3 text-[var(--primary-text)]">Redirecting to dashboard...</p>
       </div>
     )
   }
@@ -122,6 +133,12 @@ export default function Login() {
             </p>
           </div>
 
+          {message && (
+            <div className="mb-4 p-2 bg-green-500/10 border border-green-500 text-green-500 rounded text-sm">
+              {message}
+            </div>
+          )}
+
           {error && (
             <div className="mb-4 p-2 bg-red-500/10 border border-red-500 text-red-500 rounded text-sm">{error}</div>
           )}
@@ -158,7 +175,7 @@ export default function Login() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-[var(--secondary-text)]/70 placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:border-indigo-500 focus:z-10 sm:text-sm bg-[var(--background)]"
+                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-[var(--secondary-text)]/70 placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[var(--background)]"
                   placeholder="Enter your password"
                 />
               </div>
