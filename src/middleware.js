@@ -4,28 +4,22 @@ import { getToken } from "next-auth/jwt"
 export async function middleware(request) {
   const { pathname } = request.nextUrl
 
-  // Check if the path is protected
-  if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/generate-receipt")) {
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    })
+  // Get the token - if it exists, user is authenticated
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  })
 
-    // Redirect to login if not authenticated
+  // Protected routes - redirect to login if not authenticated
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/api/generate-receipt")) {
     if (!token) {
-      const url = new URL("/login", request.url)
-      // Don't add callbackUrl as it's causing issues with the redirect loop
-      return NextResponse.redirect(url)
+      // Simple redirect to login without any query parameters
+      return NextResponse.redirect(new URL("/login", request.url))
     }
   }
 
   // Redirect authenticated users away from login/signup pages
   if (pathname === "/login" || pathname === "/signup") {
-    const token = await getToken({
-      req: request,
-      secret: process.env.NEXTAUTH_SECRET,
-    })
-
     if (token) {
       return NextResponse.redirect(new URL("/dashboard", request.url))
     }

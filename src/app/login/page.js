@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
-import { signIn, useSession } from "next-auth/react"
+import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 
 export default function Login() {
@@ -10,23 +10,21 @@ export default function Login() {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
   const router = useRouter()
-  const { data: session, status } = useSession()
-
-  useEffect(() => {
-    // If user is already authenticated, redirect to dashboard
-    if (status === "authenticated") {
-      router.push("/dashboard")
-    }
-  }, [status, router])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    if (!email || !password) {
+      setError("Email and password are required")
+      return
+    }
+
     setLoading(true)
     setError("")
 
     try {
+      // Simple sign in with redirect: false to handle errors
       const result = await signIn("credentials", {
         redirect: false,
         email,
@@ -36,30 +34,15 @@ export default function Login() {
       if (result?.error) {
         setError("Invalid email or password")
         setLoading(false)
-        return
+      } else {
+        // Successful login - redirect to dashboard
+        router.push("/dashboard")
       }
-
-      // Successful login - redirect to dashboard
-      router.push("/dashboard")
     } catch (error) {
       console.error("Login error:", error)
       setError("Something went wrong. Please try again.")
       setLoading(false)
     }
-  }
-
-  // If already authenticated, show loading state
-  if (status === "loading") {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
-      </div>
-    )
-  }
-
-  // If already authenticated, don't render the login form
-  if (status === "authenticated") {
-    return null
   }
 
   return (
@@ -126,12 +109,6 @@ export default function Login() {
               </Link>
             </p>
           </div>
-
-          {message && (
-            <div className="mb-4 p-2 bg-green-500/10 border border-green-500 text-green-500 rounded text-sm">
-              {message}
-            </div>
-          )}
 
           {error && (
             <div className="mb-4 p-2 bg-red-500/10 border border-red-500 text-red-500 rounded text-sm">{error}</div>

@@ -26,6 +26,7 @@ export default function Signup() {
     }
 
     try {
+      // Create user account
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
@@ -52,7 +53,7 @@ export default function Signup() {
       })
 
       if (signInResult?.error) {
-        console.error("Auto-login failed:", signInResult.error)
+        // If auto-login fails, redirect to login page
         router.push("/login?registered=true")
       } else {
         // Redirect to dashboard on successful login

@@ -18,78 +18,53 @@ export default function Dashboard() {
     daysLeft: 0,
   })
   const [isSubscribed, setIsSubscribed] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingStats, setIsLoadingStats] = useState(false)
 
+  // Handle authentication status
   useEffect(() => {
-    // If not authenticated and not loading, redirect to login
+    // If authentication is still loading, do nothing
+    if (status === "loading") return
+
+    // If not authenticated, redirect to login
     if (status === "unauthenticated") {
       router.push("/login")
       return
     }
 
-    // If authenticated, fetch user data
-    if (status === "authenticated") {
-      // Check if user has active subscription from session
-      if (session?.user?.hasActiveSubscription) {
-        setIsSubscribed(true)
-      }
-
+    // If authenticated, check subscription and fetch stats
+    if (status === "authenticated" && session?.user) {
+      setIsSubscribed(!!session.user.hasActiveSubscription)
       fetchUserStats()
-
-      // Check URL parameters for payment success
-      const urlParams = new URLSearchParams(window.location.search)
-      if (urlParams.get("payment") === "success") {
-        // Force refresh user session to get updated subscription status
-        refreshSession()
-      }
     }
-  }, [status, router, session])
-
-  const refreshSession = async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetch("/api/auth/session?update=true")
-      const data = await response.json()
-
-      if (response.ok && data.user) {
-        setIsSubscribed(data.user.hasActiveSubscription)
-        // Refresh the page stats without full reload
-        fetchUserStats()
-
-        // Remove the query parameter without page reload
-        const url = new URL(window.location.href)
-        url.searchParams.delete("payment")
-        window.history.replaceState({}, document.title, url.toString())
-      }
-    } catch (error) {
-      console.error("Failed to refresh session:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  }, [status, session, router])
 
   const fetchUserStats = async () => {
+    if (status !== "authenticated") return
+
     try {
-      setIsLoading(true)
+      setIsLoadingStats(true)
       const response = await fetch("/api/user/stats")
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user stats")
+      }
+
       const data = await response.json()
 
-      if (response.ok) {
-        setUserStats({
-          receiptsGenerated: data.receiptsGenerated || 0,
-          subscriptionStatus: data.subscriptionStatus || "Not subscribed",
-          daysLeft: data.daysLeft || 0,
-        })
+      setUserStats({
+        receiptsGenerated: data.receiptsGenerated || 0,
+        subscriptionStatus: data.subscriptionStatus || "Not subscribed",
+        daysLeft: data.daysLeft || 0,
+      })
 
-        // Update subscription status based on user stats
-        if (data.subscriptionStatus === "lifetime" || data.subscriptionStatus === "monthly") {
-          setIsSubscribed(true)
-        }
+      // Update subscription status based on user stats
+      if (data.subscriptionStatus === "lifetime" || data.subscriptionStatus === "monthly") {
+        setIsSubscribed(true)
       }
     } catch (error) {
       console.error("Failed to fetch user stats:", error)
     } finally {
-      setIsLoading(false)
+      setIsLoadingStats(false)
     }
   }
 
@@ -160,12 +135,12 @@ export default function Dashboard() {
             <h1 className="text-2xl font-semibold">Overview</h1>
             <RefreshCw
               className="w-5 h-5 text-[var(--accent-text)] cursor-pointer hover:rotate-180 transition-transform duration-300"
-              onClick={() => fetchUserStats()}
+              onClick={fetchUserStats}
             />
           </div>
         </div>
 
-        {isLoading ? (
+        {isLoadingStats ? (
           <div className="flex justify-center items-center p-20">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
           </div>

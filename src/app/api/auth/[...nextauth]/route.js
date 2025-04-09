@@ -14,7 +14,7 @@ export const authOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password required")
+          return null
         }
 
         await connectToDatabase()
@@ -22,15 +22,16 @@ export const authOptions = {
         const user = await User.findOne({ email: credentials.email })
 
         if (!user) {
-          throw new Error("No user found with this email")
+          return null
         }
 
         const isPasswordValid = await compare(credentials.password, user.password)
 
         if (!isPasswordValid) {
-          throw new Error("Invalid password")
+          return null
         }
 
+        // Return user data that will be stored in the token
         return {
           id: user._id.toString(),
           email: user.email,
@@ -43,28 +44,24 @@ export const authOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
-      // Initial sign in
+    async jwt({ token, user }) {
+      // Initial sign in - add user data to token
       if (user) {
         token.id = user.id
+        token.email = user.email
+        token.name = user.name
         token.hasActiveSubscription = user.hasActiveSubscription
         token.subscriptionType = user.subscriptionType
         token.subscriptionEndDate = user.subscriptionEndDate
       }
-
-      // Handle session updates
-      if (trigger === "update" && session) {
-        // Update the token with the new session data
-        token.hasActiveSubscription = session.hasActiveSubscription
-        token.subscriptionType = session.subscriptionType
-        token.subscriptionEndDate = session.subscriptionEndDate
-      }
-
       return token
     },
     async session({ session, token }) {
+      // Add user data from token to session
       if (token) {
         session.user.id = token.id
+        session.user.email = token.email
+        session.user.name = token.name
         session.user.hasActiveSubscription = token.hasActiveSubscription
         session.user.subscriptionType = token.subscriptionType
         session.user.subscriptionEndDate = token.subscriptionEndDate
