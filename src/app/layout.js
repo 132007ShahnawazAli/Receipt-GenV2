@@ -1,6 +1,7 @@
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar"
+import { AuthProvider } from "@/components/AuthProvider"
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -17,8 +18,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${dmSans.variable}  antialiased overflow-x-hidden bg-(--background) text-(--primary-text)`}>
         <div className="w-screen h-fit ">
-          <Navbar />
-          {children}
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
         </div>
       </body>
     </html>

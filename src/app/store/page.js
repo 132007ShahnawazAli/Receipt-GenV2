@@ -87,55 +87,6 @@ function Store() {
                             <p className="text-gray-400">from $54.95</p>
                         </Link>
 
-                        {/* Product 2 */}
-                        <div className="flex flex-col w-full">
-                            <div className="flex items-center justify-center h-48 mb-4 w-full">
-                                <div className="relative w-full h-full">
-                                    <img
-                                        src="https://images.squarespace-cdn.com/content/v1/6137d3d5942fc363decba711/234373ed-d8fa-4081-9ddd-a1fe498c90ba/GENERATOR-01.png?format=1000w"
-                                        alt="Supplier List Icon"
-                                        className="w-full h-full object-cover object-center "
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-3xl font-semibold text-(--primary-text) mb-2">Supplier List 2.0</h2>
-                                {/* <span className="bg-white text-black px-2 py-1 text-sm font-bold">SALE</span> */}
-                            </div>
-                            <p className="text-gray-400">
-                                <span className="text-white">$79.95</span> <span className="line-through">$99.95</span>
-                            </p>
-                        </div>
-
-                        {/* Product 3 */}
-                        <div className="flex flex-col w-full">
-                            <div className="flex items-center justify-center h-48 mb-4 w-full">
-                                <div className="relative w-full h-full">
-                                    <img
-                                        src="https://images.squarespace-cdn.com/content/v1/6137d3d5942fc363decba711/1714668627890-O1B7PPE6KEVCB1EUV9HD/apple.png?format=2500w"
-                                        alt="Apple Logo"
-                                        className="w-full h-full object-cover object-center "
-                                    />
-                                </div>
-                            </div>
-                            <h2 className="text-3xl font-semibold text-(--primary-text) mb-2">Apple Email Receipt</h2>
-                            <p className="text-gray-400">$9.95</p>
-                        </div>
-
-                        {/* Product 4 */}
-                        <div className="flex flex-col w-full">
-                            <div className="flex items-center justify-center h-48 mb-4 w-full">
-                                <div className="relative w-full h-full">
-                                    <img
-                                        src="https://images.squarespace-cdn.com/content/v1/6137d3d5942fc363decba711/234373ed-d8fa-4081-9ddd-a1fe498c90ba/GENERATOR-01.png?format=1000w"
-                                        alt="Apple Logo"
-                                        className="w-full h-full object-cover object-center "
-                                    />
-                                </div>
-                            </div>
-                            <h2 className="text-3xl font-semibold text-(--primary-text) mb-2">Apple Paper Receipt</h2>
-                            <p className="text-gray-400">$9.95</p>
-                        </div>
                     </div>
                     
                 </main>
