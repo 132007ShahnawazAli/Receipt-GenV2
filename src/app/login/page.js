@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { signIn, useSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { Typewriter } from "react-simple-typewriter"
 
 export default function Login() {
   const [email, setEmail] = useState("")
@@ -106,13 +107,23 @@ export default function Login() {
     <div className="px-8 sm:px-14 w-full bg-[var(--background)] font-[family-name:var(--font-dm-sans)] flex flex-col md:flex-row justify-between">
       <div className="w-full md:w-2/3 py-8 md:py-16 flex items-center">
         <div className="relative w-full flex flex-col pt-10 md:py-20 gap-10 md:gap-14">
-          <div className="w-fit">
-            <h1 className="font-medium md:font-semibold text-[var(--primary-text)] tablet:w-[50vw] text-5xl md:text-5xl tracking-tighter">
+          <div className="w-fit md:max-w-2xl">
+            <h1 className="font-medium md:font-semibold text-[var(--primary-text)] tablet:w-[50vw] text-5xl md:text-6xl lg:text-7xl tracking-tighter">
               Step up your{" "}
-              <span className="text-[var(--accent-text)] drop-shadow-[0px_0px_10px_var(--accent-text)]">resell</span>{" "}
+              <span className="text-[var(--accent-text)] drop-shadow-[0px_0px_10px_var(--accent-text)]">
+                <Typewriter
+                  words={["receipt", "resell", "business"]}
+                  loop={false}
+                  cursor
+                  cursorStyle="|"
+                  typeSpeed={95}
+                  deleteSpeed={100}
+                  delaySpeed={1000}
+                />
+              </span>{" "}
               game!
             </h1>
-            <p className="mt-6 text-[var(--primary-text)] text-lg tablet:w-[36vw]">
+            <p className="mt-6 text-[var(--primary-text)] text-lg md:text-xl tablet:w-[36vw] md:max-w-xl">
               You can access the generator by purchasing a license key through one of the links below.
             </p>
           </div>
@@ -132,7 +143,7 @@ export default function Login() {
             </Link>
           </div>
 
-          <div className="relative flex md:flex-row flex-col md:gap-7 gap-4 text-2xl md:text-3xl font-light text-[var(--primary-text)] py-4 border-b-2 border-(--accent-text) w-fit">
+          <div className="relative flex md:flex-row flex-col md:gap-7 gap-4 text-2xl md:text-3xl lg:text-4xl font-light text-[var(--primary-text)] py-4 border-b-2 border-(--accent-text) w-fit">
             <div>
               <p>
                 <span className="font-bold text-[var(--accent-text)]">75+</span> templates

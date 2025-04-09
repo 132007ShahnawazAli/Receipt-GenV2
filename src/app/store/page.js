@@ -9,7 +9,7 @@ function Store() {
                 <div className="w-full flex tablet:flex-row flex-col justify-between">
                     <div className="flex flex-col tablet:gap-0 gap-4">
                         <h1 className='tablet:font-semibold font-medium text-(--primary-text) text-5xl tablet:text-6xl tracking-tighter tablet:w-[50vw]'>
-                            Choose from our offers and <span className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)]">pick</span> a <span className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)]">receipt</span> that suits your needs.
+                            Choose from our offers and <span className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)]">pick</span> a <span className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)]">product</span> that suits your needs.
                         </h1>
                     </div>
                 </div>

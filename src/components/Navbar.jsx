@@ -35,12 +35,12 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/", label: "Home" },
+    { href: "/store", label: "Store" },
     { href: "/affiliate", label: "Affiliate" },
     { href: "/delivery", label: "Delivery" },
     { href: "/reviews", label: "Reviews" },
     { href: "/pricing", label: "Pricing" },
     { href: "/contact", label: "Contact" },
-    { href: "/store", label: "Store" },
   ]
 
   if (!mounted) return null
