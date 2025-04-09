@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
-import { Home, Mail, RefreshCw } from "lucide-react"
+import { useSession, signOut } from "next-auth/react"
+import { Home, Mail, RefreshCw, LogOut } from "lucide-react"
 import { MdEditCalendar } from "react-icons/md";
 import { LuMailCheck } from "react-icons/lu";
 import { IoTimerOutline } from "react-icons/io5";
@@ -202,10 +202,21 @@ export default function Dashboard() {
     <div className="flex text-white min-h-screen">
       {/* Sidebar - hidden on mobile, visible on md and up */}
       <div className="hidden md:flex w-16 flex-col items-center py-6 border-r border-zinc-800">
-        <div className="flex flex-col items-center space-y-8">
-          <Link href="/dashboard">
+        <div className="flex flex-col items-center h-full">
+          <Link href="/dashboard" className="p-3 rounded-xl hover:bg-[var(--accent-text)]/10 transition-colors">
             <Home className="w-5 h-5 text-[var(--accent-text)]" />
           </Link>
+          
+          {/* Spacer */}
+          <div className="flex-grow"></div>
+          
+          {/* Logout Button */}
+          <button 
+            onClick={() => signOut({ callbackUrl: '/login' })}
+            className="p-3 rounded-xl hover:bg-[var(--accent-text)]/10 transition-colors mt-auto"
+          >
+            <LogOut className="w-5 h-5 text-[var(--accent-text)]" />
+          </button>
         </div>
       </div>
 
@@ -269,7 +280,7 @@ export default function Dashboard() {
             <div className="flex items-center text-[var(--accent-text)]">
               <PiPulse className="w-6 h-6" />
             </div>
-            <hr className="absolute bottom-0 w-full text-(--accent-text)" />
+            <hr className="absolute bottom-0 w-full text-zinc-800" />
           </div>
         </div>
 
@@ -288,16 +299,16 @@ export default function Dashboard() {
         )}
 
         {/* Email Receipts Section */}
-        <div className="px-6 mb-4">
-          <div className="flex justify-between items-center mb-2">
+        <div className="px-6 mb-6">
+          <div className="relative flex justify-between items-center pb-6">
             <h2 className="text-4xl font-semibold">Email Receipts</h2>
             <div className="flex items-center">
               <Mail className="w-5 h-5 text-[var(--accent-text)]" />
             </div>
+            <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
           </div>
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mt-2">
             <p className="text-md font-normal text-[var(--accent-text)]">Some receipts may arrive in the spam folder</p>
-            {/* <p className="text-sm">StockX Rec</p> */}
           </div>
         </div>
 

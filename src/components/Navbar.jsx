@@ -33,6 +33,11 @@ export default function Navbar() {
     }
   }
 
+  // Don't render navbar on dashboard
+  if (!mounted || pathname === '/dashboard') {
+    return null
+  }
+
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/store", label: "Store" },
@@ -42,8 +47,6 @@ export default function Navbar() {
     { href: "/pricing", label: "Pricing" },
     { href: "/contact", label: "Contact" },
   ]
-
-  if (!mounted) return null
 
   return (
     <nav className="px-8 sm:px-14 relative w-full bg-[var(--background)] tablet:h-fit h-fit text-white font-light font-[family-name:var(--font-dm-sans)]">
