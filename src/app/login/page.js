@@ -21,7 +21,18 @@ export default function Login() {
   useEffect(() => {
     // If user is already authenticated, redirect to dashboard or callback URL
     if (status === "authenticated") {
-      router.push(callbackUrl)
+      // Ensure the callback URL is from the same origin
+      try {
+        const callbackUrlObj = new URL(callbackUrl, window.location.origin)
+        if (callbackUrlObj.origin === window.location.origin) {
+          router.push(callbackUrl)
+        } else {
+          router.push("/dashboard")
+        }
+      } catch (error) {
+        console.error("Invalid callback URL:", error)
+        router.push("/dashboard")
+      }
     }
 
     // Check for registration success message
@@ -52,7 +63,18 @@ export default function Login() {
 
       // If login was successful, manually redirect to the callback URL
       if (result?.ok) {
-        router.push(callbackUrl)
+        // Ensure the callback URL is from the same origin
+        try {
+          const callbackUrlObj = new URL(callbackUrl, window.location.origin)
+          if (callbackUrlObj.origin === window.location.origin) {
+            router.push(callbackUrl)
+          } else {
+            router.push("/dashboard")
+          }
+        } catch (error) {
+          console.error("Invalid callback URL:", error)
+          router.push("/dashboard")
+        }
       }
     } catch (error) {
       console.error("Login error:", error)

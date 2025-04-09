@@ -39,7 +39,15 @@ export async function middleware(request) {
     
     // If there's a callback URL, redirect to it
     if (callbackUrl) {
-      return NextResponse.redirect(new URL(callbackUrl, request.url))
+      // Ensure the callback URL is from the same origin
+      try {
+        const callbackUrlObj = new URL(callbackUrl, request.url)
+        if (callbackUrlObj.origin === request.nextUrl.origin) {
+          return NextResponse.redirect(callbackUrlObj)
+        }
+      } catch (error) {
+        console.error("Invalid callback URL:", error)
+      }
     }
     
     // Otherwise, redirect to dashboard
