@@ -4,6 +4,10 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { Home, Mail, RefreshCw } from "lucide-react"
+import { MdEditCalendar } from "react-icons/md";
+import { LuMailCheck } from "react-icons/lu";
+import { IoTimerOutline } from "react-icons/io5";
+import { PiPulse } from "react-icons/pi";
 import OrderForm from "@/components/OrderForm"
 import Link from "next/link"
 
@@ -144,7 +148,41 @@ export default function Dashboard() {
     { id: 18, name: "bestbuy", logo: "bestbuy.png" },
     { id: 19, name: "canada_go", logo: "canada_goose.png" },
     { id: 20, name: "corteiz", logo: "corteiz.png" },
+    { id: 21, name: "vivienne", logo: "vivienne.png" },
+    { id: 22, name: "balenciaga", logo: "balenciaga.png" },
+    { id: 23, name: "dior", logo: "dior.png" },
+    { id: 24, name: "farfetch", logo: "farfetch.png" },
+    { id: 25, name: "lvr", logo: "lvr.png" },
+    { id: 26, name: "rick_owens", logo: "rick_owens.png" },
+    { id: 27, name: "supreme", logo: "supreme.png" },
+    { id: 28, name: "syna", logo: "syna.png" },
+    { id: 29, name: "grailed", logo: "grailed.png" },
+    { id: 30, name: "denim_tear", logo: "denim_tears.png" },
+    { id: 31, name: "dsm", logo: "dsm.png" },
+    { id: 32, name: "end", logo: "end.png" },
+    { id: 33, name: "flight_club", logo: "flight_club.png" },
+    { id: 34, name: "frasers", logo: "frasers.png" },
+    { id: 35, name: "selfridges", logo: "selfridges.png" },
+    { id: 36, name: "stadium", logo: "stadium.png" },
+    { id: 37, name: "mrporter", logo: "mrporter.png" },
+    { id: 38, name: "harrods", logo: "harrods.png" },
+    { id: 39, name: "farfetchtwo", logo: "farfetchtwo.png" },
+    { id: 40, name: "gallerydept", logo: "gallerydept.png" },
+    { id: 41, name: "de_bijenkorf", logo: "de_bijenkorf.png" },
+    { id: 42, name: "goat", logo: "goat.png" },
+    { id: 43, name: "icon", logo: "icon.png" },
+    { id: 44, name: "jd", logo: "jd.png" },
+    { id: 45, name: "johnlewis", logo: "johnlewis.png" },
+    { id: 46, name: "pacsun", logo: "pacsun.png" },
+    { id: 47, name: "sns", logo: "sns.png" },
+    { id: 48, name: "spoder", logo: "sp5der.png" },
+    { id: 49, name: "ssense", logo: "ssense.png" },
+    { id: 50, name: "zalando", logo: "zalando.png" },
+    { id: 51, name: "goyard", logo: "goyard.png" },
+    { id: 52, name: "nordstrom", logo: "nordstrom.png" },
+    { id: 53, name: "snkrs", logo: "snkrs.png" },
   ]
+
 
   // Show loading state while checking authentication
   if (status === "loading" || (status === "authenticated" && isLoading && !dataFetchAttempted)) {
@@ -161,8 +199,9 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex bg-[var(--background)] text-white">
-      <div className="w-16 flex flex-col items-center py-6 border-r border-zinc-800">
+    <div className="flex text-white min-h-screen">
+      {/* Sidebar - hidden on mobile, visible on md and up */}
+      <div className="hidden md:flex w-16 flex-col items-center py-6 border-r border-zinc-800">
         <div className="flex flex-col items-center space-y-8">
           <Link href="/dashboard">
             <Home className="w-5 h-5 text-[var(--accent-text)]" />
@@ -170,35 +209,52 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto">
-        <div className="p-6 border-b border-zinc-800">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-semibold">Overview</h1>
-            <RefreshCw
-              className="w-5 h-5 text-[var(--accent-text)] cursor-pointer hover:rotate-180 transition-transform duration-300"
-              onClick={() => fetchUserStats()}
-            />
+      {/* Main content */}
+      <div className="flex-1 ">
+        {/* Header */}
+        <div className="p-6">
+          <div className="relative flex justify-between items-center pb-6">
+            <h1 className="text-4xl font-semibold">Overview</h1>
+            <div className="flex items-center">
+              <RefreshCw
+                className="w-5 h-5 text-[var(--accent-text)] cursor-pointer hover:rotate-180 transition-transform duration-300"
+                onClick={() => fetchUserStats()}
+              />
+            </div>
+            <hr className="absolute bottom-0 left-0 right-0 text-(--accent-text)" />
           </div>
         </div>
 
+        {/* Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
-          <div className="bg-zinc-900 p-6 rounded-lg">
+          <div className=" p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] border border-zinc-800">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-sm">Available templates</span>
+              <span className="text-lg font-normal">Available templates</span>
+              <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
+                <MdEditCalendar className=" w-6 h-6" />
+              </div>
             </div>
             <div className="text-6xl font-bold text-[var(--accent-text)]">{brands.length}</div>
           </div>
 
-          <div className="bg-zinc-900 p-6 rounded-lg">
+          <div className=" p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] border border-zinc-800">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-sm">Generated receipts</span>
+              <span className="text-lg font-normal">Generated receipts</span>
+              <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
+                <LuMailCheck className=" w-6 h-6" />
+
+              </div>
             </div>
             <div className="text-6xl font-bold text-[var(--accent-text)]">{userStats.receiptsGenerated}</div>
           </div>
 
-          <div className="bg-zinc-900 p-6 rounded-lg">
+          <div className=" p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] border border-zinc-800">
             <div className="flex justify-between items-center mb-4">
-              <span className="text-sm">Days left</span>
+              <span className="text-lg font-normal">Days left</span>
+              <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
+                <IoTimerOutline className=" w-6 h-6" />
+
+              </div>
             </div>
             <div className="text-6xl font-bold text-[var(--accent-text)]">
               {userStats.subscriptionStatus === "lifetime" ? "∞" : userStats.daysLeft || "0"}
@@ -206,8 +262,20 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Status Section */}
+        <div className="px-6 mb-6">
+          <div className="relative flex justify-between items-center pb-6">
+            <h2 className="text-4xl font-semibold">Status</h2>
+            <div className="flex items-center text-[var(--accent-text)]">
+              <PiPulse className="w-6 h-6" />
+            </div>
+            <hr className="absolute bottom-0 w-full text-(--accent-text)" />
+          </div>
+        </div>
+
+        {/* Subscription Notice */}
         {!isSubscribed && (
-          <div className="mx-6 mb-6 p-4 bg-zinc-900 rounded-lg border border-[var(--accent-text)]/30">
+          <div className="mx-6 mb-6 p-4 bg-zinc-900/80 rounded-xl border border-[var(--accent-text)]/30">
             <h3 className="text-xl font-semibold mb-2">Subscription Required</h3>
             <p className="mb-4">You need an active subscription to generate receipts. Choose a plan to continue.</p>
             <Link
@@ -219,31 +287,33 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="p-6">
-          <div className="mb-4">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xl">Email Receipts</h3>
+        {/* Email Receipts Section */}
+        <div className="px-6 mb-4">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-4xl font-semibold">Email Receipts</h2>
+            <div className="flex items-center">
               <Mail className="w-5 h-5 text-[var(--accent-text)]" />
             </div>
-            <div className="flex justify-between items-center mb-6">
-              <p className="text-sm text-[var(--accent-text)]">Some receipts may arrive in the spam folder</p>
-              <p className="text-sm">StockX R</p>
-            </div>
           </div>
+          <div className="flex justify-between items-center mb-6">
+            <p className="text-md font-normal text-[var(--accent-text)]">Some receipts may arrive in the spam folder</p>
+            {/* <p className="text-sm">StockX Rec</p> */}
+          </div>
+        </div>
 
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+        {/* Brand Grid */}
+        <div className="px-6 pb-6">
+          <div className="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8  xl:grid-cols-9 gap-3">
             {brands.map((brand) => (
               <div
                 key={brand.id}
-                className={`aspect-square ${
-                  isSubscribed ? "bg-[var(--accent-text)]" : "bg-[var(--accent-text)]/50"
-                } rounded-lg flex items-center justify-center p-3 cursor-pointer hover:bg-[var(--accent-text)]/80 transition-colors`}
+                className={`aspect-square bg-[var(--accent-text)] rounded-xl flex items-center justify-center p-3 cursor-pointer hover:bg-[var(--accent-text)]/80 transition-colors`}
                 onClick={() => handleBrandClick(brand)}
               >
                 <div className="w-full h-full flex items-center justify-center">
                   <img
                     src={`https://res.cloudinary.com/drbew77vx/image/upload/v1743604967/resolora-receipt-logos/${brand.logo}`}
-                    className="h-8 max-w-full object-contain"
+                    className="h-12 max-w-full object-contain"
                     alt={brand.name}
                     loading="lazy"
                     onError={(e) => {
@@ -258,6 +328,7 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Order Form Modal */}
       {showForm && (
         <div className="fixed inset-0 bg-black/50 bg-opacity-70 flex items-center justify-center p-4 z-50">
           <OrderForm brand={selectedBrand} onClose={handleCloseForm} />
