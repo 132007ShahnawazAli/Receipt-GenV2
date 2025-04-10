@@ -321,11 +321,11 @@ export default function Dashboard() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 pr-16 md:ml-16">
+      <div className="flex-1 md:pr-16 md:ml-16">
         {/* Header */}
         <div className="p-6">
           <div className="relative flex justify-between items-center pb-6">
-            <h1 className="text-4xl font-semibold">Overview</h1>
+            <h1 className="tablet:text-4xl text-3xl font-semibold">Overview</h1>
             <div className="flex items-center">
               <button
                 onClick={() => signOut({ callbackUrl: '/' })}
@@ -378,7 +378,7 @@ export default function Dashboard() {
         {/* Status Section */}
         <div className="px-6 mb-6">
           <div className="relative flex justify-between items-center pb-6">
-            <h2 className="text-4xl font-semibold">Status</h2>
+            <h2 className="tablet:text-4xl text-3xl font-semibold">Status</h2>
             <div className="flex items-center text-[var(--accent-text)]">
               <BiBarChartAlt className="w-6 h-6" />
             </div>
@@ -403,23 +403,23 @@ export default function Dashboard() {
         {/* Email Receipts Section */}
         <div className="px-6 mb-6">
           <div className="relative flex justify-between items-center pb-6">
-            <h2 className="text-4xl font-semibold">Email Receipts</h2>
+            <h2 className="tablet:text-4xl text-3xl font-semibold">Email Receipts</h2>
             <div className="flex items-center">
               <Mail className="w-5 h-5 text-[var(--accent-text)]" />
             </div>
             <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
           </div>
 
-          <div className="relative flex justify-between items-center pb-6 py-9">
-            <p className="text-md font-normal text-[var(--accent-text)]">Some receipts may arrive in the spam folder</p>
-            <div className="flex items-center">
-              <div className="relative">
+          <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 py-9">
+            <p className="text-md font-normal text-[var(--accent-text)] mb-4 sm:mb-0">Some receipts may arrive in the spam folder</p>
+            <div className="flex items-center w-full sm:w-auto">
+              <div className="relative w-full sm:w-auto">
                 <input
                   type="text"
                   placeholder={currentPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-48 px-2 py-1 bg-transparent border-b-2 border-[var(--accent-text)] text-[var(--primary-text)] placeholder-[var(--secondary-text)] focus:outline-none"
+                  className="w-full sm:w-48 px-2 py-1 bg-transparent border-b-2 border-[var(--accent-text)] text-[var(--primary-text)] placeholder-[var(--secondary-text)] focus:outline-none"
                 />
                 {searchQuery && (
                   <button 
