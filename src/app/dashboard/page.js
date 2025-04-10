@@ -7,7 +7,7 @@ import { Home, Mail, RefreshCw, LogOut, Search } from "lucide-react"
 import { MdEditCalendar } from "react-icons/md";
 import { LuMailCheck } from "react-icons/lu";
 import { IoTimerOutline } from "react-icons/io5";
-import { PiPulse } from "react-icons/pi";
+import { BiBarChartAlt } from "react-icons/bi";
 import OrderForm from "@/components/OrderForm"
 import Link from "next/link"
 
@@ -309,36 +309,30 @@ export default function Dashboard() {
   return (
     <div className="flex text-white min-h-screen">
       {/* Sidebar - hidden on mobile, visible on md and up */}
-      <div className="hidden md:flex w-16 flex-col items-center py-6 border-r border-zinc-800">
+      <div className="hidden md:flex w-16 flex-col items-center py-6 border-r border-zinc-800 fixed h-screen">
         <div className="flex flex-col items-center h-full">
-          <Link href="/dashboard" className="p-3 rounded-xl hover:bg-[var(--accent-text)]/10 transition-colors">
+          <Link href="/" className="p-3 rounded-xl hover:bg-[var(--accent-text)]/10 transition-colors">
             <Home className="w-5 h-5 text-[var(--accent-text)]" />
           </Link>
 
           {/* Spacer */}
           <div className="flex-grow"></div>
-
-          {/* Logout Button */}
-          <button
-            onClick={() => signOut({ callbackUrl: '/login' })}
-            className="p-3 rounded-xl hover:bg-[var(--accent-text)]/10 transition-colors mt-auto"
-          >
-            <LogOut className="w-5 h-5 text-[var(--accent-text)]" />
-          </button>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex-1 pr-6">
+      <div className="flex-1 pr-16 md:ml-16">
         {/* Header */}
         <div className="p-6">
           <div className="relative flex justify-between items-center pb-6">
             <h1 className="text-4xl font-semibold">Overview</h1>
             <div className="flex items-center">
-              <RefreshCw
-                className="w-5 h-5 text-[var(--accent-text)] cursor-pointer hover:rotate-180 transition-transform duration-300"
-                onClick={() => fetchUserStats()}
-              />
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="p-2 rounded-xl hover:bg-[var(--accent-text)]/10 transition-colors"
+              >
+                <LogOut className="w-5 h-5 text-[var(--accent-text)]" />
+              </button>
             </div>
             <hr className="absolute bottom-0 left-0 right-0 text-(--accent-text)" />
           </div>
@@ -386,7 +380,7 @@ export default function Dashboard() {
           <div className="relative flex justify-between items-center pb-6">
             <h2 className="text-4xl font-semibold">Status</h2>
             <div className="flex items-center text-[var(--accent-text)]">
-              <PiPulse className="w-6 h-6" />
+              <BiBarChartAlt className="w-6 h-6" />
             </div>
             <hr className="absolute bottom-0 w-full text-zinc-800" />
           </div>
