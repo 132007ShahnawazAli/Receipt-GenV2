@@ -307,7 +307,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex text-white min-h-screen">
+    <div className="flex text-white min-h-screen font-[family-name:var(--font-dm-sans)]">
       {/* Sidebar - hidden on mobile, visible on md and up */}
       <div className="hidden md:flex w-16 flex-col items-center py-6 border-r border-zinc-800 fixed h-screen">
         <div className="flex flex-col items-center h-full">
@@ -340,33 +340,31 @@ export default function Dashboard() {
 
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
-          <div className=" p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
-            <div className="flex justify-between items-center mb-4">
+          <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
+            <div className="flex justify-between items-center mb-6">
               <span className="text-lg font-normal">Available templates</span>
               <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
-                <MdEditCalendar className=" w-6 h-6" />
+                <MdEditCalendar className="w-6 h-6" />
               </div>
             </div>
             <div className="text-6xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">{brands.length}</div>
           </div>
 
-          <div className=" p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
-            <div className="flex justify-between items-center mb-4">
+          <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
+            <div className="flex justify-between items-center mb-6">
               <span className="text-lg font-normal">Generated receipts</span>
               <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
-                <LuMailCheck className=" w-6 h-6" />
-
+                <LuMailCheck className="w-6 h-6" />
               </div>
             </div>
             <div className="text-6xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">{userStats.receiptsGenerated}</div>
           </div>
 
-          <div className=" p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden  border border-zinc-800">
-            <div className="flex justify-between items-center mb-4">
+          <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
+            <div className="flex justify-between items-center mb-6">
               <span className="text-lg font-normal">Days left</span>
               <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
-                <IoTimerOutline className=" w-6 h-6" />
-
+                <IoTimerOutline className="w-6 h-6" />
               </div>
             </div>
             <div className="text-6xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
@@ -411,7 +409,7 @@ export default function Dashboard() {
           </div>
 
           <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 py-9">
-            <p className="text-md font-normal text-[var(--accent-text)] mb-4 sm:mb-0">Some receipts may arrive in the spam folder</p>
+            <p className="text-lg font-normal text-[var(--accent-text)] mb-4 sm:mb-0">Some receipts may arrive in the spam folder</p>
             <div className="flex items-center w-full sm:w-auto">
               <div className="relative w-full sm:w-auto">
                 <input
@@ -419,7 +417,7 @@ export default function Dashboard() {
                   placeholder={currentPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full sm:w-48 px-2 py-1 bg-transparent border-b-2 border-[var(--accent-text)] text-[var(--primary-text)] placeholder-[var(--secondary-text)] focus:outline-none"
+                  className="w-full sm:w-48 px-2 py-1 bg-transparent border-b-2 border-[var(--accent-text)] text-[var(--primary-text)] placeholder-[var(--secondary-text)]  placeholder:text-lg focus:outline-none"
                 />
                 {searchQuery && (
                   <button 

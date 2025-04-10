@@ -105,14 +105,14 @@ export default function UnlimitedGenerator() {
               </p>
 
               <p className="tablet:text-xl text-lg font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
-                Adidas, Amazon, Apple, Arc&apos;Teryx, Argos, Balenciaga, BAPE, Best Buy, Carhartt, Costco, Boohoo, Browns,
+                Adidas, Amazon, Apple, Arc'Teryx, Argos, Balenciaga, BAPE, Best Buy, Carhartt, Costco, Boohoo, Browns,
                 Canada Goose, Coggles, Converse, Debenhams, Denim Tears, DIOR, Dover Street Market, Dyson, eBay, END,
                 Farfetch, Flannels, Flight Club, Foot Locker, FRASERS, Gallery Dept., Gucci, Harrods, Hermes, Yeezy,
                 GAP, GOAT, Grailed, John Lewis, Louis Vuitton, LUISAVIAROMA, Moncler, MR PORTER, Nike, Off-White,
                 PacSun, Prada, Ralph Lauren, Rick Owens, Saks Fifth Avenue, Samsung, Selfridges, Sephora,
                 Sneakersnstuff, SNKRS, StockX, SSENSE, Stadium Goods, Stanley, StockX, Stüssy, Supreme, Syna World,
                 Trapstar, Vivienne Westwood, Saint Laurent, Zalando, Legit App Authentication, Moncler Authentication,
-                OFFSPRING, GOT &apos;EM, Apple (A4), Farfetch (A4), Nike (A4), Apple (Thermal), CheckCheck (Emulator)
+                OFFSPRING, GOT 'EM, Apple (A4), Farfetch (A4), Nike (A4), Apple (Thermal), CheckCheck (Emulator)
               </p>
 
               <p className="tablet:text-xl text-lg font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">

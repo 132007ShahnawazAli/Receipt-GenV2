@@ -16,7 +16,7 @@ function HowItWorksSection() {
         },
         {
             title: "Receive your receipt",
-            description: "Your receipt will be sent to your email inbox within 24 hours. Don&apos;t forget to check your spam folder."
+            description: "Your receipt will be sent to your email inbox within 24 hours. Don't forget to check your spam folder."
         }
     ]
     return (

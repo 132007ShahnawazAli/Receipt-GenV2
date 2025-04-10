@@ -12,14 +12,12 @@ const accordionData = [
             "If you bought a digital receipt, you will get it via email. Physical receipts will be shipped to you."
     },
     {
-        title: "What&apos;s the delivery time?",
-        content:
-            "24 - 48 hours for digital receipts. 7 - 21 days for physical receipts."
+        title: "What's the delivery time?",
+        content: "Your receipt will be sent to your email inbox within 24 hours."
     },
     {
-        title: "There&apos;s wrong info on my receipt.",
-        content:
-            "Don&apos;t worry. Message us with your order number and we will re-send you the fixed version."
+        title: "There's wrong info on my receipt.",
+        content: "Don't worry. Message us with your order number and we will re-send you the fixed version."
     },
 ];
 
@@ -69,7 +67,7 @@ function FaqSection() {
                     FAQ & Contact
                 </h1>
                 <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl tablet:pt-10">
-                    Here you can find frequently asked questions. If you didn&apos;t find the one you were looking for, you can jump to the contact page.
+                    Here you can find frequently asked questions. If you didn't find the one you were looking for, you can jump to the contact page.
                 </p>
                 <PrimaryButton />
             </div>

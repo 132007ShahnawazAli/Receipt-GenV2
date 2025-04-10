@@ -5,7 +5,7 @@ function AboutUsSection() {
         {
             number: "55+",
             title: "Available templates",
-            description: "We offer a huge selection of templates for all kinds of items, whether it&apos;s for shoes or clothing—we&apos;ve got you covered! Our template portfolio is always expanding."
+            description: "We offer a huge selection of templates for all kinds of items, whether it's for shoes or clothing—we've got you covered! Our template portfolio is always expanding."
         },
         {
             number: "5+",
