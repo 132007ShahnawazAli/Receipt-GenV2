@@ -321,7 +321,7 @@ export default function Dashboard() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 md:pr-16 md:ml-16">
+      <div className="flex-1 md:pr-6 md:ml-16">
         {/* Header */}
         <div className="p-6">
           <div className="relative flex justify-between items-center pb-6">
@@ -441,7 +441,7 @@ export default function Dashboard() {
 
         {/* Brand Grid */}
         <div className="px-6 pb-6">
-          <div className="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-9 gap-3">
+          <div className="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-9 xl:grid-cols-10 gap-3">
             {filteredBrands.map((brand) => (
               <div
                 key={brand.id}
