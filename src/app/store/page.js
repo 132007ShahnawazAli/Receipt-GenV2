@@ -1,11 +1,12 @@
+import PrimaryButton from '@/components/PrimaryButton'
 import Link from 'next/link'
 import React from 'react'
 
 function Store() {
     return (
         <div className='px-8 sm:px-14  font-[family-name:var(--font-dm-sans)] '>
+
             <div className='relative w-full flex flex-col pt-10 tablet:py-20 gap-20 '>
-                <img id="mesh" className="absolute top-0 -z-10 scale-100" src="https://cdn.prod.website-files.com/678294ec876dfc9faed1440c/6782ca8f6309baf6ea837124_Hero-Grid.svg"></img>
                 <div className="w-full flex tablet:flex-row flex-col justify-between">
                     <div className="flex flex-col tablet:gap-0 gap-4">
                         <h1 className='tablet:font-semibold font-medium text-(--primary-text) text-5xl tablet:text-6xl tracking-tighter tablet:w-[50vw]'>
@@ -32,18 +33,6 @@ function Store() {
                     <hr className='absolute bottom-0 left-0 w-full border-t-[1px] border-(--accent-text) -z-10' />
                 </div>
             </div>
-            {/* <div className='w-full'>
-                <div className="flex flex-col items-center">
-                    <h2 className='tablet:font-semibold font-medium text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20'>Store</h2>
-                    <div className="flex text-(--primary-text) gap-5">
-                        <h3>Printouts</h3>
-                        <hr />
-                        <h3>Printouts</h3>
-                        <hr />
-                        <h3>Printouts</h3>
-                    </div>
-                </div>
-            </div> */}
 
             <div className=" text-(--primary-text) min-h-screen">
                 <div className="border-t border-gray-800 my-8"></div>
@@ -72,7 +61,7 @@ function Store() {
 
                     {/* Products Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-14 mt-16 w-full">
-                        {/* Product 1 */}   
+                        {/* Product 1 */}
                         <Link href={"/unlimited-generator"} className="flex flex-col w-full">
                             <div className="flex items-center justify-center h-48 mb-4 w-full">
                                 <div className="relative w-full h-full">
@@ -88,8 +77,29 @@ function Store() {
                         </Link>
 
                     </div>
-                    
+
                 </main>
+            </div>
+
+            <div className=" relative w-full flex flex-col pt-10 tablet:py-20 gap-10 tablet:mb-0 mb-12">
+                <div className="relative w-full">
+                    <hr className="w-full border-t-2 border-(--accent-text) relative z-10" />
+                    <div className="absolute top-1/2 left-0 w-full h-[80px] -translate-y-1/2 bg-[var(--accent-text)]/30 blur-3xl rounded-full z-0"></div>
+
+                </div>
+                <div className="w-full flex tablet:flex-row flex-col justify-between">
+                    <div className="flex flex-col tablet:gap-0 gap-4">
+                        <h1 className="tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20">
+                            Didn&apos;t find what you were looking for?
+                        </h1>
+                    </div>
+                    <div className="flex flex-col w-fit h-fit tablet:gap-4 gap-10">
+                        <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl w-full pt-10">
+                            Feel free to contact us to see what we can do! 👀
+                        </p>
+                        <PrimaryButton text='Contact us' href='https://discord.gg/resellora' />
+                    </div>
+                </div>
             </div>
         </div>
     )
