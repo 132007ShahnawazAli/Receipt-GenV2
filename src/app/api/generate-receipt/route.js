@@ -131,7 +131,7 @@ function generateReceiptHtml(data) {
           <tr>
             <td style="padding-bottom: 20px;">
               <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;">Order Number</div>
-              <div style="font-size: 14px; color: #aaaaaa;">CO${Math.floor(Math.random() * 9000000000) + 1000000000}</div>
+              <div style="font-size: 14px; color: #aaaaaa;">${data.orderNumber}</div>
             </td>
           </tr>
           <tr>

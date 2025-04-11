@@ -312,10 +312,15 @@ export default function Dashboard() {
 
     setSelectedBrand(brand)
     setShowForm(true)
+    // Add modal-open class to body
+    document.body.classList.add('modal-open')
   }
 
   const handleCloseForm = () => {
     setShowForm(false)
+    setSelectedBrand(null)
+    // Remove modal-open class from body
+    document.body.classList.remove('modal-open')
   }
 
   // If not authenticated, don't render anything (middleware will redirect)
@@ -509,9 +514,7 @@ export default function Dashboard() {
 
         {/* Order Form Modal */}
         {showForm && (
-          <div className="fixed inset-0 bg-black/50 bg-opacity-70 flex items-center justify-center p-4 z-50">
-            <OrderForm brand={selectedBrand} onClose={handleCloseForm} />
-          </div>
+          <OrderForm brand={selectedBrand} onClose={handleCloseForm} />
         )}
       </div>
 
