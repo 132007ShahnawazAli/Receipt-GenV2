@@ -79,10 +79,10 @@ export default function PricingSection() {
           </p>
         </AnimatedText>
       </div>
-      <div className="flex flex-wrap justify-center gap-6 max-w-6xl w-full">
+      <div className="flex flex-row flex-wrap justify-center gap-6 max-w-6xl w-full">
         {pricingPlans.map((plan, index) => (
           <AnimatedText key={index} delay={0.2 * (index + 2)}>
-            <div className="flex-1 min-w-[300px] border-[1px] border-[var(--secondary-text)] relative bg-gradient-to-br from-neutral-950 to-[var(--background)] rounded-lg p-8 flex flex-col">
+            <div className="flex-1 min-w-[300px] max-w-[400px] border-[1px] border-[var(--secondary-text)] relative bg-gradient-to-br from-neutral-950 to-[var(--background)] rounded-lg p-8 flex flex-col">
               {plan.featured && (
                 <div className="absolute -top-4 right-8 bg-[var(--accent-text)] text-black font-semibold px-4 py-1 rounded-full">
                   Featured

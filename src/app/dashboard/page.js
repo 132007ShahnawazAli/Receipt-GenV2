@@ -306,7 +306,7 @@ export default function Dashboard() {
 
   const handleBrandClick = (brand) => {
     if (!isSubscribed) {
-      router.push("/pricing")
+      router.push("/store")
       return
     }
 
@@ -422,7 +422,7 @@ export default function Dashboard() {
               <h3 className="text-xl font-semibold mb-2">Subscription Required</h3>
               <p className="mb-4">You need an active subscription to generate receipts. Choose a plan to continue.</p>
               <Link
-                href="/pricing"
+                href="/store"
                 className="inline-block px-4 py-2 bg-[var(--accent-text)] text-black rounded-md hover:bg-[var(--accent-text)]/80 transition-colors"
               >
                 View Plans

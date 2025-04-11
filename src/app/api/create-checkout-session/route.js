@@ -38,8 +38,8 @@ export async function POST(request) {
         },
       ],
       mode: isLifetime ? "payment" : "subscription",
-      success_url: `${process.env.NEXTAUTH_URL}/api/payment-success?session_id={CHECKOUT_SESSION_ID}&userId=${session.user.id}&type=${isLifetime ? "lifetime" : "monthly"}`,
-      cancel_url: `${process.env.NEXTAUTH_URL}/pricing?payment=cancelled`,
+      success_url: `${process.env.NEXTAUTH_URL}/dashboard?payment=success`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/store?payment=cancelled`,
       customer_email: session.user.email,
       metadata: {
         userId: session.user.id,

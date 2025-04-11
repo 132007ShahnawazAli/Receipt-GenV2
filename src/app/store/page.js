@@ -6,6 +6,7 @@ import { AnimatedText } from "@/components/ScrollProvider"
 function Store() {
     return (
         <div className='px-8 sm:px-14  font-[family-name:var(--font-dm-sans)] '>
+            <img id="mesh" className="absolute top-0 -z-10 scale-100" src="https://cdn.prod.website-files.com/678294ec876dfc9faed1440c/6782ca8f6309baf6ea837124_Hero-Grid.svg"></img>
 
             <div className='relative w-full flex flex-col pt-10 tablet:py-20 gap-20 '>
                 <div className="w-full flex tablet:flex-row flex-col justify-between">

@@ -11,9 +11,10 @@ export async function GET(request) {
     const sessionId = searchParams.get("session_id")
     const userId = searchParams.get("userId")
     const type = searchParams.get("type")
+    const priceId = searchParams.get("priceId")
 
-    if (!sessionId || !userId || !type) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/pricing?error=missing_params`)
+    if (!sessionId || !userId || !type || !priceId) {
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/store?error=missing_params`)
     }
 
     // Verify the payment was successful
@@ -25,7 +26,7 @@ export async function GET(request) {
       type === "lifetime" ? checkoutSession.payment_status === "paid" : checkoutSession.subscription !== null
 
     if (!isPaymentSuccessful) {
-      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/pricing?error=payment_failed`)
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/store?error=payment_failed`)
     }
 
     // Connect to database
@@ -51,7 +52,7 @@ export async function GET(request) {
     // Redirect to dashboard with success parameter
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard?payment=success`)
   } catch (error) {
-    console.error("Payment success error:", error)
-    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/pricing?error=server_error`)
+    console.error("Error processing payment success:", error)
+    return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/store?error=server_error`)
   }
 }
