@@ -13,7 +13,7 @@ const accordionData = [
     },
     {
         title: "What's the delivery time?",
-        content: "Your receipt will be sent to your email inbox within 24 hours."
+        content: "Your receipts will be sent to your email inbox immediately after submission."
     },
     {
         title: "There's wrong info on my receipt.",
@@ -69,7 +69,7 @@ function FaqSection() {
                 <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl tablet:pt-10">
                     Here you can find frequently asked questions. If you didn&apos;t find the one you were looking for, you can jump to the contact page.
                 </p>
-                <PrimaryButton />
+                <PrimaryButton text="Contact us" href="https://discord.gg/resellora"/>
             </div>
             <div className="accordion flex flex-col  overflow-hidden tablet:w-[45%] w-full">
                 {accordionData.map((item, index) => (

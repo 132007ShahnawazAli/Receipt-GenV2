@@ -84,7 +84,7 @@ function Store() {
                                 </div>
                             </div>
                             <h2 className="text-3xl font-semibold text-(--primary-text) mb-2">Unlimited Generator</h2>
-                            <p className="text-gray-400">from $54.95</p>
+                            <p className="text-gray-400">From $29.99</p>
                         </Link>
 
                     </div>

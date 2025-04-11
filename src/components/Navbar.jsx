@@ -44,8 +44,8 @@ export default function Navbar() {
     { href: "/affiliate", label: "Affiliate" },
     { href: "/delivery", label: "Delivery" },
     { href: "/reviews", label: "Reviews" },
-    { href: "/pricing", label: "Pricing" },
-    { href: "/contact", label: "Contact" },
+    // { href: "/pricing", label: "Pricing" },
+    // { href: "/contact", label: "Contact" },
   ]
 
   return (
@@ -78,27 +78,17 @@ export default function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                {status === "authenticated" && (
-                  <Link
-                    href="/dashboard"
-                    className={`px-3 cursor-pointer ${
-                      pathname === "/dashboard" ? "underline underline-offset-8 decoration-1" : ""
-                    }`}
-                  >
-                    Dashboard
-                  </Link>
-                )}
               </div>
             </div>
           </div>
           <div className="hidden tablet:flex items-center gap-4">
             {status === "authenticated" ? (
-              <>
-                <span className="cursor-pointer">{session.user.name || session.user.email}</span>
-                <button onClick={handleSignOut} className="cursor-pointer" disabled={isLoggingOut}>
-                  {isLoggingOut ? "Logging out..." : "Logout"}
-                </button>
-              </>
+              <Link
+                href="/dashboard"
+                className="cursor-pointer"
+              >
+                Dashboard
+              </Link>
             ) : (
               <>
                 <Link href="/login" className="cursor-pointer">
@@ -169,18 +159,13 @@ export default function Navbar() {
             </Link>
           )}
           {status === "authenticated" ? (
-            <>
-              <button
-                onClick={() => {
-                  handleSignOut()
-                  setIsMenuOpen(false)
-                }}
-                className="text-5xl text-left"
-                disabled={isLoggingOut}
-              >
-                {isLoggingOut ? "Logging out..." : "Logout"}
-              </button>
-            </>
+            <Link
+              href="/dashboard"
+              className="text-5xl text-left"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Dashboard
+            </Link>
           ) : (
             <Link href="/login" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
               Login

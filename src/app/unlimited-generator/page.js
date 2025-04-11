@@ -95,7 +95,7 @@ export default function UnlimitedGenerator() {
 
             <div className="md:w-2/3 flex flex-col gap-6">
               <p className="tablet:text-3xl text-lg font-semibold tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
-                from {selectedPeriod === "1 Month" ? "$24.99" : "$39.99"}
+                 {selectedPeriod === "1 Month" ? "$29.99" : "$99.99"}
               </p>
               <p className="tablet:text-xl text-lg font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
                 1 Month Or Lifetime Access To Unlimited Receipt Generator

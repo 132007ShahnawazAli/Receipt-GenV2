@@ -8,6 +8,34 @@
   --primary-button-text-color: #0000;
 }
 
+@keyframes logoGrow {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-logo-grow {
+  animation: logoGrow 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Add fade-out animation for the loading screen */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-out {
+  animation: fadeOut .8s ease-out forwards;
+}
 
 body {
   background: var(--background);
