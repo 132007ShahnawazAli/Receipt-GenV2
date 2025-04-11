@@ -326,7 +326,7 @@ export default function Dashboard() {
   // Always render the dashboard, but with a loading overlay if needed
   return (
     <>
-      <div className="flex text-white min-h-screen font-[family-name:var(--font-dm-sans)] text-[var(--primary-text)]">
+      <div className="flex  min-h-screen font-[family-name:var(--font-dm-sans)] text-[var(--primary-text)]">
         {/* Sidebar - hidden on mobile, visible on md and up */}
         <div className="hidden md:flex w-16 flex-col items-center py-6 border-r border-zinc-800 fixed h-screen">
           <div className="flex flex-col items-center h-full">
@@ -336,6 +336,15 @@ export default function Dashboard() {
 
             {/* Spacer */}
             <div className="flex-grow"></div>
+            
+            {/* Logout button at the bottom of sidebar */}
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="p-3 rounded-xl hover:bg-[var(--accent-text)]/10 transition-colors"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5 text-[var(--accent-text)]" />
+            </button>
           </div>
         </div>
 
@@ -344,7 +353,7 @@ export default function Dashboard() {
           {/* Header */}
           <div className="p-6">
             <div className="relative flex justify-between items-center pb-6">
-              <h1 className="tablet:text-4xl text-3xl font-semibold">Overview</h1>
+              <h1 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Overview</h1>
               <div className="flex items-center">
                 <button
                   onClick={() => signOut({ callbackUrl: "/" })}
@@ -360,37 +369,37 @@ export default function Dashboard() {
           {/* Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
             <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
-              <div className="flex justify-between items-center mb-6">
-                <span className="text-xl font-semibold">Available templates</span>
+              <div className="flex justify-between items-center mb-8">
+                <span className="text-2xl tracking-tighter">Available templates</span>
                 <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
                   <MdEditCalendar className="w-6 h-6" />
                 </div>
               </div>
-              <div className="text-6xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
+              <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
                 {brands.length}
               </div>
             </div>
 
             <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
-              <div className="flex justify-between items-center mb-6">
-                <span className="text-xl font-semibold">Generated receipts</span>
+              <div className="flex justify-between items-center mb-8">
+                <span className="text-2xl tracking-tighter">Generated receipts</span>
                 <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
                   <LuMailCheck className="w-6 h-6" />
                 </div>
               </div>
-              <div className="text-6xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
+              <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
                 {userStats.receiptsGenerated}
               </div>
             </div>
 
             <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
-              <div className="flex justify-between items-center mb-6">
-                <span className="text-xl font-semibold">Days left</span>
+              <div className="flex justify-between items-center mb-8">
+                <span className="text-2xl tracking-tighter">Days left</span>
                 <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
                   <IoTimerOutline className="w-6 h-6" />
                 </div>
               </div>
-              <div className="text-6xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
+              <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
                 {userStats.subscriptionStatus === "lifetime" ? "∞" : userStats.daysLeft || "0"}
               </div>
             </div>
@@ -399,7 +408,7 @@ export default function Dashboard() {
           {/* Status Section */}
           <div className="px-6 mb-6">
             <div className="relative flex justify-between items-center pb-6">
-              <h2 className="tablet:text-4xl text-3xl font-semibold">Status</h2>
+              <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Status</h2>
               <div className="flex items-center text-[var(--accent-text)]">
                 <BiBarChartAlt className="w-6 h-6" />
               </div>
@@ -424,7 +433,7 @@ export default function Dashboard() {
           {/* Email Receipts Section */}
           <div className="px-6 mb-6">
             <div className="relative flex justify-between items-center pb-6">
-              <h2 className="tablet:text-4xl text-3xl font-semibold">Email Receipts</h2>
+              <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Email Receipts</h2>
               <div className="flex items-center">
                 <Mail className="w-5 h-5 text-[var(--accent-text)]" />
               </div>
@@ -432,7 +441,7 @@ export default function Dashboard() {
             </div>
 
             <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 py-9">
-              <p className="text-xl font-medium text-[var(--accent-text)] mb-4 sm:mb-0">
+              <p className="text-2xl tracking-tighter text-[var(--accent-text)] mb-4 sm:mb-0">
                 Some receipts may arrive in the spam folder
               </p>
               <div className="flex items-center w-full sm:w-auto">
@@ -442,7 +451,7 @@ export default function Dashboard() {
                     placeholder={currentPlaceholder}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full sm:w-48 px-2 py-1 bg-transparent border-b-2 border-[var(--accent-text)] text-[var(--primary-text)] placeholder-[var(--secondary-text)]  placeholder:text-xl  focus:outline-none"
+                    className="w-full sm:w-60 px-2 py-1 bg-transparent border-b-1 border-[var(--accent-text)] text-[var(--primary-text)] placeholder-[var(--secondary-text)]  placeholder:text-2xl  focus:outline-none"
                   />
                   {searchQuery && (
                     <button
@@ -477,7 +486,7 @@ export default function Dashboard() {
               {filteredBrands.map((brand) => (
                 <div
                   key={brand.id}
-                  className={`aspect-square bg-[var(--accent-text)] rounded-xl flex items-center justify-center p-3 cursor-pointer hover:bg-[var(--accent-text)]/80 transition-colors`}
+                  className={`aspect-square bg-[var(--accent-text)] rounded-xl flex items-center justify-center p-3 cursor-pointer hover:scale-95 transition-transform duration-300`}
                   onClick={() => handleBrandClick(brand)}
                 >
                   <div className="w-full h-full flex items-center justify-center">

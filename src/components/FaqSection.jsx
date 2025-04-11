@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { HiOutlinePlus } from "react-icons/hi2";
 import PrimaryButton from "./PrimaryButton"
+import { AnimatedText } from "./ScrollProvider"
 
 const accordionData = [
     {
@@ -22,33 +23,35 @@ const accordionData = [
 ];
 
 
-const AccordionItem = ({ title, content, isOpen, onClick, isLast }) => {
+const AccordionItem = ({ title, content, isOpen, onClick, isLast, delay }) => {
     return (
-        <div className={`border-t-(--secondary-text) border-t-[1px] ${isLast ? "border-b-(--secondary-text) border-b-[1px]" : ""
-            }`}>
-            <button
-                className="flex items-center justify-between w-full py-7  text-left focus:outline-none "
-                onClick={onClick}
-            >
-                <h2 className="tablet:text-3xl text-2xl font-semibold text-(--primary-text) tracking-tight">{title}</h2>
-                <HiOutlinePlus
-                    className={`w-7 h-7 transition-transform duration-200 text-(--accent-text) ${isOpen ? "transform rotate-45" : ""
-                        }`}
-                />
-            </button>
-            <AnimatePresence initial={false}>
-                {isOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                    >
-                        <div className="text-xl font-light tracking-tight text-(--primary-text) pb-7">{content}</div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
+        <AnimatedText delay={delay}>
+            <div className={`border-t-(--secondary-text) border-t-[1px] ${isLast ? "border-b-(--secondary-text) border-b-[1px]" : ""
+                }`}>
+                <button
+                    className="flex items-center justify-between w-full py-7  text-left focus:outline-none "
+                    onClick={onClick}
+                >
+                    <h2 className="tablet:text-3xl text-2xl font-semibold text-(--primary-text) tracking-tight">{title}</h2>
+                    <HiOutlinePlus
+                        className={`w-7 h-7 transition-transform duration-200 text-(--accent-text) ${isOpen ? "transform rotate-45" : ""
+                            }`}
+                    />
+                </button>
+                <AnimatePresence initial={false}>
+                    {isOpen && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                        >
+                            <div className="text-xl font-light tracking-tight text-(--primary-text) pb-7">{content}</div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+        </AnimatedText>
     )
 }
 
@@ -62,14 +65,22 @@ function FaqSection() {
     return (
         <div className="faq-section flex tablet:flex-row flex-col tablet:justify-between w-full items-start pb-5 gap-10" id="faq">
             <div className="flex flex-col gap-10 w-full">
-                <span className="text-(--accent-text) text-[1.2rem] font-light">Frequently asked questions</span>
-                <h1 className="tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20">
-                    FAQ & Contact
-                </h1>
-                <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl tablet:pt-10">
-                    Here you can find frequently asked questions. If you didn&apos;t find the one you were looking for, you can jump to the contact page.
-                </p>
-                <PrimaryButton text="Contact us" href="https://discord.gg/resellora"/>
+                <AnimatedText>
+                    <span className="text-(--accent-text) text-[1.2rem] font-light">Frequently asked questions</span>
+                </AnimatedText>
+                <AnimatedText delay={0.2}>
+                    <h1 className="tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20">
+                        FAQ & Contact
+                    </h1>
+                </AnimatedText>
+                <AnimatedText delay={0.4}>
+                    <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl tablet:pt-10">
+                        Here you can find frequently asked questions. If you didn&apos;t find the one you were looking for, you can jump to the contact page.
+                    </p>
+                </AnimatedText>
+                <AnimatedText delay={0.6}>
+                    <PrimaryButton text="Contact us" href="https://discord.gg/resellora"/>
+                </AnimatedText>
             </div>
             <div className="accordion flex flex-col  overflow-hidden tablet:w-[45%] w-full">
                 {accordionData.map((item, index) => (
@@ -80,6 +91,7 @@ function FaqSection() {
                         isOpen={openIndex === index}
                         onClick={() => handleItemClick(index)}
                         isLast={index === accordionData.length - 1}
+                        delay={0.2 * (index + 4)}
                     />
                 ))}
             </div>

@@ -1,4 +1,5 @@
 import React from "react"
+import { AnimatedText } from "./ScrollProvider"
 
 function HowItWorksSection() {
     const steps = [
@@ -24,28 +25,36 @@ function HowItWorksSection() {
             <img id="mesh" className="absolute top-0 -z-10 scale-90" src="https://cdn.prod.website-files.com/678294ec876dfc9faed1440c/6782ca8f6309baf6ea837124_Hero-Grid.svg"></img>
             <div className="w-full flex tablet:flex-row flex-col tablet:gap-0 gap-10 justify-between">
                 <div className="flex flex-col gap-4">
-                    <span className="text-(--accent-text) text-[1.2rem] font-light">How it works</span>
-                    <h1 className="tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20">
-                        How to order a <br />receipt?
-                    </h1>
+                    <AnimatedText>
+                        <span className="text-(--accent-text) text-[1.2rem] font-light">How it works</span>
+                    </AnimatedText>
+                    <AnimatedText delay={0.2}>
+                        <h1 className="tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20">
+                            How to order a <br />receipt?
+                        </h1>
+                    </AnimatedText>
                 </div>
                 <div className="w-fit h-fit ">
-                    <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl w-full  tablet:pt-10">
-                        In just four simple steps, you can easily generate your own customized receipt. See how below.
-                    </p>
+                    <AnimatedText delay={0.4}>
+                        <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl w-full  tablet:pt-10">
+                            In just four simple steps, you can easily generate your own customized receipt. See how below.
+                        </p>
+                    </AnimatedText>
                 </div>
             </div>
             <div className="flex items-center justify-center ">
                 <div className="w-full">
-                    <div className="flex flex-col md:flex-row tablet:gap-4 gap-10">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {steps.map((step, index) => (
-                            <div key={index} className="flex-1  border border-(--secondary-text) rounded-lg p-6 relative bg-(--background)">
-                                <div className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)] text-5xl tablet:text-7xl tablet:font-bold font-semibold absolute tablet:-top-10 -top-7 right-10 rotate-3 ">{index + 1}</div>
-                                <h2 className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)] text-2xl font-light tracking-tight">{step.title}</h2>
-                                <p className="text-(--secondary-text) text-xl font-light tracking-tight tablet:pt-12 pt-6">
-                                    {step.description}
-                                </p>
-                            </div>
+                            <AnimatedText key={index} delay={0.2 * (index + 3)}>
+                                <div className="flex-1 border border-(--secondary-text) rounded-lg p-6 relative bg-(--background) h-full flex flex-col">
+                                    <div className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)] text-5xl tablet:text-7xl tablet:font-bold font-semibold absolute tablet:-top-10 -top-7 right-10 rotate-3 ">{index + 1}</div>
+                                    <h2 className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)] text-2xl font-light tracking-tight">{step.title}</h2>
+                                    <p className="text-(--secondary-text) text-xl font-light tracking-tight tablet:pt-12 pt-6 flex-grow">
+                                        {step.description}
+                                    </p>
+                                </div>
+                            </AnimatedText>
                         ))}
                     </div>
                 </div>

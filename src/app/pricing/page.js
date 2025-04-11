@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Check } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { AnimatedText } from "@/components/ScrollProvider"
 
 export default function PricingSection() {
   const { data: session, status } = useSession()
@@ -67,57 +68,58 @@ export default function PricingSection() {
   return (
     <div className="px-8 sm:px-14 bg-[var(--background)] flex flex-col items-center gap-20 tablet:py-10">
       <div className="flex flex-col gap-7 items-center">
-        <h1 className="tablet:font-bold font-semibold text-[var(--primary-text)] tablet:w-full text-5xl tablet:text-7xl tracking-tighter">
-          Choose Your Plan
-        </h1>
-        <p className="tablet:text-2xl text-lg font-light tracking-tight text-center text-[var(--primary-text)] tablet:w-xl w-full">
-          Access all premium features with flexible pricing options
-        </p>
+        <AnimatedText>
+          <h1 className="tablet:font-bold font-semibold text-[var(--primary-text)] tablet:w-full text-5xl tablet:text-7xl tracking-tighter">
+            Choose Your Plan
+          </h1>
+        </AnimatedText>
+        <AnimatedText delay={0.2}>
+          <p className="tablet:text-2xl text-lg font-light tracking-tight text-center text-[var(--primary-text)] tablet:w-xl w-full">
+            Access all premium features with flexible pricing options
+          </p>
+        </AnimatedText>
       </div>
       <div className="flex flex-wrap justify-center gap-6 max-w-6xl w-full">
         {pricingPlans.map((plan, index) => (
-          <div
-            key={index}
-            className="flex-1 min-w-[300px] border-[1px] border-[var(--secondary-text)] relative bg-gradient-to-br from-neutral-950 to-[var(--background)] rounded-lg p-8 flex flex-col"
-          >
-            {plan.featured && (
-              <div className="absolute -top-4 right-8 bg-[var(--accent-text)] text-black font-semibold px-4 py-1 rounded-full">
-                Featured
+          <AnimatedText key={index} delay={0.2 * (index + 2)}>
+            <div className="flex-1 min-w-[300px] border-[1px] border-[var(--secondary-text)] relative bg-gradient-to-br from-neutral-950 to-[var(--background)] rounded-lg p-8 flex flex-col">
+              {plan.featured && (
+                <div className="absolute -top-4 right-8 bg-[var(--accent-text)] text-black font-semibold px-4 py-1 rounded-full">
+                  Featured
+                </div>
+              )}
+
+              <h2 className="tablet:text-3xl text-xl font-semibold tracking-tight text-[var(--primary-text)] tablet:w-xl w-full">
+                {plan.title}
+              </h2>
+
+              <div className="mb-4">
+                <span className="text-[var(--primary-text)] text-6xl font-bold">{plan.price}</span>
+                <span className="text-[var(--secondary-text)] ml-2 line-through">{plan.originalPrice}</span>
               </div>
-            )}
 
-            <h2 className="tablet:text-3xl text-xl font-semibold tracking-tight text-[var(--primary-text)] tablet:w-xl w-full">
-              {plan.title}
-            </h2>
+              <p className="text-[var(--secondary-text)] mb-8">
+                {plan.title === "Lifetime" ? "One time payment" : "Monthly payment"}
+              </p>
 
-            <div className="mb-4">
-              <span className="text-[var(--primary-text)] text-6xl font-bold">{plan.price}</span>
-              <span className="text-[var(--secondary-text)] ml-2 line-through">{plan.originalPrice}</span>
-            </div>
-
-            <p className="text-[var(--secondary-text)] mb-8">
-              {plan.title === "Lifetime" ? "One time payment" : "Monthly payment"}
-            </p>
-
-            <div className="flex-grow">
-              <ul className="space-y-4">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center text-[var(--primary-text)]">
-                    <Check className="mr-2 h-5 w-5 text-[var(--accent-text)]" />
-                    <span>{feature}</span>
+              <ul className="space-y-4 mb-8 flex-grow">
+                {plan.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-center">
+                    <Check className="h-5 w-5 text-[var(--accent-text)] mr-2" />
+                    <span className="text-[var(--primary-text)]">{feature}</span>
                   </li>
                 ))}
               </ul>
-            </div>
 
-            <button
-              className="mt-8 w-full bg-[#111] border border-gray-700 text-[var(--primary-text)] py-3 rounded-md hover:bg-gray-800 transition-colors disabled:opacity-70"
-              onClick={() => handleSubscription(plan.priceId)}
-              disabled={loading}
-            >
-              {loading ? "Processing..." : plan.cta}
-            </button>
-          </div>
+              <button
+                onClick={() => handleSubscription(plan.priceId)}
+                disabled={loading}
+                className="mt-auto bg-[var(--accent-text)] text-black font-semibold py-3 px-6 rounded-lg hover:bg-opacity-90 transition-all"
+              >
+                {loading ? "Processing..." : plan.cta}
+              </button>
+            </div>
+          </AnimatedText>
         ))}
       </div>
     </div>

@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@studio-freight/lenis": "^1.0.42",
     "bcryptjs": "^3.0.2",
+    "framer-motion": "^12.6.5",
     "lucide-react": "^0.483.0",
     "mongoose": "^8.13.2",
     "motion": "^12.5.0",
