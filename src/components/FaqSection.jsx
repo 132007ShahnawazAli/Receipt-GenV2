@@ -67,7 +67,7 @@ function FaqSection() {
                     FAQ & Contact
                 </h1>
                 <p className="tablet:text-2xl text-lg font-light tracking-tight text-(--primary-text) tablet:w-xl tablet:pt-10">
-                    Here you can find frequently asked questions. If you didn't find the one you were looking for, you can jump to the contact page.
+                    Here you can find frequently asked questions. If you didn&apos;t find the one you were looking for, you can jump to the contact page.
                 </p>
                 <PrimaryButton />
             </div>
