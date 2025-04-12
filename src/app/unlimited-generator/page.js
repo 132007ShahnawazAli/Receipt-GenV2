@@ -53,7 +53,7 @@ export default function UnlimitedGenerator() {
       {/* Navigation */}
       <div className="py-2 hidden sm:block">
         <div className="text-lg font-light">
-          <Link href="#" className="hover:underline">
+          <Link href="/store" className="hover:underline">
             Store
           </Link>{" "}
           {" > "}
@@ -100,25 +100,25 @@ export default function UnlimitedGenerator() {
 
             <div className="md:w-2/3 flex flex-col gap-6">
               <AnimatedText delay={0.3}>
-                <p className="tablet:text-3xl text-lg font-semibold tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
+                <p className="text-3xl font-semibold tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
                   {selectedPeriod === "1 Month" ? "$29.99" : "$99.99"}
                 </p>
               </AnimatedText>
-              
+
               <AnimatedText delay={0.4}>
-                <p className="tablet:text-xl text-lg font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
+                <p className="text-xl font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
                   1 Month Or Lifetime Access To Unlimited Receipt Generator
                 </p>
               </AnimatedText>
-              
+
               <AnimatedText delay={0.5}>
-                <p className="tablet:text-xl text-lg font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
+                <p className="text-xl  font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
                   Dashboard includes more than 70 ready-to-generate templates.
                 </p>
               </AnimatedText>
 
               <AnimatedText delay={0.6}>
-                <p className="tablet:text-xl text-lg font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
+                <p className="text-xl font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
                   Adidas, Amazon, Apple, Arc Teryx, Argos, Balenciaga, BAPE, Best Buy, Carhartt, Costco, Boohoo, Browns,
                   Canada Goose, Coggles, Converse, Debenhams, Denim Tears, DIOR, Dover Street Market, Dyson, eBay, END,
                   Farfetch, Flannels, Flight Club, Foot Locker, FRASERS, Gallery Dept., Gucci, Harrods, Hermes, Yeezy,
@@ -131,7 +131,7 @@ export default function UnlimitedGenerator() {
               </AnimatedText>
 
               <AnimatedText delay={0.7}>
-                <p className="tablet:text-xl text-lg font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
+                <p className="text-xl font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
                   This{" "}
                   <Link href="#" className="underline">
                     hypereceipt.me/io
@@ -147,22 +147,20 @@ export default function UnlimitedGenerator() {
               {/* Period Selection */}
               <AnimatedText delay={0.8}>
                 <div className="flex flex-col gap-4">
-                  <p className="tablet:text-xl text-lg font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
+                  <p className="text-xl font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
                     Period:
                   </p>
                   <div className="grid grid-cols-2 gap-3 max-w-xl">
                     <button
-                      className={`py-4 rounded-lg tracking-tight text-[var(--accent-text)] text-center ${
-                        selectedPeriod === "1 Month" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
-                      }`}
+                      className={`py-4 rounded-lg tracking-tight text-[var(--accent-text)] text-center cursor-pointer ${selectedPeriod === "1 Month" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
+                        }`}
                       onClick={() => setSelectedPeriod("1 Month")}
                     >
                       1 Month
                     </button>
                     <button
-                      className={`py-4 px-10 rounded-lg tracking-tight text-[var(--accent-text)] text-center ${
-                        selectedPeriod === "Lifetime" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
-                      }`}
+                      className={`py-4 px-10 rounded-lg tracking-tight text-[var(--accent-text)] text-center cursor-pointer ${selectedPeriod === "Lifetime" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
+                        }`}
                       onClick={() => setSelectedPeriod("Lifetime")}
                     >
                       Lifetime
@@ -171,12 +169,16 @@ export default function UnlimitedGenerator() {
                 </div>
               </AnimatedText>
 
-              <hr className="max-w-xl text-[var(--accent-text)] mt-4 mb-4" />
+              <div className="relative max-w-xl">
+                <hr className="w-full border-t-2 border-(--accent-text) relative z-10" />
+                <div className="absolute top-1/2 left-0 w-full h-[80px] -translate-y-1/2 bg-[var(--accent-text)]/30 blur-3xl rounded-full z-0"></div>
+
+              </div>
 
               {/* Purchase Button */}
               <AnimatedText delay={0.9}>
                 <button
-                  className="w-full max-w-xl bg-[var(--accent-text)] text-black py-4 rounded-lg tracking-tight font-medium disabled:opacity-70"
+                  className="w-full max-w-xl bg-[var(--accent-text)] text-black py-4 rounded-lg tracking-tight font-medium disabled:opacity-70 cursor-pointer"
                   onClick={handlePurchase}
                   disabled={loading}
                 >

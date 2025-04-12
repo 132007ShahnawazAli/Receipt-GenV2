@@ -13,26 +13,26 @@ export async function GET(request) {
     const type = searchParams.get("type")
     const priceId = searchParams.get("priceId")
 
+    console.log("Payment success parameters:", { sessionId, userId, type, priceId })
+
     if (!sessionId || !userId || !type || !priceId) {
+      console.error("Missing required parameters:", { sessionId, userId, type, priceId })
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/store?error=missing_params`)
     }
 
     // Verify the payment was successful
     const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId)
+    console.log("Checkout session:", checkoutSession)
 
-    // For one-time payments, check payment status
-    // For subscriptions, check subscription status
-    const isPaymentSuccessful =
-      type === "lifetime" ? checkoutSession.payment_status === "paid" : checkoutSession.subscription !== null
-
-    if (!isPaymentSuccessful) {
+    if (checkoutSession.payment_status !== "paid") {
+      console.error("Payment not successful:", checkoutSession.payment_status)
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/store?error=payment_failed`)
     }
 
     // Connect to database
     await connectToDatabase()
 
-    // Calculate subscription end date for monthly subscriptions
+    // Calculate subscription end date
     let subscriptionEndDate = null
     if (type === "monthly") {
       subscriptionEndDate = new Date()
@@ -40,13 +40,32 @@ export async function GET(request) {
     }
 
     // Update user subscription status
-    await User.findByIdAndUpdate(userId, {
-      hasActiveSubscription: true,
-      subscriptionType: type,
+    const updateResult = await User.findByIdAndUpdate(
+      userId,
+      {
+        hasActiveSubscription: true,
+        subscriptionType: type,
+        subscriptionEndDate,
+        stripeCustomerId: checkoutSession.customer,
+        ...(type === "monthly" && checkoutSession.subscription
+          ? { stripeSubscriptionId: checkoutSession.subscription }
+          : {}),
+      },
+      { new: true }
+    )
+
+    if (!updateResult) {
+      console.error("Failed to update user subscription:", userId)
+      return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/store?error=update_failed`)
+    }
+
+    console.log("Successfully updated user subscription:", {
+      userId,
+      type,
       subscriptionEndDate,
-      ...(type === "monthly" && checkoutSession.subscription
-        ? { stripeSubscriptionId: checkoutSession.subscription }
-        : {}),
+      hasActiveSubscription: updateResult.hasActiveSubscription,
+      stripeCustomerId: updateResult.stripeCustomerId,
+      stripeSubscriptionId: updateResult.stripeSubscriptionId
     })
 
     // Redirect to dashboard with success parameter
