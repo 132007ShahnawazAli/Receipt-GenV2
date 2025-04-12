@@ -16,15 +16,17 @@ function HeroSection() {
                     <AnimatedText delay={0.2}>
                         <h1 className="tablet:font-bold font-semibold text-(--primary-text) text-5xl tablet:text-7xl tracking-tighter tablet:leading-20">
                             Step-up your <br />
-                            <span className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)]"><Typewriter
-                                words={["Receipt", "Resell", "Business"]}
-                                loop={false}
-                                cursor
-                                cursorStyle="|"
-                                typeSpeed={95}
-                                deleteSpeed={100}
-                                delaySpeed={1000}
-                            /></span> game!
+                            <span className="text-(--accent-text) drop-shadow-[0px_0px_10px_var(--accent-text)] inline-block min-h-[1.2em] h-[1.2em] min-w-[200px]">
+                                <Typewriter
+                                    words={["Receipt", "Resell", "Business"]}
+                                    loop={false}
+                                    cursor
+                                    cursorStyle="|"
+                                    typeSpeed={95}
+                                    deleteSpeed={100}
+                                    delaySpeed={1000}
+                                />
+                            </span> game!
                         </h1>
                     </AnimatedText>
                 </div>

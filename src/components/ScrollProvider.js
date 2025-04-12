@@ -39,7 +39,11 @@ export function ScrollProvider({ children }) {
 
 export function AnimatedText({ children, className = '', delay = 0.2 }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-20% 0px -20% 0px" });
+  const isInView = useInView(ref, { 
+    once: true, 
+    margin: "0px 0px -5% 0px",
+    amount: 0.2
+  });
 
   return (
     <div

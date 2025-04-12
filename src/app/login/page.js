@@ -164,8 +164,8 @@ export default function Login() {
         </div>
       </div>
 
-      <div className="w-full md:w-1/3 p-8 flex items-center justify-center">
-        <div className="w-full max-w-md bg-[var(--background)] py-8 px-4 shadow-[inset_0px_0px_15px_2px_rgba(71,_85,_105,_0.08)] rounded-lg border border-[var(--accent-text)]/10">
+      <div className="w-full md:w-1/3 flex items-center justify-center">
+        <div className="w-full max-w-md bg-[var(--background)] py-8 px-4 sm:px-6 shadow-[inset_0px_0px_15px_2px_rgba(71,_85,_105,_0.08)] rounded-lg border border-[var(--accent-text)]/10">
           <div className="flex flex-col items-center w-full mb-8">
             <h2 className="font-semibold text-[var(--primary-text)] text-4xl md:text-5xl tracking-tighter text-center">
               Log in

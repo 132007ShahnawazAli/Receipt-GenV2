@@ -46,7 +46,7 @@ function Store() {
                 <main className="container py-12">
                     {/* Store Heading */}
                     <AnimatedText>
-                        <h1 className="text-6xl md:text-7xl font-bold text-center mb-16">Store</h1>
+                        <h1 className="text-6xl md:text-7xl font-semibold text-center mb-16 tracking-tighter">Store</h1>
                     </AnimatedText>
 
                     {/* Navigation */}

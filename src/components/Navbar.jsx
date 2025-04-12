@@ -116,13 +116,8 @@ export default function Navbar() {
               <span className="sr-only">Open main menu</span>
               <div className="relative w-6 h-6">
                 <HiOutlinePlus
-                  className={`absolute inset-0 h-8 w-8 transition-all duration-300 text-[var(--secondary-text)] ${
-                    isMenuOpen ? "opacity-0 rotate-45" : "opacity-100 rotate-0"
-                  }`}
-                />
-                <X
-                  className={`absolute inset-0 h-6 w-6 transition-all duration-300 ${
-                    isMenuOpen ? "opacity-100 rotate-0" : "opacity-0 -rotate-45"
+                  className={`h-9 w-9 transition-transform duration-300 text-[var(--secondary-text)] ${
+                    isMenuOpen ? "rotate-45" : "rotate-0"
                   }`}
                 />
               </div>
@@ -149,7 +144,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          {status === "authenticated" && (
+          {status === "authenticated" ? (
             <Link
               href="/dashboard"
               className={`text-5xl ${pathname === "/dashboard" ? "underline underline-offset-8 decoration-1" : ""}`}
@@ -157,19 +152,15 @@ export default function Navbar() {
             >
               Dashboard
             </Link>
-          )}
-          {status === "authenticated" ? (
-            <Link
-              href="/dashboard"
-              className="text-5xl text-left"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Dashboard
-            </Link>
           ) : (
-            <Link href="/login" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
-              Login
-            </Link>
+            <>
+              <Link href="/login" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
+                Login
+              </Link>
+              <Link href="/signup" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
+                Sign-up
+              </Link>
+            </>
           )}
           <div className="flex gap-4">
             <Link href="https://www.instagram.com/resellora.store/">
