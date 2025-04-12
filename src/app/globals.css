@@ -58,14 +58,18 @@ body {
   --breakpoint-tablet: 800px;
 }
 
-/* Custom scrollbar styles */
+
+.modal-open {
+  overflow: hidden;
+}
+
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: var(--accent-text) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -74,10 +78,5 @@ body {
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: var(--accent-text);
-  border-radius: 3px;
-}
-
-/* Modal styles */
-body.modal-open {
-  overflow: hidden;
+  border-radius: 20px;
 }
