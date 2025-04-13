@@ -6,6 +6,28 @@ import { AnimatedText } from "@/components/ScrollProvider"
 export const metadata = {
   title: "RESELLORA - Store",
   description: "Grab access to our premium tools and resources including guides, marketplace tools, generators and more.",
+  openGraph: {
+    title: "RESELLORA - Store",
+    description: "Grab access to our premium tools and resources including guides, marketplace tools, generators and more.",
+    url: "https://resellora.com/store",
+    siteName: "RESELLORA",
+    images: [
+      {
+        url: "/assets/Logo_1.png",
+        width: 800,
+        height: 600,
+        alt: "RESELLORA Store",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RESELLORA - Store",
+    description: "Grab access to our premium tools and resources including guides, marketplace tools, generators and more.",
+    images: ["/assets/Logo_1.png"],
+  },
 };
 
 function Store() {

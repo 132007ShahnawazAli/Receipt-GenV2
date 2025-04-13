@@ -12,6 +12,28 @@ const dmSans = DM_Sans({
 export const metadata = {
   title: "RESELLORA | Reselling Platform",
   description: "Set-up your reselling game with top tools and resources including guides, marketplace tools, generators and more.",
+  openGraph: {
+    title: "RESELLORA | Reselling Platform",
+    description: "Set-up your reselling game with top tools and resources including guides, marketplace tools, generators and more.",
+    url: "https://resellora.com",
+    siteName: "RESELLORA",
+    images: [
+      {
+        url: "/assets/Logo_1.png",
+        width: 800,
+        height: 600,
+        alt: "RESELLORA Logo",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RESELLORA | Reselling Platform",
+    description: "Set-up your reselling game with top tools and resources including guides, marketplace tools, generators and more.",
+    images: ["/assets/Logo_1.png"],
+  },
 };
 
 export default function RootLayout({ children }) {

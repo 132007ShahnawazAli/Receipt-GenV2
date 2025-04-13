@@ -4,6 +4,28 @@ import React from 'react'
 export const metadata = {
   title: "RESELLORA - Shipping",
   description: "Check out the shipping times for all our physical products.",
+  openGraph: {
+    title: "RESELLORA - Shipping",
+    description: "Check out the shipping times for all our physical products.",
+    url: "https://resellora.com/delivery",
+    siteName: "RESELLORA",
+    images: [
+      {
+        url: "/assets/Logo_1.png",
+        width: 800,
+        height: 600,
+        alt: "RESELLORA Shipping Information",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "RESELLORA - Shipping",
+    description: "Check out the shipping times for all our physical products.",
+    images: ["/assets/Logo_1.png"],
+  },
 };
 
 function Delivery() {
