@@ -7,11 +7,6 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Typewriter } from "react-simple-typewriter"
 import React from 'react'
 
-export const metadata = {
-  title: "RESELLORA - Login",
-  description: "Login to your account and continue learning",
-};
-
 export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
