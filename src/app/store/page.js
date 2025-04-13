@@ -3,6 +3,11 @@ import Link from 'next/link'
 import React from 'react'
 import { AnimatedText } from "@/components/ScrollProvider"
 
+export const metadata = {
+  title: "RESELLORA - Store",
+  description: "Grab access to our premium tools and resources including guides, marketplace tools, generators and more.",
+};
+
 function Store() {
     return (
         <div className='px-8 sm:px-14  font-[family-name:var(--font-dm-sans)] '>

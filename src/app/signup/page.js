@@ -4,6 +4,12 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { signIn } from "next-auth/react"
+import React from 'react'
+
+export const metadata = {
+  title: "RESELLORA - Create Account",
+  description: "Join now and launch your reselling journey with us!",
+};
 
 export default function Signup() {
   const [name, setName] = useState("")

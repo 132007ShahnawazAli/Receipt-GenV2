@@ -1,6 +1,11 @@
 import Link from 'next/link'
 import React from 'react'
 
+export const metadata = {
+  title: "RESELLORA - Affiliate",
+  description: "Join our affiliate program and start earning by promoting us",
+};
+
 function Affiliate() {
     return (
         <div className=" px-8 sm:px-14 w-full flex tablet:flex-row flex-col gap-10 tablet:gap-0 justify-between tablet:pt-10 ">

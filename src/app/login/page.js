@@ -5,6 +5,12 @@ import Link from "next/link"
 import { signIn, useSession } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Typewriter } from "react-simple-typewriter"
+import React from 'react'
+
+export const metadata = {
+  title: "RESELLORA - Login",
+  description: "Login to your account and continue learning",
+};
 
 export default function Login() {
   const [email, setEmail] = useState("")
