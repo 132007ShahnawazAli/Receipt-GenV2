@@ -23,7 +23,6 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [success, setSuccess] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -87,17 +86,15 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
       if (!response.ok) {
         throw new Error(data.message || "Failed to generate receipt")
       }
-
-      setSuccess(true)
       
       // Notify parent component that a receipt was generated
       if (onReceiptGenerated) {
         onReceiptGenerated();
       }
       
-      setTimeout(() => {
+      // Close the form immediately after successful generation
         onClose()
-      }, 3000)
+      
     } catch (error) {
       console.error("Error generating receipt:", error)
       setError(error.message || "Something went wrong. Please try again.")
@@ -126,14 +123,6 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
             onClick={(e) => e.stopPropagation()}
             onWheel={(e) => e.stopPropagation()}
           >
-            {success ? (
-              <div className="p-6 text-center">
-                <div className="mb-4 text-green-500 text-5xl">✓</div>
-                <h3 className="text-xl font-bold mb-2">Receipt Generated!</h3>
-                <p className="mb-4">Your receipt has been generated and sent to your email.</p>
-                <p className="text-sm text-gray-400">This window will close automatically...</p>
-              </div>
-            ) : (
               <form onSubmit={handleSubmit} className="p-6 space-y-5">
                 {error && (
                   <div className="p-2 bg-red-500/10 border border-red-500 text-red-500 rounded text-sm">{error}</div>
@@ -309,7 +298,6 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
                   </div>
                 </div>
               </form>
-            )}
           </div>
         </div>
       </div>
