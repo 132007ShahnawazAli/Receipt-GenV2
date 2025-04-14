@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@strapi/sdk-js": "^1.0.0",
     "@studio-freight/lenis": "^1.0.42",
     "bcryptjs": "^3.0.2",
     "framer-motion": "^12.6.5",
