@@ -9,6 +9,7 @@ import { LuMailCheck } from "react-icons/lu"
 import { IoTimerOutline } from "react-icons/io5"
 import { BiBarChartAlt } from "react-icons/bi"
 import OrderForm from "@/components/OrderForm"
+import CategoryBoxes from "@/components/CategoryBoxes" // Import the new component
 import Link from "next/link"
 
 export default function Dashboard() {
@@ -313,14 +314,48 @@ export default function Dashboard() {
     setSelectedBrand(brand)
     setShowForm(true)
     // Add modal-open class to body
-    document.body.classList.add('modal-open')
+    document.body.classList.add("modal-open")
   }
 
   const handleCloseForm = () => {
     setShowForm(false)
     setSelectedBrand(null)
     // Remove modal-open class from body
-    document.body.classList.remove('modal-open')
+    document.body.classList.remove("modal-open")
+  }
+
+  // Function to handle receipt generation
+  const handleReceiptGenerated = () => {
+    // Show loading overlay
+    setShowLoadingOverlay(true)
+    setOverlayOpacity(1)
+    
+    // Refresh user stats
+    fetchUserStats()
+    
+    // Hide loading overlay after animation
+    setTimeout(() => {
+      // Start fading out the overlay
+      const fadeOutAnimation = () => {
+        setOverlayOpacity((prevOpacity) => {
+          const newOpacity = prevOpacity - 0.05
+          if (newOpacity <= 0) {
+            // When fully transparent, remove the overlay
+            setShowLoadingOverlay(false)
+            return 0
+          }
+          return newOpacity
+        })
+      }
+
+      // Create a smooth fade-out effect
+      const fadeInterval = setInterval(fadeOutAnimation, 30)
+      
+      // Clean up the interval after animation completes
+      setTimeout(() => {
+        clearInterval(fadeInterval)
+      }, 1500)
+    }, 1000)
   }
 
   // If not authenticated, don't render anything (middleware will redirect)
@@ -341,7 +376,7 @@ export default function Dashboard() {
 
             {/* Spacer */}
             <div className="flex-grow"></div>
-            
+
             {/* Logout button at the bottom of sidebar */}
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
@@ -510,12 +545,13 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
+
+          {/* Learning Resources Section - NEW SECTION */}
+          <CategoryBoxes />
         </div>
 
         {/* Order Form Modal */}
-        {showForm && (
-          <OrderForm brand={selectedBrand} onClose={handleCloseForm} />
-        )}
+        {showForm && <OrderForm brand={selectedBrand} onClose={handleCloseForm} onReceiptGenerated={handleReceiptGenerated} />}
       </div>
 
       {/* Loading Overlay - positioned above the dashboard */}

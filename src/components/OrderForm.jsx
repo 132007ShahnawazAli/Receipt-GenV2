@@ -4,7 +4,7 @@ import { useState } from "react"
 import { X } from "lucide-react"
 import { useSession } from "next-auth/react"
 
-export default function OrderForm({ brand, onClose }) {
+export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
   const { data: session } = useSession()
   const [formData, setFormData] = useState({
     customerName: "",
@@ -89,6 +89,12 @@ export default function OrderForm({ brand, onClose }) {
       }
 
       setSuccess(true)
+      
+      // Notify parent component that a receipt was generated
+      if (onReceiptGenerated) {
+        onReceiptGenerated();
+      }
+      
       setTimeout(() => {
         onClose()
       }, 3000)
