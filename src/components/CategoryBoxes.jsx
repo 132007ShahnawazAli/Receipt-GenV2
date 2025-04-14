@@ -63,28 +63,28 @@ export default function CategoryBoxes() {
         <div className="px-6 mb-6">
             {/* Section Header */}
             <div className="relative flex justify-between items-center pb-6">
-                <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Learning Resources</h2>
+                <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Guides</h2>
                 <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
             </div>
 
             {/* Category Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
                 {categories.map((category) => (
-                    <div key={category.id} className="rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800">
+                    <div key={category.id} className="rounded-xl overflow-hidden border border-zinc-800">
                         {/* Image Header with Title Overlay - Only top portion */}
-                        <div className="relative h-24 overflow-hidden">
+                        <div className="relative h-24 overflow-hidden px-4 pt-4">
                             {/* Placeholder image */}
                             <img
                                 src={category.image || "/placeholder.svg"}
                                 alt={category.title}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover object-center rounded-lg"
                             />
 
                             {/* Dark overlay to ensure text readability */}
-                            <div className="absolute inset-0 bg-black/30"></div>
+                            <div className="absolute inset-0"></div>
 
                             {/* Title centered on image */}
-                            <div className="absolute bottom-3 left-5 flex items-center justify-center">
+                            <div className="absolute bottom-2 left-6 flex items-center justify-center">
                                 <h3 className="text-4xl font-semibold text-(--primary-text)">{category.title}</h3>
                             </div>
                         </div>
@@ -92,10 +92,10 @@ export default function CategoryBoxes() {
                         {/* Content below image */}
                         <div className="p-4 flex flex-col flex-grow">
                             <h4 className="text-lg font-semibold mb-2">{category.title}</h4>
-                            <div className="flex flex-row">
-                                <p className="text-sm text-gray-300 mb-4 flex-grow  w-[90%]">{category.description}</p>
-                                <button className="text-[var(--accent-text)] hover:text-white transition-colors">
-                                    <Download className="w-5 h-5" />
+                            <div className="flex flex-row justify-between">
+                                <p className="text-sm text-gray-300 mb-4 w-[80%]">{category.description}</p>
+                                <button className="bg-[var(--accent-text)]/10 rounded-lg h-8 w-8 flex items-center justify-center">
+                                    <Download className="w-4 h-4 text-(--accent-text) " />
                                 </button>
                             </div>
                         </div>
