@@ -84,9 +84,9 @@ export default function CategoryBoxes() {
                             <div className="absolute inset-0"></div>
 
                             {/* Title centered on image */}
-                            <div className="absolute bottom-2 left-6 flex items-center justify-center">
+                            {/* <div className="absolute bottom-2 left-6 flex items-center justify-center">
                                 <h3 className="text-4xl font-semibold text-(--primary-text)">{category.title}</h3>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Content below image */}
