@@ -3,6 +3,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar"
 import { AuthProvider } from "@/components/AuthProvider"
 import { ScrollProvider } from "@/components/ScrollProvider"
+import { FaDiscord } from "react-icons/fa";
+
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
