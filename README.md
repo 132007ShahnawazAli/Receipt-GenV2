@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Receipt Generator Application
 
-## Getting Started
+A professional web application for generating branded receipt emails with a multi-template system.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This receipt generator allows users to create and send branded receipts through email. It features a subscription-based model with monthly and lifetime payment options, a dashboard for managing receipt generation, and a flexible template system that supports multiple brands with customized receipt templates.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **User Authentication**: Secure login and signup with NextAuth
+- **Subscription Management**: Monthly and lifetime subscription options via Stripe
+- **Dynamic Dashboard**: View available templates and statistics
+- **Multi-brand Templates**: Each brand has its own customized template
+- **Dynamic Form Generation**: Forms adapt to each template's required fields
+- **Email Delivery**: Receipts are sent to the user's email
+- **Mobile Responsive**: Works on all device sizes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Template Management System
 
-## Learn More
+The application uses a template management system to handle different brand templates. Each template defines:
 
-To learn more about Next.js, take a look at the following resources:
+1. The form fields required for that brand
+2. The email subject format
+3. The HTML structure of the receipt email
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Adding a New Template
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To add a new brand template:
 
-## Deploy on Vercel
+1. Add the brand logo to the `public/assets/brand-logos/` directory
+2. Add the template configuration to `src/lib/templates/index.js`
+3. Define the form fields, email subject, and HTML generation function
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Setup
+
+### Prerequisites
+
+- Node.js 16+ 
+- MongoDB database
+- Stripe account for payments
+- Email service for sending receipts

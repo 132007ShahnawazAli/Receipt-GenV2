@@ -9,8 +9,9 @@ import { LuMailCheck } from "react-icons/lu"
 import { IoTimerOutline } from "react-icons/io5"
 import { BiBarChartAlt } from "react-icons/bi"
 import OrderForm from "@/components/OrderForm"
-import CategoryBoxes from "@/components/CategoryBoxes" // Import the new component
+import CategoryBoxes from "@/components/CategoryBoxes"
 import Link from "next/link"
+import { useAvailableBrands } from "@/components/dashboard-brands"
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -34,71 +35,18 @@ export default function Dashboard() {
   const [overlayOpacity, setOverlayOpacity] = useState(1)
   const loadingAnimationRef = useRef(null)
 
+  // Get available brands with templates from our template system
+  const availableBrands = useAvailableBrands()
+
   // Placeholder texts for typewriter effect
   const placeholderTexts = [
     "Nike Receipt",
     "Apple Receipt",
+    "Acne Studios Receipt",
     "Ebay Receipt",
     "Argos Receipt",
     "GAP Receipt",
     "Stanley Receipt",
-  ]
-
-  // Define brands array first
-  const brands = [
-    { id: 1, name: "apple", logo: "apple.png" },
-    { id: 2, name: "argos", logo: "argos.png" },
-    { id: 3, name: "bpm", logo: "bpm.png" },
-    { id: 4, name: "dyson", logo: "dyson.png" },
-    { id: 5, name: "gap", logo: "gap.png" },
-    { id: 6, name: "lv", logo: "lv.png" },
-    { id: 7, name: "nike", logo: "nike.png" },
-    { id: 8, name: "sephora", logo: "sephora.png" },
-    { id: 9, name: "stanley", logo: "stanley.png" },
-    { id: 10, name: "ysl", logo: "ysl.png" },
-    { id: 11, name: "currys", logo: "currys.png" },
-    { id: 12, name: "ebay", logo: "ebay.png" },
-    { id: 13, name: "moncler", logo: "moncler.png" },
-    { id: 14, name: "flannels", logo: "flannels.png" },
-    { id: 15, name: "hermes", logo: "hermes.png" },
-    { id: 16, name: "prada", logo: "prada.png" },
-    { id: 17, name: "arcteryx", logo: "arcteryx.png" },
-    { id: 18, name: "bestbuy", logo: "bestbuy.png" },
-    { id: 19, name: "canada_go", logo: "canada_goose.png" },
-    { id: 20, name: "corteiz", logo: "corteiz.png" },
-    { id: 21, name: "vivienne", logo: "vivienne.png" },
-    { id: 22, name: "balenciaga", logo: "balenciaga.png" },
-    { id: 23, name: "dior", logo: "dior.png" },
-    { id: 24, name: "farfetch", logo: "farfetch.png" },
-    { id: 25, name: "lvr", logo: "lvr.png" },
-    { id: 26, name: "rick_owens", logo: "rick_owens.png" },
-    { id: 27, name: "supreme", logo: "supreme.png" },
-    { id: 28, name: "syna", logo: "syna.png" },
-    { id: 29, name: "grailed", logo: "grailed.png" },
-    { id: 30, name: "denim_tear", logo: "denim_tears.png" },
-    { id: 31, name: "dsm", logo: "dsm.png" },
-    { id: 32, name: "end", logo: "end.png" },
-    { id: 33, name: "flight_club", logo: "flight_club.png" },
-    { id: 34, name: "frasers", logo: "frasers.png" },
-    { id: 35, name: "selfridges", logo: "selfridges.png" },
-    { id: 36, name: "stadium", logo: "stadium.png" },
-    { id: 37, name: "mrporter", logo: "mrporter.png" },
-    { id: 38, name: "harrods", logo: "harrods.png" },
-    { id: 39, name: "farfetchtwo", logo: "farfetchtwo.png" },
-    { id: 40, name: "gallerydept", logo: "gallerydept.png" },
-    { id: 41, name: "de_bijenkorf", logo: "de_bijenkorf.png" },
-    { id: 42, name: "goat", logo: "goat.png" },
-    { id: 43, name: "icon", logo: "icon.png" },
-    { id: 44, name: "jd", logo: "jd.png" },
-    { id: 45, name: "johnlewis", logo: "johnlewis.png" },
-    { id: 46, name: "pacsun", logo: "pacsun.png" },
-    { id: 47, name: "sns", logo: "sns.png" },
-    { id: 48, name: "spoder", logo: "sp5der.png" },
-    { id: 49, name: "ssense", logo: "ssense.png" },
-    { id: 50, name: "zalando", logo: "zalando.png" },
-    { id: 51, name: "goyard", logo: "goyard.png" },
-    { id: 52, name: "nordstrom", logo: "nordstrom.png" },
-    { id: 53, name: "snkrs", logo: "snkrs.png" },
   ]
 
   // Debounce search query to prevent glitchy filtering
@@ -146,7 +94,7 @@ export default function Dashboard() {
 
   // Custom search function
   const getFilteredBrands = () => {
-    if (!debouncedSearchQuery) return brands
+    if (!debouncedSearchQuery) return availableBrands
 
     // Process the search query to make it more user-friendly
     let processedQuery = debouncedSearchQuery.toLowerCase().trim()
@@ -164,8 +112,8 @@ export default function Dashboard() {
     const queryWords = processedQuery.split(/\s+/)
 
     // Filter brands based on what the user is actually typing
-    return brands.filter((brand) => {
-      const brandName = brand.name.toLowerCase()
+    return availableBrands.filter((brand) => {
+      const brandName = (brand.displayName || brand.name).toLowerCase()
 
       // Direct match - if brand name contains the entire query
       if (brandName.includes(processedQuery)) return true
@@ -329,10 +277,10 @@ export default function Dashboard() {
     // Show loading overlay
     setShowLoadingOverlay(true)
     setOverlayOpacity(1)
-    
+
     // Refresh user stats
     fetchUserStats()
-    
+
     // Hide loading overlay after animation
     setTimeout(() => {
       // Start fading out the overlay
@@ -350,7 +298,7 @@ export default function Dashboard() {
 
       // Create a smooth fade-out effect
       const fadeInterval = setInterval(fadeOutAnimation, 30)
-      
+
       // Clean up the interval after animation completes
       setTimeout(() => {
         clearInterval(fadeInterval)
@@ -366,7 +314,7 @@ export default function Dashboard() {
   // Always render the dashboard, but with a loading overlay if needed
   return (
     <>
-      <div className="flex  min-h-screen font-[family-name:var(--font-dm-sans)] text-[var(--primary-text)]">
+      <div className="flex min-h-screen font-[family-name:var(--font-dm-sans)] text-[var(--primary-text)]">
         {/* Sidebar - hidden on mobile, visible on md and up */}
         <div className="hidden md:flex w-16 flex-col items-center py-6 border-r border-zinc-800 fixed h-screen">
           <div className="flex flex-col items-center h-full">
@@ -416,7 +364,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
-                {brands.length}
+                {availableBrands.length}
               </div>
             </div>
 
@@ -533,7 +481,7 @@ export default function Dashboard() {
                     <img
                       src={`https://res.cloudinary.com/drbew77vx/image/upload/v1743604967/resolora-receipt-logos/${brand.logo}`}
                       className="h-12 max-w-full object-contain"
-                      alt={brand.name}
+                      alt={brand.displayName || brand.name}
                       loading="lazy"
                       onError={(e) => {
                         e.target.onerror = null
@@ -546,12 +494,14 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Learning Resources Section - NEW SECTION */}
+          {/* Learning Resources Section */}
           <CategoryBoxes />
         </div>
 
         {/* Order Form Modal */}
-        {showForm && <OrderForm brand={selectedBrand} onClose={handleCloseForm} onReceiptGenerated={handleReceiptGenerated} />}
+        {showForm && (
+          <OrderForm brand={selectedBrand} onClose={handleCloseForm} onReceiptGenerated={handleReceiptGenerated} />
+        )}
       </div>
 
       {/* Loading Overlay - positioned above the dashboard */}

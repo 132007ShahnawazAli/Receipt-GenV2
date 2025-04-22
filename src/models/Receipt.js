@@ -12,7 +12,7 @@ const ReceiptSchema = new mongoose.Schema({
   },
   customerName: {
     type: String,
-    required: true,
+    required: false, // Make fields optional to support different templates
   },
   email: {
     type: String,
@@ -20,42 +20,72 @@ const ReceiptSchema = new mongoose.Schema({
   },
   deliveryAddress: {
     type: String,
-    required: true,
+    required: false,
+  },
+  // Added new fields for both templates
+  streetAddress: {
+    type: String,
+    required: false,
+  },
+  city: {
+    type: String,
+    required: false,
+  },
+  zipCode: {
+    type: String,
+    required: false,
+  },
+  country: {
+    type: String,
+    required: false,
   },
   currencySymbol: {
     type: String,
-    required: true,
+    required: false,
   },
   productName: {
     type: String,
-    required: true,
+    required: false,
   },
   orderDate: {
     type: Date,
-    required: true,
+    required: false,
+  },
+  deliveryDate: {
+    type: Date,
+    required: false,
   },
   shipping: {
     type: String,
-    required: true,
+    required: false,
   },
   productSize: {
     type: String,
-    required: true,
+    required: false,
   },
   subtotal: {
     type: Number,
-    required: true,
+    required: false,
+  },
+  tax: {
+    type: Number,
+    required: false,
   },
   total: {
     type: Number,
-    required: true,
+    required: false,
   },
   productImageUrl: {
     type: String,
-    required: true,
+    required: false,
   },
   cardLastFour: {
     type: String,
+    required: false,
+  },
+  // Store all form data as JSON to accommodate different templates
+  formData: {
+    type: String, // JSON string of all form fields
     required: true,
   },
   createdAt: {
