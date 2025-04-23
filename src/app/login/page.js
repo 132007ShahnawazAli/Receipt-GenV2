@@ -80,14 +80,10 @@ export default function Login() {
         return
       }
 
-      // If login was successful, wait for session to update
+      // If login was successful, redirect to dashboard
       if (result?.ok) {
-        // Wait for session to be updated
-        const session = await useSession()
-        if (session?.status === "authenticated") {
-          console.log("Sign in successful, redirecting to dashboard")
-          window.location.href = "/dashboard"
-        }
+        console.log("Sign in successful, redirecting to dashboard")
+        window.location.href = "/dashboard"
       }
     } catch (error) {
       console.error("Login error:", error)
