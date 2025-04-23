@@ -60,6 +60,7 @@ export default function Login() {
         redirect: false,
         email,
         password,
+        callbackUrl: "/dashboard"
       })
 
       console.log("Sign in result:", result)
@@ -79,10 +80,14 @@ export default function Login() {
         return
       }
 
-      // If login was successful, use router.replace for client-side navigation
+      // If login was successful, wait for session to update
       if (result?.ok) {
-        console.log("Sign in successful, redirecting to:", callbackUrl)
-        router.replace(callbackUrl)
+        // Wait for session to be updated
+        const session = await useSession()
+        if (session?.status === "authenticated") {
+          console.log("Sign in successful, redirecting to dashboard")
+          window.location.href = "/dashboard"
+        }
       }
     } catch (error) {
       console.error("Login error:", error)
