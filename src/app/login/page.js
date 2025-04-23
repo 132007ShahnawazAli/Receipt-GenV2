@@ -29,8 +29,7 @@ export default function Login() {
     // If user is already authenticated, redirect to dashboard or callback URL
     if (status === "authenticated" && session?.user) {
       console.log("User is authenticated, redirecting to:", callbackUrl)
-      // Use window.location.href for a hard redirect
-      window.location.href = callbackUrl
+      router.replace(callbackUrl)
     }
 
     // Check for registration success message
@@ -47,7 +46,7 @@ export default function Login() {
         timestamp: new Date().toISOString()
       })
     }
-  }, [status, session, callbackUrl, searchParams, debugMode])
+  }, [status, session, callbackUrl, searchParams, debugMode, router])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -61,7 +60,6 @@ export default function Login() {
         redirect: false,
         email,
         password,
-        callbackUrl,
       })
 
       console.log("Sign in result:", result)
@@ -81,11 +79,10 @@ export default function Login() {
         return
       }
 
-      // If login was successful, use a hard redirect
+      // If login was successful, use router.replace for client-side navigation
       if (result?.ok) {
-        console.log("Sign in successful, using hard redirect to:", callbackUrl)
-        // Use window.location.href for a hard redirect
-        window.location.href = callbackUrl
+        console.log("Sign in successful, redirecting to:", callbackUrl)
+        router.replace(callbackUrl)
       }
     } catch (error) {
       console.error("Login error:", error)
