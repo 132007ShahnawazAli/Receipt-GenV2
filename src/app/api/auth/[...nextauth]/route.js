@@ -69,22 +69,6 @@ export const authOptions = {
         })
       }
 
-      // If token is about to expire, refresh user data from database
-      if (token?.exp && Date.now() / 1000 > token.exp - 300) {
-        try {
-          await connectToDatabase()
-          const user = await User.findById(token.id)
-          if (user) {
-            token.hasActiveSubscription = user.hasActiveSubscription
-            token.subscriptionType = user.subscriptionType
-            token.subscriptionEndDate = user.subscriptionEndDate
-          }
-        } catch (error) {
-          console.error("Error refreshing token data:", error)
-          // Continue with existing token data on error
-        }
-      }
-
       return token
     },
     async session({ session, token }) {
@@ -104,7 +88,7 @@ export const authOptions = {
   },
   pages: {
     signIn: "/login",
-    error: "/login", // Error code passed in query string as ?error=
+    error: "/login",
   },
   session: {
     strategy: "jwt",

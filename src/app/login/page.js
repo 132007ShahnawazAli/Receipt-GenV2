@@ -60,7 +60,6 @@ export default function Login() {
         redirect: false,
         email,
         password,
-        callbackUrl: "/dashboard"
       })
 
       console.log("Sign in result:", result)
@@ -80,10 +79,15 @@ export default function Login() {
         return
       }
 
-      // If login was successful, redirect to dashboard
+      // If login was successful, wait for session to be established
       if (result?.ok) {
-        console.log("Sign in successful, redirecting to dashboard")
-        window.location.href = "/dashboard"
+        // Force a session update
+        await fetch('/api/auth/session?update=true')
+        
+        // Wait a moment for the session to be properly established
+        setTimeout(() => {
+          window.location.href = "/dashboard"
+        }, 100)
       }
     } catch (error) {
       console.error("Login error:", error)
