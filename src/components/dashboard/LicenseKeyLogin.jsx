@@ -49,6 +49,7 @@ export default function LicenseKeyLogin() {
       // If login was successful, redirect to dashboard
       if (result?.ok) {
         router.push("/dashboard")
+        router.refresh() // Force a refresh to ensure the session is updated
       }
     } catch (error) {
       console.error("License login error:", error)
