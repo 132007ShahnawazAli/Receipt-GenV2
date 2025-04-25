@@ -64,7 +64,7 @@ export default function LicenseKeyLogin() {
         <div className="relative w-full flex flex-col pt-10 md:py-20 gap-10 md:gap-14">
           <div className="w-fit md:max-w-2xl">
             <h1 className="font-medium md:font-semibold text-[var(--primary-text)] tablet:w-[50vw] text-5xl md:text-6xl lg:text-7xl tracking-tighter">
-              Access your{" "}
+              Access your{" "} <br/>
               <span className="text-[var(--accent-text)] drop-shadow-[0px_0px_10px_var(--accent-text)] inline-block min-w-[120px] h-[1.2em]">
                 <Typewriter
                   words={["dashboard", "templates", "receipts"]}
