@@ -6,46 +6,19 @@ import Link from "next/link"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { AnimatedText } from "@/components/ScrollProvider"
+import CheckoutModal from "@/components/checkout/CheckoutModal"
 
 export default function UnlimitedGenerator() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [selectedPeriod, setSelectedPeriod] = useState("1 Month")
   const [loading, setLoading] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
+  // Update the handlePurchase function to not require login
   const handlePurchase = async () => {
-    if (status !== "authenticated") {
-      router.push("/login")
-      return
-    }
-
-    setLoading(true)
-    try {
-      const priceId = selectedPeriod === "1 Month" ? "price_monthly" : "price_lifetime"
-
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          priceId,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        window.location.href = data.url
-      } else {
-        throw new Error(data.message || "Failed to create checkout session")
-      }
-    } catch (error) {
-      console.error("Error creating checkout session:", error)
-      alert("Something went wrong. Please try again.")
-    } finally {
-      setLoading(false)
-    }
+    // Show the checkout modal directly without checking login status
+    setIsModalOpen(true)
   }
 
   return (
@@ -152,15 +125,19 @@ export default function UnlimitedGenerator() {
                   </p>
                   <div className="grid grid-cols-2 gap-3 max-w-xl">
                     <button
-                      className={`py-4 rounded-lg tracking-tight text-[var(--accent-text)] text-center cursor-pointer ${selectedPeriod === "1 Month" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
-                        }`}
+                      className={`py-4 rounded-lg tracking-tight text-[var(--accent-text)] text-center cursor-pointer ${
+                        selectedPeriod === "1 Month" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
+                      }`}
                       onClick={() => setSelectedPeriod("1 Month")}
                     >
                       1 Month
                     </button>
                     <button
-                      className={`py-4 px-10 rounded-lg tracking-tight text-[var(--accent-text)] text-center cursor-pointer ${selectedPeriod === "Lifetime" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
-                        }`}
+                      className={`py-4 px-10 rounded-lg tracking-tight text-[var(--accent-text)] text-center cursor-pointer ${
+                        selectedPeriod === "Lifetime"
+                          ? "border-1 border-[var(--accent-text)]"
+                          : "border border-gray-600"
+                      }`}
                       onClick={() => setSelectedPeriod("Lifetime")}
                     >
                       Lifetime
@@ -172,7 +149,6 @@ export default function UnlimitedGenerator() {
               <div className="relative max-w-xl">
                 <hr className="w-full border-t-2 border-(--accent-text) relative z-10" />
                 <div className="absolute top-1/2 left-0 w-full h-[80px] -translate-y-1/2 bg-[var(--accent-text)]/30 blur-3xl rounded-full z-0"></div>
-
               </div>
 
               {/* Purchase Button */}
@@ -275,6 +251,13 @@ export default function UnlimitedGenerator() {
           </AnimatedText>
         </div>
       </div>
+
+      {/* Checkout Modal */}
+      <CheckoutModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        initialPlan={selectedPeriod === "1 Month" ? "price_monthly" : "price_lifetime"}
+      />
     </div>
   )
 }

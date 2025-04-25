@@ -1,7 +1,5 @@
 "use client"
 
-import Image from "next/image"
-
 export default function BrandGrid({ brands, onBrandClick }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -12,11 +10,10 @@ export default function BrandGrid({ brands, onBrandClick }) {
           onClick={() => onBrandClick(brand)}
         >
           <div className="text-center">
-            <div className=" mx-auto mb-2 relative">
+            <div className="mx-auto mb-2 relative">
               <img
                 src={`/assets/brand-logos/${brand.logo}`}
                 alt={`${brand.name} logo`}
-                fill
                 className="object-contain h-40"
               />
             </div>
@@ -27,4 +24,3 @@ export default function BrandGrid({ brands, onBrandClick }) {
     </div>
   )
 }
-

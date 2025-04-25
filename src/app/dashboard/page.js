@@ -12,6 +12,7 @@ import OrderForm from "@/components/OrderForm"
 import CategoryBoxes from "@/components/CategoryBoxes"
 import Link from "next/link"
 import { useAvailableBrands } from "@/components/dashboard-brands"
+import DashboardLoading from "@/components/dashboard/DashboardLoading"
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -143,8 +144,15 @@ export default function Dashboard() {
     // If authentication is still loading, wait
     if (status === "loading") return
 
-    // If not authenticated, let middleware handle the redirect
+    // If not authenticated, redirect to dashboard login
     if (status === "unauthenticated") {
+      router.replace("/dashboard-login")
+      return
+    }
+
+    // Check if user is a license user
+    if (status === "authenticated" && !session.user.isLicenseUser) {
+      router.replace("/dashboard-login")
       return
     }
 
@@ -166,7 +174,7 @@ export default function Dashboard() {
         refreshSession()
       }
     }
-  }, [status, session, dataFetchAttempted])
+  }, [status, session, dataFetchAttempted, router])
 
   // Handle loading animation timing
   useEffect(() => {
@@ -311,6 +319,10 @@ export default function Dashboard() {
     return null
   }
 
+  if (status === "loading" || isLoading) {
+    return <DashboardLoading />
+  }
+
   // Always render the dashboard, but with a loading overlay if needed
   return (
     <>
@@ -327,7 +339,7 @@ export default function Dashboard() {
 
             {/* Logout button at the bottom of sidebar */}
             <button
-              onClick={() => signOut({ callbackUrl: "/" })}
+              onClick={() => signOut({ callbackUrl: "/dashboard-login" })}
               className="p-3 rounded-xl hover:bg-[var(--accent-text)]/10 transition-colors"
               title="Logout"
             >
@@ -344,7 +356,7 @@ export default function Dashboard() {
               <h1 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Overview</h1>
               <div className="flex items-center">
                 <button
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={() => signOut({ callbackUrl: "/dashboard-login" })}
                   className="p-2 rounded-xl hover:bg-[var(--accent-text)]/10 transition-colors"
                 >
                   <LogOut className="w-5 h-5 text-[var(--accent-text)]" />

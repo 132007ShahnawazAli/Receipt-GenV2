@@ -31,9 +31,21 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  stripeCustomerId: {
+    type: String,
+    default: null,
+  },
   receiptsGenerated: {
     type: Number,
     default: 0,
+  },
+  discordId: {
+    type: String,
+    default: null,
+  },
+  discordUsername: {
+    type: String,
+    default: null,
   },
   createdAt: {
     type: Date,

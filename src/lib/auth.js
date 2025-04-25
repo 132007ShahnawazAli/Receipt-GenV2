@@ -1,5 +1,3 @@
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
 import { connectToDatabase } from "@/lib/utils"
 import bcrypt from "bcryptjs"
 import User from "@/models/User"
@@ -7,9 +5,10 @@ import LicenseUser from "@/models/LicenseUser"
 
 export const authOptions = {
   providers: [
-    CredentialsProvider({
+    {
       id: "credentials",
       name: "Credentials",
+      type: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
@@ -43,10 +42,11 @@ export const authOptions = {
           isLicenseUser: false, // Explicitly mark as not a license user
         }
       },
-    }),
-    CredentialsProvider({
+    },
+    {
       id: "license-key",
       name: "License Key",
+      type: "credentials",
       credentials: {
         licenseKey: { label: "License Key", type: "text" },
       },
@@ -90,7 +90,7 @@ export const authOptions = {
           isLicenseUser: true, // Flag to identify license users
         }
       },
-    }),
+    },
   ],
   session: {
     strategy: "jwt",
@@ -149,7 +149,3 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === "development",
 }
-
-const handler = NextAuth(authOptions)
-
-export { handler as GET, handler as POST }
