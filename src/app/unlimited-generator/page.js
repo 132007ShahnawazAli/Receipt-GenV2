@@ -63,7 +63,7 @@ export default function UnlimitedGenerator() {
             {/* Image for mobile - full width at top */}
             <div className="w-full mb-6 md:hidden">
               <Image
-                src="https://images.squarespace-cdn.com/content/v1/6137d3d5942fc363decba711/234373ed-d8fa-4081-9ddd-a1fe498c90ba/GENERATOR-01.png?format=1000w"
+                src="/assets/unlimited-generator.png"
                 alt="Generator Logo"
                 width={400}
                 height={400}

@@ -104,7 +104,7 @@ function Store() {
                                 <div className="flex items-center justify-center h-48 mb-4 w-full">
                                     <div className="relative w-full h-full">
                                         <img
-                                            src="https://images.squarespace-cdn.com/content/v1/6137d3d5942fc363decba711/234373ed-d8fa-4081-9ddd-a1fe498c90ba/GENERATOR-01.png?format=1000w"
+                                            src="/assets/unlimited-generator.png"
                                             alt="Generator Icon"
                                             className="w-full h-full object-cover object-center "
                                         />
