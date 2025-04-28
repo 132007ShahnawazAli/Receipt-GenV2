@@ -6,6 +6,7 @@ import Link from "next/link"
 import { signIn } from "next-auth/react"
 import { Typewriter } from "react-simple-typewriter"
 import CheckoutModal from "@/components/checkout/CheckoutModal"
+import { RiKey2Line } from "react-icons/ri";
 
 export default function LicenseKeyLogin() {
   const [licenseKey, setLicenseKey] = useState("")
@@ -65,7 +66,7 @@ export default function LicenseKeyLogin() {
         <div className="relative w-full flex flex-col pt-10 md:py-20 gap-10 md:gap-14">
           <div className="w-fit md:max-w-2xl">
             <h1 className="font-medium md:font-semibold text-[var(--primary-text)] tablet:w-[50vw] text-5xl md:text-6xl lg:text-7xl tracking-tighter">
-              Access your{" "} <br/>
+              Access your{" "} <br />
               <span className="text-[var(--accent-text)] drop-shadow-[0px_0px_10px_var(--accent-text)] inline-block min-w-[120px] h-[1.2em]">
                 <Typewriter
                   words={["dashboard", "templates", "receipts"]}
@@ -87,19 +88,19 @@ export default function LicenseKeyLogin() {
           <div className="flex flex-col tablet:w-fit md:flex-row gap-4 tablet:gap-9 border-y-2 border-[var(--primary-text)]/10 py-4">
             <Link
               href="/"
-              className="tablet:px-14 px-6 py-4 border border-[var(--primary-text)]/10 rounded-md text-xl text-center text-[var(--primary-text)] hover:bg-[var(--accent-text)]/10 transition-all shadow-[0px_0px_10px_-1px_#000000]"
+              className="tablet:px-14 px-6 py-6 border border-[var(--primary-text)]/10 rounded-xl text-xl text-center text-[var(--primary-text)] hover:border-[var(--accent-text)] transition-all shadow-[0px_0px_10px_-1px_#000000]"
             >
               Main website
             </Link>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="tablet:px-14 px-6 py-4 border border-[var(--primary-text)]/10 rounded-md text-xl text-center text-[var(--primary-text)] hover:bg-[var(--accent-text)]/10 transition-all shadow-[0px_0px_10px_-1px_#000000]"
+              className="tablet:px-14 px-6 py-6 border border-[var(--primary-text)]/10 rounded-xl text-xl text-center text-[var(--primary-text)] hover:border-[var(--accent-text)] transition-all shadow-[0px_0px_10px_-1px_#000000] cursor-pointer"
             >
               Instant access
             </button>
           </div>
 
-          <div className="relative flex md:flex-row flex-col md:gap-7 gap-4 text-2xl md:text-3xl lg:text-4xl font-light text-[var(--primary-text)] py-4 border-b-2 border-(--accent-text) w-fit">
+          <div className="relative flex md:flex-row flex-col md:gap-14 gap-6 text-lg md:text-xl lg:text-2xl font-light text-[var(--primary-text)] py-4 border-b-2 border-(--accent-text) w-fit">
             <div>
               <p>
                 <span className="font-bold text-[var(--accent-text)]">75+</span> templates
@@ -121,14 +122,11 @@ export default function LicenseKeyLogin() {
       </div>
 
       <div className="w-full md:w-1/3 flex items-center justify-center">
-        <div className="w-full max-w-md bg-[var(--background)] py-8 px-4 sm:px-6 shadow-[inset_0px_0px_15px_2px_rgba(71,_85,_105,_0.08)] rounded-lg border border-[var(--accent-text)]/10">
-          <div className="flex flex-col items-center w-full mb-8">
-            <h2 className="font-semibold text-[var(--primary-text)] text-4xl md:text-5xl tracking-tighter text-center">
-              License Key
+        <div className="w-full max-w-sm bg-[var(--background)] py-8 px-6 sm:px-7 shadow-[inset_0px_0px_15px_2px_rgba(71,_85,_105,_0.08)] rounded-lg border border-[var(--accent-text)]/10">
+          <div className="flex flex-col  w-full mb-8">
+            <h2 className="font-semibold text-[var(--primary-text)] text-4xl md:text-5xl tracking-tighter text-left">
+              Log in
             </h2>
-            <p className="mt-2 text-center text-sm text-[var(--secondary-text)]">
-              Enter your license key to access the dashboard
-            </p>
           </div>
 
           {error && (
@@ -137,8 +135,8 @@ export default function LicenseKeyLogin() {
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="licenseKey" className="block text-sm font-medium text-[var(--secondary-text)]">
-                License Key
+              <label htmlFor="licenseKey" className="flex w-full justify-between text-2xl mb-3 font-medium text-[var(--primary-text)]">
+                <span>License Key</span> <RiKey2Line className="text-(--accent-text)"/>
               </label>
               <div className="relative w-full">
                 <input
@@ -148,7 +146,7 @@ export default function LicenseKeyLogin() {
                   required
                   value={licenseKey}
                   onChange={(e) => setLicenseKey(e.target.value)}
-                  className="appearance-none rounded-md relative block w-full px-3 py-2 border border-[var(--secondary-text)]/70 placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm bg-[var(--background)]"
+                  className="appearance-none relative block w-full placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:ring-(--accent-text) focus:border-(--accent-text) focus:z-10 bg-[var(--background)] tablet:px-7 px-3 py-6 border border-[var(--primary-text)]/10 rounded-xl text-xl shadow-[0px_0px_10px_-1px_#000000]"
                   placeholder="XXXX-XXXX-XXXX-XXXX"
                 />
                 {licenseKey && (
@@ -180,21 +178,31 @@ export default function LicenseKeyLogin() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-black bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-70"
+                className="appearance-none relative block w-full placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:ring-(--accent-text) focus:border-(--accent-text) hover:border-(--accent-text) focus:z-10 bg-[var(--background)] tablet:px-7 px-3 py-6 border border-[var(--primary-text)]/10 rounded-xl text-xl shadow-[0px_0px_10px_-1px_#000000] transition-all duration-300"
               >
                 {loading ? "Verifying..." : "Access Dashboard"}
               </button>
             </div>
-          </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-[var(--secondary-text)]">
-              Don't have a license key?{" "}
-              <Link href="/store" className="text-[var(--accent-text)] hover:text-[var(--accent-text)]/80">
-                Purchase one here
+            <div>
+              <Link
+                href={"/store"}
+                disabled={loading}
+                className="appearance-none relative block w-full placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:ring-(--accent-text) focus:border-(--accent-text) hover:border-(--accent-text) focus:z-10 bg-[var(--background)] tablet:px-7 px-3 py-6 border border-[var(--primary-text)]/10 rounded-xl text-xl shadow-[0px_0px_10px_-1px_#000000] text-center transition-all duration-300"
+              >
+                Buy
               </Link>
-            </p>
-          </div>
+            </div>
+            <div>
+              <Link
+                href={"/"}
+                disabled={loading}
+                className="appearance-none relative block w-full placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:ring-(--accent-text) focus:border-(--accent-text) hover:border-(--accent-text) focus:z-10 bg-[var(--background)] tablet:px-7 px-3 py-6 border border-[var(--primary-text)]/10 rounded-xl text-xl shadow-[0px_0px_10px_-1px_#000000] text-center transition-all duration-300"
+              >
+                Our Tellegram
+              </Link>
+            </div>
+          </form>
         </div>
       </div>
 
