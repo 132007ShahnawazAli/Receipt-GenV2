@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
-import { connectToDatabase, generateLicenseKey } from "@/lib/utils"
+import { connectToDatabase } from "@/lib/utils"
 import LicenseUser from "@/models/LicenseUser"
+import { sendReceiptEmail } from "@/lib/email"
+import { generateLicenseKeyEmail } from "@/lib/templates/license-key-email"
 
 export async function GET(request) {
   try {
@@ -79,6 +81,9 @@ export async function GET(request) {
       }
     }
 
+    // Send license key email
+    await sendLicenseKeyEmail(email, licenseKey, type)
+
     // Redirect to success page with license key
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/payment-success?licenseKey=${licenseKey}&type=${type}`)
   } catch (error) {
@@ -117,4 +122,42 @@ async function grantDiscordChannelAccess(discordId) {
   }
 
   return true
+}
+
+// Function to generate a license key
+function generateLicenseKey() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  let result = ""
+
+  // Generate 4 groups of 4 characters
+  for (let group = 0; group < 4; group++) {
+    for (let i = 0; i < 4; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    if (group < 3) result += "-"
+  }
+
+  return result
+}
+
+// Function to send license key email
+async function sendLicenseKeyEmail(email, licenseKey, planType) {
+  const subject = "Your Receipt Generator License Key"
+
+  // Generate email HTML using the template
+  const html = generateLicenseKeyEmail({
+    email,
+    licenseKey,
+    planType,
+  })
+
+  try {
+    await sendReceiptEmail(email, subject, html)
+    console.log(`License key email sent to ${email}`)
+    return true
+  } catch (error) {
+    console.error("Error sending license key email:", error)
+    // Continue even if email fails
+    return false
+  }
 }

@@ -34,6 +34,7 @@ export default function Dashboard() {
   const [isTyping, setIsTyping] = useState(true)
   const [showLoadingOverlay, setShowLoadingOverlay] = useState(true)
   const [overlayOpacity, setOverlayOpacity] = useState(1)
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false)
   const loadingAnimationRef = useRef(null)
 
   // Get available brands with templates from our template system
@@ -170,8 +171,12 @@ export default function Dashboard() {
     }
   }, [status, session, dataFetchAttempted, router])
 
-  // Handle loading animation timing
+  // Always show loading animation on dashboard load
   useEffect(() => {
+    // Reset loading state
+    setShowLoadingOverlay(true)
+    setOverlayOpacity(1)
+
     // Always show the loading animation for at least 2.5 seconds
     const animationTimer = setTimeout(() => {
       // Start fading out the overlay
@@ -283,6 +288,14 @@ export default function Dashboard() {
     // Refresh user stats
     fetchUserStats()
 
+    // Show success notification
+    setShowSuccessNotification(true)
+
+    // Hide success notification after 5 seconds
+    setTimeout(() => {
+      setShowSuccessNotification(false)
+    }, 5000)
+
     // Hide loading overlay after animation
     setTimeout(() => {
       // Start fading out the overlay
@@ -359,6 +372,25 @@ export default function Dashboard() {
               <hr className="absolute bottom-0 left-0 right-0 text-(--accent-text)" />
             </div>
           </div>
+
+          {/* Success Notification */}
+          {showSuccessNotification && (
+            <div className="fixed top-6 right-6 z-50 bg-green-500/90 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <div>
+                <p className="font-medium">Receipt Generated Successfully!</p>
+                <p className="text-sm">Check your email for the receipt.</p>
+              </div>
+            </div>
+          )}
 
           {/* Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
@@ -524,7 +556,7 @@ export default function Dashboard() {
               className="w-15 h-15 object-contain"
               onError={(e) => {
                 e.target.onerror = null
-                e.target.src = "/assets/Logo_1.png"
+                e.target.src = "/placeholder.svg?height=60&width=60"
               }}
             />
           </div>

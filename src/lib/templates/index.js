@@ -10,14 +10,12 @@
 import nikeTemplate from "./brands/nike"
 import acneStudiosTemplate from "./brands/acne-studios"
 import appleTemplate from "./brands/apple"
-import exampleTemplate from "./brands/template-example"
 
 // Register all templates here
 const templates = {
   nike: nikeTemplate,
   acne_studios: acneStudiosTemplate,
   apple: appleTemplate,
-  example_brand: exampleTemplate,
   // Add more templates here as needed
 }
 
