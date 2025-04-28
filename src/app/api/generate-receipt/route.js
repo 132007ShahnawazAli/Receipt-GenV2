@@ -2,8 +2,7 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "../auth/[...nextauth]/route"
 import { connectToDatabase } from "@/lib/mongodb"
-import User from "@/models/User"
-import Receipt from "@/models/Receipt"
+import LicenseUser from "@/models/LicenseUser"
 import { sendReceiptEmail } from "@/lib/email"
 import { getTemplateByBrandId, generateEmailSubject } from "@/lib/templates"
 
@@ -17,10 +16,17 @@ export async function POST(request) {
 
     // Connect to database to get fresh user data
     await connectToDatabase()
-    const user = await User.findById(session.user.id)
 
-    if (!user || !user.hasActiveSubscription) {
+    // For license users, we need to check their license
+    const licenseUser = await LicenseUser.findOne({ licenseKey: session.user.licenseKey })
+
+    if (!licenseUser || !licenseUser.isActive) {
       return NextResponse.json({ message: "Active subscription required" }, { status: 403 })
+    }
+
+    // Check if license is expired (for monthly plans)
+    if (licenseUser.plan === "monthly" && licenseUser.expiresAt && new Date(licenseUser.expiresAt) < new Date()) {
+      return NextResponse.json({ message: "Your subscription has expired" }, { status: 403 })
     }
 
     const formData = await request.json()
@@ -32,51 +38,6 @@ export async function POST(request) {
     if (!template) {
       return NextResponse.json({ message: "Template not found for this brand" }, { status: 404 })
     }
-
-    // Map all form data to include in receipt record
-    const receiptData = {
-      userId: session.user.id,
-      brandName: formData.brandName,
-      email: formData.email,
-      // Store all form data as JSON to accommodate different templates
-      formData: JSON.stringify(formData),
-      createdAt: new Date(),
-    }
-
-    // Add common fields that are present in the Receipt schema
-    const commonFields = [
-      "customerName",
-      "deliveryAddress",
-      "currencySymbol",
-      "productName",
-      "orderDate",
-      "shipping",
-      "productSize",
-      "subtotal",
-      "total",
-      "productImageUrl",
-      "cardLastFour",
-      "tax", // Added tax field for Acne Studios template
-      "streetAddress", // Added for both templates
-      "city", // Added for both templates
-      "zipCode", // Added for both templates
-      "country", // Added for Acne Studios template
-    ]
-
-    commonFields.forEach((field) => {
-      if (formData[field] !== undefined) {
-        receiptData[field] = formData[field]
-      }
-    })
-
-    // Create receipt record
-    const receipt = new Receipt(receiptData)
-    await receipt.save()
-
-    // Update user's receipt count
-    await User.findByIdAndUpdate(session.user.id, {
-      $inc: { receiptsGenerated: 1 },
-    })
 
     // Generate email subject
     const emailSubject = generateEmailSubject(template, formData)
@@ -90,9 +51,13 @@ export async function POST(request) {
     // Send email
     await sendReceiptEmail(formData.email, emailSubject, receiptHtml)
 
+    // Update user's receipt count
+    await LicenseUser.findByIdAndUpdate(licenseUser._id, {
+      $inc: { receiptsGenerated: 1 },
+    })
+
     return NextResponse.json({
       message: "Receipt generated and sent successfully",
-      receiptId: receipt._id,
     })
   } catch (error) {
     console.error("Error generating receipt:", error)

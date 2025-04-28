@@ -15,7 +15,7 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
   // Get the template configuration when brand changes
   useEffect(() => {
     if (brand) {
-      const brandId = brand.name.toLowerCase()
+      const brandId = brand.id || brand.name.toLowerCase().replace(/\s+/g, "_")
       const templateConfig = getTemplateByBrandId(brandId)
 
       if (templateConfig) {

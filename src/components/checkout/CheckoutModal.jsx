@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { X } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { FaDiscord } from "react-icons/fa";
 
 export default function CheckoutModal({ isOpen, onClose, initialPlan = null }) {
   const [step, setStep] = useState("plans")
@@ -235,13 +236,7 @@ export default function CheckoutModal({ isOpen, onClose, initialPlan = null }) {
               </p>
 
               <div className="flex flex-col items-center justify-center py-4">
-                <Image
-                  src="/placeholder.svg?height=80&width=80"
-                  alt="Discord Logo"
-                  width={80}
-                  height={80}
-                  className="mb-4"
-                />
+                <FaDiscord/>
 
                 {!discordConnected ? (
                   <button

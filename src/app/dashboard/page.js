@@ -150,12 +150,6 @@ export default function Dashboard() {
       return
     }
 
-    // Check if user is a license user
-    if (status === "authenticated" && !session.user.isLicenseUser) {
-      router.replace("/dashboard-login")
-      return
-    }
-
     // If authenticated and we haven't tried to fetch data yet
     if (status === "authenticated" && !dataFetchAttempted) {
       setDataFetchAttempted(true)
@@ -530,7 +524,7 @@ export default function Dashboard() {
               className="w-15 h-15 object-contain"
               onError={(e) => {
                 e.target.onerror = null
-                e.target.src = "/placeholder.svg?height=60&width=60"
+                e.target.src = "/assets/Logo_1.png"
               }}
             />
           </div>

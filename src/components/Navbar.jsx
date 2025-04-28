@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Instagram, Link2, X } from "lucide-react"
+import { Instagram, Link2 } from "lucide-react"
 import { HiOutlinePlus } from "react-icons/hi2"
 import { usePathname } from "next/navigation"
 import Image from "next/image"
@@ -34,7 +34,7 @@ export default function Navbar() {
   }
 
   // Don't render navbar on dashboard
-  if (!mounted || pathname === '/dashboard') {
+  if (!mounted || pathname === "/dashboard") {
     return null
   }
 
@@ -44,8 +44,6 @@ export default function Navbar() {
     { href: "/affiliate", label: "Affiliate" },
     { href: "/delivery", label: "Delivery" },
     { href: "/reviews", label: "Reviews" },
-    // { href: "/pricing", label: "Pricing" },
-    // { href: "/contact", label: "Contact" },
   ]
 
   return (
@@ -56,13 +54,7 @@ export default function Navbar() {
           <div className="flex items-center gap-6">
             <div className="flex-shrink-0">
               <Link href="/" className="">
-                <Image
-                  src="/assets/Logo_1.png"
-                  alt="Logo"
-                  width={36}
-                  height={36}
-                  className="inline-block"
-                />
+                <Image src="/assets/Logo_1.png" alt="Logo" width={36} height={36} className="inline-block" />
               </Link>
             </div>
             <div className="hidden tablet:block">
@@ -83,21 +75,18 @@ export default function Navbar() {
           </div>
           <div className="hidden tablet:flex items-center gap-4">
             {status === "authenticated" ? (
-              <Link
-                href="/dashboard"
-                className="cursor-pointer"
-              >
-                Dashboard
-              </Link>
-            ) : (
               <>
-                <Link href="/login" className="cursor-pointer">
-                  Login
+                <Link href="/dashboard" className="cursor-pointer">
+                  Dashboard
                 </Link>
-                <Link href="/signup" className="cursor-pointer">
-                  Sign-up
-                </Link>
+                <button onClick={handleSignOut} disabled={isLoggingOut} className="cursor-pointer">
+                  {isLoggingOut ? "Logging out..." : "Logout"}
+                </button>
               </>
+            ) : (
+              <Link href="/dashboard-login" className="cursor-pointer">
+                Dashboard Access
+              </Link>
             )}
             <Link href="https://www.instagram.com/resellora.store/" className="">
               <Instagram className="h-5 w-5" />
@@ -145,22 +134,25 @@ export default function Navbar() {
             </Link>
           ))}
           {status === "authenticated" ? (
-            <Link
-              href="/dashboard"
-              className={`text-5xl ${pathname === "/dashboard" ? "underline underline-offset-8 decoration-1" : ""}`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Dashboard
-            </Link>
-          ) : (
             <>
-              <Link href="/login" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
-                Login
+              <Link href="/dashboard" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
+                Dashboard
               </Link>
-              <Link href="/signup" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
-                Sign-up
-              </Link>
+              <button
+                onClick={() => {
+                  handleSignOut()
+                  setIsMenuOpen(false)
+                }}
+                disabled={isLoggingOut}
+                className="text-5xl text-left"
+              >
+                {isLoggingOut ? "Logging out..." : "Logout"}
+              </button>
             </>
+          ) : (
+            <Link href="/dashboard-login" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
+              Dashboard Access
+            </Link>
           )}
           <div className="flex gap-4">
             <Link href="https://www.instagram.com/resellora.store/">

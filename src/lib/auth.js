@@ -1,48 +1,8 @@
 import { connectToDatabase } from "@/lib/utils"
-import bcrypt from "bcryptjs"
-import User from "@/models/User"
 import LicenseUser from "@/models/LicenseUser"
 
 export const authOptions = {
   providers: [
-    {
-      id: "credentials",
-      name: "Credentials",
-      type: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password are required")
-        }
-
-        await connectToDatabase()
-
-        // Find the user by email
-        const user = await User.findOne({ email: credentials.email })
-
-        if (!user) {
-          throw new Error("No user found with this email")
-        }
-
-        // Check if the password is correct
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-
-        if (!isPasswordValid) {
-          throw new Error("Invalid password")
-        }
-
-        // Return the user object - note this is just for website login, not dashboard access
-        return {
-          id: user._id.toString(),
-          email: user.email,
-          name: user.name,
-          isLicenseUser: false, // Explicitly mark as not a license user
-        }
-      },
-    },
     {
       id: "license-key",
       name: "License Key",
