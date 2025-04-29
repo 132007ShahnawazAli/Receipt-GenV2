@@ -4,7 +4,7 @@ import { authOptions } from "../auth/[...nextauth]/route"
 import { connectToDatabase } from "@/lib/mongodb"
 import LicenseUser from "@/models/LicenseUser"
 import { sendReceiptEmail } from "@/lib/email"
-import { getTemplateByBrandId, generateEmailSubject } from "@/lib/templates"
+import { getTemplateByBrandId, generateEmailSubject, templates } from "@/lib/templates"
 
 export async function POST(request) {
   try {

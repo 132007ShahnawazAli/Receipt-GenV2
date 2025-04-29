@@ -14,6 +14,10 @@ import louisVuittonTemplate from "./brands/louis-vuitton"
 import zaraTemplate from "./brands/zara"
 import endTemplate from "./brands/end"
 import adidasTemplate from "./brands/adidas"
+import snkrsTemplate from "./brands/snkrs"
+import trapstarTemplate from "./brands/trapstar"
+import amazonTemplate from "./brands/amazon"
+
 
 // Register all templates here
 const templates = {
@@ -24,8 +28,16 @@ const templates = {
   zara: zaraTemplate,
   end_clothing: endTemplate, 
   adidas: adidasTemplate,
+  snkrs: snkrsTemplate,
+  trapstar: trapstarTemplate,
+  trapstar_london: trapstarTemplate,
+  amazon: amazonTemplate,
+
   // Add more templates here as needed
 }
+
+// Export templates object
+export { templates }
 
 /**
  * Get all enabled templates
@@ -65,5 +77,3 @@ export function generateEmailSubject(template, data) {
     return data[key] || match
   })
 }
-
-export default templates
