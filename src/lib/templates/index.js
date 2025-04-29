@@ -22,7 +22,7 @@ const templates = {
   apple: appleTemplate,
   louis_vuitton: louisVuittonTemplate,
   zara: zaraTemplate,
-  end_clothing: endTemplate, // Changed from 'end' to 'end_clothing' to match the expected ID
+  end_clothing: endTemplate, 
   adidas: adidasTemplate,
   // Add more templates here as needed
 }

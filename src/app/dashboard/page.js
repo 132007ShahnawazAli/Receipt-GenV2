@@ -517,7 +517,7 @@ export default function Dashboard() {
                 >
                   <div className="w-full h-full flex items-center justify-center">
                     <img
-                      src={`https://res.cloudinary.com/drbew77vx/image/upload/v1743604967/resolora-receipt-logos/${brand.logo}`}
+                      src={`https://res.cloudinary.com/drbew77vx/image/upload/resolora-receipt-logos/${brand.logo}`}
                       className="h-12 max-w-full object-contain"
                       alt={brand.displayName || brand.name}
                       loading="lazy"
