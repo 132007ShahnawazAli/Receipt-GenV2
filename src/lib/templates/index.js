@@ -17,6 +17,9 @@ import adidasTemplate from "./brands/adidas"
 import snkrsTemplate from "./brands/snkrs"
 import trapstarTemplate from "./brands/trapstar"
 import amazonTemplate from "./brands/amazon"
+import diorTemplate from "./brands/dior"
+import denimTearsTemplate from "./brands/denimtears"
+
 
 
 // Register all templates here
@@ -26,14 +29,13 @@ const templates = {
   apple: appleTemplate,
   louis_vuitton: louisVuittonTemplate,
   zara: zaraTemplate,
-  end_clothing: endTemplate, 
+  end_clothing: endTemplate,
   adidas: adidasTemplate,
   snkrs: snkrsTemplate,
   trapstar: trapstarTemplate,
-  trapstar_london: trapstarTemplate,
   amazon: amazonTemplate,
-
-  // Add more templates here as needed
+  dior: diorTemplate,
+  denimtears: denimTearsTemplate,
 }
 
 // Export templates object
@@ -68,7 +70,24 @@ export function getEnabledTemplates() {
  * @returns {Object|null} The template configuration or null if not found
  */
 export function getTemplateByBrandId(brandId) {
-  return templates[brandId] || null
+  // First try direct match
+  if (templates[brandId]) {
+    return templates[brandId]
+  }
+
+  // Try to find by display name
+  const normalizedBrandId = brandId.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "")
+  
+  // Check for special cases
+  if (normalizedBrandId === "trapstar_london") {
+    return templates.trapstar
+  }
+  if (normalizedBrandId === "denim_tears") {
+    return templates.denimtears
+  }
+
+  // Try normalized match
+  return templates[normalizedBrandId] || null
 }
 
 /**
