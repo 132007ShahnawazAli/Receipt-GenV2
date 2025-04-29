@@ -44,6 +44,7 @@ export { templates }
  * @returns {Array} Array of enabled template objects with id, name, and logo
  */
 export function getEnabledTemplates() {
+  const seenNames = new Set()
   return Object.entries(templates)
     .filter(([_, template]) => template.enabled)
     .map(([id, template]) => ({
@@ -52,6 +53,13 @@ export function getEnabledTemplates() {
       displayName: template.displayName || template.name,
       logo: template.logo,
     }))
+    .filter(template => {
+      if (seenNames.has(template.name)) {
+        return false
+      }
+      seenNames.add(template.name)
+      return true
+    })
 }
 
 /**
