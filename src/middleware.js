@@ -30,8 +30,8 @@ export async function middleware(request) {
   }
 
   // Handle regular site authentication redirects
-  // Redirect authenticated users away from login/signup pages
-  if ((pathname === "/login" || pathname === "/signup") && token && !pathname.startsWith("/dashboard")) {
+  // Redirect authenticated users away from login page
+  if (pathname === "/login" && token && !pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/", request.url))
   }
 
@@ -39,5 +39,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/dashboard-login", "/api/generate-receipt/:path*", "/login", "/signup"],
+  matcher: ["/dashboard/:path*", "/dashboard-login", "/api/generate-receipt/:path*", "/login"],
 }
