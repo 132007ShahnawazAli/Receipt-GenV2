@@ -515,10 +515,10 @@ export default function Dashboard() {
                   className={`aspect-square bg-[var(--accent-text)] rounded-xl flex items-center justify-center p-3 cursor-pointer hover:scale-95 transition-transform duration-300`}
                   onClick={() => handleBrandClick(brand)}
                 >
-                  <div className="w-full h-full flex items-center justify-center">
+                  <div className="w-full h-full flex items-center justify-center flex-row">
                     <img
                       src={`https://res.cloudinary.com/drbew77vx/image/upload/resolora-receipt-logos/${brand.logo}`}
-                      className="h-12 max-w-full object-contain"
+                      className="h-12 max-w-full object-contain" 
                       alt={brand.displayName || brand.name}
                       loading="lazy"
                       onError={(e) => {
