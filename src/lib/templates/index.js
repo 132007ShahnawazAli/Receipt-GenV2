@@ -10,12 +10,14 @@
 import nikeTemplate from "./brands/nike"
 import acneStudiosTemplate from "./brands/acne-studios"
 import appleTemplate from "./brands/apple"
+import louisVuittonTemplate from "./brands/louis-vuitton"
 
 // Register all templates here
 const templates = {
   nike: nikeTemplate,
   acne_studios: acneStudiosTemplate,
   apple: appleTemplate,
+  louis_vuitton: louisVuittonTemplate,
   // Add more templates here as needed
 }
 
@@ -29,6 +31,7 @@ export function getEnabledTemplates() {
     .map(([id, template]) => ({
       id,
       name: template.name,
+      displayName: template.displayName || template.name,
       logo: template.logo,
     }))
 }

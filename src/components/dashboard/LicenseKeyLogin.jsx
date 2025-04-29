@@ -195,11 +195,11 @@ export default function LicenseKeyLogin() {
             </div>
             <div>
               <Link
-                href={"/"}
+                href={"https://t.me/resellora"}
                 disabled={loading}
                 className="appearance-none relative block w-full placeholder-[var(--secondary-text)]/70 text-[var(--primary-text)] focus:outline-none focus:ring-(--accent-text) focus:border-(--accent-text) hover:border-(--accent-text) focus:z-10 bg-[var(--background)] tablet:px-7 px-3 py-6 border border-[var(--primary-text)]/10 rounded-xl text-xl shadow-[0px_0px_10px_-1px_#000000] text-center transition-all duration-300"
               >
-                Our Tellegram
+                Our telegram
               </Link>
             </div>
           </form>
