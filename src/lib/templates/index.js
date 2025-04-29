@@ -11,6 +11,9 @@ import nikeTemplate from "./brands/nike"
 import acneStudiosTemplate from "./brands/acne-studios"
 import appleTemplate from "./brands/apple"
 import louisVuittonTemplate from "./brands/louis-vuitton"
+import zaraTemplate from "./brands/zara"
+import endTemplate from "./brands/end"
+import adidasTemplate from "./brands/adidas"
 
 // Register all templates here
 const templates = {
@@ -18,6 +21,9 @@ const templates = {
   acne_studios: acneStudiosTemplate,
   apple: appleTemplate,
   louis_vuitton: louisVuittonTemplate,
+  zara: zaraTemplate,
+  end_clothing: endTemplate, // Changed from 'end' to 'end_clothing' to match the expected ID
+  adidas: adidasTemplate,
   // Add more templates here as needed
 }
 

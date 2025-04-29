@@ -32,10 +32,12 @@ export async function POST(request) {
     const formData = await request.json()
 
     // Get the template for the brand
-    const brandId = formData.brandName.toLowerCase().replace(/\s+/g, "_")
+    const brandId = formData.brandName.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "")
+    console.log("Brand ID:", brandId)
     const template = getTemplateByBrandId(brandId)
 
     if (!template) {
+      console.log("Available templates:", Object.keys(templates))
       return NextResponse.json({ message: "Template not found for this brand" }, { status: 404 })
     }
 

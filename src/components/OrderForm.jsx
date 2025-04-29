@@ -17,6 +17,7 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
     if (brand) {
       // Use the brand ID directly if it exists, otherwise generate it
       const brandId = brand.id || brand.name.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "")
+      console.log("Brand ID in OrderForm:", brandId) // Add logging to debug
       const templateConfig = getTemplateByBrandId(brandId)
 
       if (templateConfig) {
