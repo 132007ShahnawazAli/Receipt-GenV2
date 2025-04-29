@@ -285,7 +285,7 @@ const denimTearsTemplate = {
   name: "Denim Tears",
   displayName: "Denim Tears",
   enabled: true,
-  logo: "/assets/denimtears-logo.png",
+  logo: "denim_tears.png",
   subject: "Thank you for your order, {name}",
   fields: [
     { name: "name", label: "Full Name", type: "text", required: true, placeholder: "John Doe" },
