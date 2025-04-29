@@ -523,7 +523,7 @@ export default function Dashboard() {
                       loading="lazy"
                       onError={(e) => {
                         e.target.onerror = null
-                        e.target.src = "/placeholder.svg?height=32&width=32"
+                        e.target.src = `/assets/brand-logos/${brand.logo}`
                       }}
                     />
                   </div>
