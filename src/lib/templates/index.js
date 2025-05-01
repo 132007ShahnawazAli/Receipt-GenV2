@@ -28,6 +28,8 @@ import pradaTemplate from "./brands/prada"
 import sephoraTemplate from "./brands/sephora"
 import spiderTemplate from "./brands/spider"
 import ebayTemplate from "./brands/ebay"
+import jdSportsTemplate from "./brands/jdsports"
+import flannelsTemplate from "./brands/flannels"
 
 // Register all templates here
 const templates = {
@@ -51,7 +53,9 @@ const templates = {
   prada: pradaTemplate,
   sephora: sephoraTemplate,
   spider: spiderTemplate,
-  ebay: ebayTemplate
+  ebay: ebayTemplate,
+  jd_sports: jdSportsTemplate,
+  flannels: flannelsTemplate
 }
 
 // Export templates object
@@ -112,6 +116,12 @@ export function getTemplateByBrandId(brandId) {
   }
   if (normalizedBrandId === "sp5der" || normalizedBrandId === "spider") {
     return templates.spider
+  }
+  if (normalizedBrandId === "jd_sports" || normalizedBrandId === "jdsports") {
+    return templates.jd_sports
+  }
+  if (normalizedBrandId === "flannels" || normalizedBrandId === "flannels_london") {
+    return templates.flannels
   }
 
   // Try normalized match
