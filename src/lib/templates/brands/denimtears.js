@@ -85,13 +85,13 @@ function getHtml(data) {
                     <table style="width:560px;text-align:left;border-spacing:0;border-collapse:collapse;margin:0 auto">
                       <tbody>
                         <tr>
-                          <td style="width:50%;font-family:'Helvetica Neue',sans-serif">
-                            <h3 style="color:#777;font-weight:normal;font-size:16px;margin:0 0 25px;font-family:Helvetica"></h3>
-                          </td>
-                          <td style="width:50%;font-family:'Helvetica Neue',sans-serif">
+    <td style="width:50%;font-family:'Helvetica Neue',sans-serif">
+      <h3 style="color:#777;font-weight:normal;font-size:16px;margin:0 0 25px;font-family:Helvetica"></h3>
+    </td>
+    <td style="width:50%;font-family:'Helvetica Neue',sans-serif">
                             <h3 style="color:#777;font-weight:normal;font-size:16px;margin:0 0 25px;font-family:Helvetica;text-align:end">Order #${data.ordernumber}</h3>
-                          </td>
-                        </tr>
+    </td>
+    </tr>
                       </tbody>
                     </table>
                     <table style="width:560px;text-align:left;border-spacing:0;border-collapse:collapse;margin:0 auto">
@@ -263,7 +263,7 @@ function getHtml(data) {
                         <tr>
                           <td style="font-family:Helvetica">
                             <p style="color:#999;line-height:150%;font-size:14px;margin:0">
-                              If you have any questions, reply to this email or contact us at
+    If you have any questions, reply to this email or contact us at
                               <a href="mailto:${data.email}" style="font-size:14px;text-decoration:none;color:#000000">${data.email}</a>
                             </p>
                           </td>

@@ -93,11 +93,11 @@ function getHtml(data) {
                                     <tr>
                                       <td style="padding:0px 0px 16px">
                                         <table style="width:100%;border-spacing:0;border-collapse:collapse">
-                                          <tbody>
-                                            <tr>
+                          <tbody>
+                            <tr>
                                               <td style="width:80px;padding:0px 16px 0px 0px;vertical-align:top">
                                                 <img src="${data.imageurl}" alt="${data.pname}" style="width:80px;height:auto;border:0px">
-                                              </td>
+                              </td>
                                               <td style="padding:0px;vertical-align:top">
                                                 <p style="margin:0px 0px 4px;font-weight:700;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
                                                   ${data.pname}
@@ -108,14 +108,14 @@ function getHtml(data) {
                                                 <p style="margin:0px;font-weight:400;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
                                                   ${data.currency}${data.price}
                                                 </p>
-                                              </td>
-                                            </tr>
-                                          </tbody>
-                                        </table>
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
                                 <table style="width:100%;border-spacing:0;border-collapse:collapse;margin-top:16px;border-top-width:1px;border-top-style:solid;border-top-color:rgb(229,229,229)">
                                   <tbody>
                                     <tr>
@@ -124,7 +124,7 @@ function getHtml(data) {
                                           <tbody>
                                             <tr>
                                               <td style="padding:0px 0px 8px;font-weight:400;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
-                                                Subtotal
+                                            Subtotal
                                               </td>
                                               <td style="padding:0px 0px 8px;text-align:right;font-weight:400;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
                                                 ${data.currency}${data.price}
@@ -133,29 +133,29 @@ function getHtml(data) {
                                             <tr>
                                               <td style="padding:0px 0px 8px;font-weight:400;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
                                                 Shipping
-                                              </td>
+                                      </td>
                                               <td style="padding:0px 0px 8px;text-align:right;font-weight:400;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
                                                 ${data.currency}${data.shipping}
-                                              </td>
-                                            </tr>
-                                            <tr>
+                                      </td>
+                                    </tr>
+                                    <tr>
                                               <td style="padding:0px 0px 8px;font-weight:400;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
                                                 Tax
-                                              </td>
+                                      </td>
                                               <td style="padding:0px 0px 8px;text-align:right;font-weight:400;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
                                                 ${data.currency}${data.tax}
-                                              </td>
-                                            </tr>
-                                            <tr>
+                                      </td>
+                                    </tr>
+                                    <tr>
                                               <td style="padding:8px 0px 0px;font-weight:700;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
                                                 Total
-                                              </td>
+                                      </td>
                                               <td style="padding:8px 0px 0px;text-align:right;font-weight:700;font-size:13px;line-height:20px;font-family:CenturyGothic,&quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif">
                                                 ${data.currency}${data.total}
-                                              </td>
-                                            </tr>
-                                          </tbody>
-                                        </table>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                                       </td>
                                     </tr>
                                   </tbody>
@@ -169,9 +169,9 @@ function getHtml(data) {
                   </tbody>
                 </table>
               </td>
-            </tr>
-          </tbody>
-        </table>
+          </tr>
+      </tbody>
+    </table>
     `
 }
 

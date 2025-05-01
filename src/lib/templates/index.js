@@ -19,6 +19,11 @@ import trapstarTemplate from "./brands/trapstar"
 import amazonTemplate from "./brands/amazon"
 import diorTemplate from "./brands/dior"
 import denimTearsTemplate from "./brands/denimtears"
+import chromeHeartsTemplate from "./brands/chromehearts"
+import balenciagaTemplate from "./brands/balenciaga"
+import goatTemplate from "./brands/goat"
+import dysonTemplate from "./brands/dyson"
+import flightClubTemplate from "./brands/flightclub"
 
 
 
@@ -36,6 +41,11 @@ const templates = {
   amazon: amazonTemplate,
   dior: diorTemplate,
   denimtears: denimTearsTemplate,
+  chromehearts: chromeHeartsTemplate,
+  balenciaga: balenciagaTemplate,
+  goat: goatTemplate,
+  dyson: dysonTemplate,
+  flightclub: flightClubTemplate,
 }
 
 // Export templates object
@@ -84,6 +94,15 @@ export function getTemplateByBrandId(brandId) {
   }
   if (normalizedBrandId === "denim_tears") {
     return templates.denimtears
+  }
+  if (normalizedBrandId === "chrome_hearts") {
+    return templates.chromehearts
+  }
+  if (normalizedBrandId === "balenciaga") {
+    return templates.balenciaga
+  }
+  if (normalizedBrandId === "flight_club") {
+    return templates.flightclub
   }
 
   // Try normalized match
