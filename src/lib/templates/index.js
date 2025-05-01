@@ -24,8 +24,10 @@ import balenciagaTemplate from "./brands/balenciaga"
 import goatTemplate from "./brands/goat"
 import dysonTemplate from "./brands/dyson"
 import flightClubTemplate from "./brands/flightclub"
-
-
+import pradaTemplate from "./brands/prada"
+import sephoraTemplate from "./brands/sephora"
+import spiderTemplate from "./brands/spider"
+import ebayTemplate from "./brands/ebay"
 
 // Register all templates here
 const templates = {
@@ -46,6 +48,10 @@ const templates = {
   goat: goatTemplate,
   dyson: dysonTemplate,
   flightclub: flightClubTemplate,
+  prada: pradaTemplate,
+  sephora: sephoraTemplate,
+  spider: spiderTemplate,
+  ebay: ebayTemplate
 }
 
 // Export templates object
@@ -103,6 +109,9 @@ export function getTemplateByBrandId(brandId) {
   }
   if (normalizedBrandId === "flight_club") {
     return templates.flightclub
+  }
+  if (normalizedBrandId === "sp5der" || normalizedBrandId === "spider") {
+    return templates.spider
   }
 
   // Try normalized match
