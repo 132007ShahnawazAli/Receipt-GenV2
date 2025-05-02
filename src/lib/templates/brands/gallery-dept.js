@@ -344,7 +344,9 @@ const galleryDeptTemplate = {
         </tbody></table>
       `
     },
+    getHtml: function(data) {
+      return this.generateHTML(data);
+    },
   }
   
   export default galleryDeptTemplate
-  

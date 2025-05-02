@@ -30,6 +30,9 @@ import spiderTemplate from "./brands/spider"
 import ebayTemplate from "./brands/ebay"
 import jdSportsTemplate from "./brands/jdsports"
 import flannelsTemplate from "./brands/flannels"
+import hermesTemplate from "./brands/hermes";
+import galleryDeptTemplate from "./brands/gallery-dept";
+import zalandoTemplate from "./brands/zalando";
 
 // Register all templates here
 const templates = {
@@ -55,7 +58,10 @@ const templates = {
   spider: spiderTemplate,
   ebay: ebayTemplate,
   jd_sports: jdSportsTemplate,
-  flannels: flannelsTemplate
+  flannels: flannelsTemplate,
+  hermes: hermesTemplate,
+  gallery_dept: galleryDeptTemplate,
+  zalando: zalandoTemplate
 }
 
 // Export templates object
@@ -122,6 +128,9 @@ export function getTemplateByBrandId(brandId) {
   }
   if (normalizedBrandId === "flannels" || normalizedBrandId === "flannels_london") {
     return templates.flannels
+  }
+  if (normalizedBrandId === "herms") {
+    return templates.hermes;
   }
 
   // Try normalized match

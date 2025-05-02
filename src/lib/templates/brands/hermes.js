@@ -345,7 +345,10 @@ const hermesTemplate = {
       </div>
       `
     },
+
+    getHtml: function(data) {
+      return this.generateHTML(data);
+    },
   }
   
   export default hermesTemplate
-  
