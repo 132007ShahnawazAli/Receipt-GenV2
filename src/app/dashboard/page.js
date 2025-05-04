@@ -13,6 +13,7 @@ import CategoryBoxes from "@/components/CategoryBoxes"
 import Link from "next/link"
 import { useAvailableBrands } from "@/components/dashboard-brands"
 import DashboardLoading from "@/components/dashboard/DashboardLoading"
+import ReceiptHistory from "@/components/dashboard/ReceiptHistory"
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -124,7 +125,7 @@ export default function Dashboard() {
       const hasMatchingWord = queryWords.some((word) => word.length > 2 && brandName.includes(word))
 
       if (hasMatchingWord) return true
-
+ 
       // Simple partial matching - if any part of the brand name matches any part of the query
       // This helps with partial typing and typos
       const brandParts = brandName.split(/[\s-_]+/)
@@ -533,7 +534,8 @@ export default function Dashboard() {
           </div>
 
           {/* Learning Resources Section */}
-          <CategoryBoxes />
+          {/* <CategoryBoxes /> */}
+          <ReceiptHistory/>
         </div>
 
         {/* Order Form Modal */}

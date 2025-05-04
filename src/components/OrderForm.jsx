@@ -5,7 +5,14 @@ import { X } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { getTemplateByBrandId } from "@/lib/templates"
 
-export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
+export default function OrderForm({
+  brand,
+  onClose,
+  onReceiptGenerated,
+  initialData = null,
+  isEditing = false,
+  receiptId = null,
+}) {
   const { data: session } = useSession()
   const [formData, setFormData] = useState({})
   const [loading, setLoading] = useState(false)
@@ -15,37 +22,58 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
   // Get the template configuration when brand changes
   useEffect(() => {
     if (brand) {
-      // Use the brand ID directly if it exists, otherwise generate it
-      const brandId = brand.id || brand.name.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "")
-      console.log("Brand ID in OrderForm:", brandId) // Add logging to debug
+      const brandId = brand.id || brand.name.toLowerCase().replace(/\s+/g, "_")
       const templateConfig = getTemplateByBrandId(brandId)
 
       if (templateConfig) {
         setTemplate(templateConfig)
 
         // Initialize form data with default values and email from session
-        const initialData = {
+        let initialFormData = {
           email: session?.user?.email || "",
+          brandId: brandId, // Store the brand ID for reference
         }
 
         // Add default values from template fields
         templateConfig.fields.forEach((field) => {
           if (field.defaultValue !== undefined) {
-            initialData[field.name] = field.defaultValue
+            initialFormData[field.name] = field.defaultValue
           }
         })
 
         // Set current date for date fields if not specified
         templateConfig.fields.forEach((field) => {
-          if (field.type === "date" && !initialData[field.name]) {
-            initialData[field.name] = new Date().toISOString().split("T")[0]
+          if (field.type === "date" && !initialFormData[field.name]) {
+            initialFormData[field.name] = new Date().toISOString().split("T")[0]
           }
         })
 
-        setFormData(initialData)
+        // If we have initial data (for editing), override defaults with that data
+        if (initialData) {
+          // First try to use the parsed formData if available
+          if (initialData.formData && Object.keys(initialData.formData).length > 0) {
+            initialFormData = { ...initialFormData, ...initialData.formData }
+          } else {
+            // Otherwise use the individual fields
+            Object.keys(initialData).forEach((key) => {
+              if (
+                key !== "id" &&
+                key !== "date" &&
+                key !== "description" &&
+                key !== "brand" &&
+                key !== "receiptId" &&
+                key !== "formData"
+              ) {
+                initialFormData[key] = initialData[key]
+              }
+            })
+          }
+        }
+
+        setFormData(initialFormData)
       }
     }
-  }, [brand, session])
+  }, [brand, session, initialData])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -98,25 +126,27 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
     setError("")
 
     try {
-      const response = await fetch("/api/generate-receipt", {
+      // Determine if we're creating a new receipt or updating an existing one
+      const endpoint = isEditing ? "/api/user/update-receipt" : "/api/generate-receipt"
+      const payload = isEditing
+        ? { ...formData, receiptId }
+        : { ...formData, brandName: brand.displayName || brand.name, brandLogo: brand.logo }
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          ...formData,
-          brandName: brand.displayName || brand.name,
-          brandLogo: brand.logo,
-        }),
+        body: JSON.stringify(payload),
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to generate receipt")
+        throw new Error(data.message || `Failed to ${isEditing ? "update" : "generate"} receipt`)
       }
 
-      // Notify parent component that a receipt was generated
+      // Notify parent component that a receipt was generated or updated
       if (onReceiptGenerated) {
         onReceiptGenerated()
       }
@@ -124,7 +154,7 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
       // Close the form immediately after successful generation
       onClose()
     } catch (error) {
-      console.error("Error generating receipt:", error)
+      console.error(`Error ${isEditing ? "updating" : "generating"} receipt:`, error)
       setError(error.message || "Something went wrong. Please try again.")
     } finally {
       setLoading(false)
@@ -153,7 +183,9 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
       <div className="absolute inset-0 flex items-center justify-center p-4">
         <div className="bg-[var(--background)] text-[var(--primary-text)] rounded-lg w-full max-w-lg relative flex flex-col max-h-[90vh]">
           <div className="flex-none p-6 flex justify-between items-center border-b border-[var(--secondary-text)]">
-            <h2 className="text-3xl font-semibold capitalize">{brand.displayName || brand.name} Receipt</h2>
+            <h2 className="text-3xl font-semibold capitalize">
+              {isEditing ? "Update" : "New"} {brand.displayName || brand.name} Receipt
+            </h2>
             <button
               onClick={onClose}
               className="cursor-pointer text-[var(--accent-text)] hover:text-[var(--accent-text)]/50"
@@ -208,7 +240,13 @@ export default function OrderForm({ brand, onClose, onReceiptGenerated }) {
                     disabled={loading}
                     className="w-full py-3 px-4 bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 text-black font-bold rounded-md transition-colors disabled:opacity-70"
                   >
-                    {loading ? "Generating Receipt..." : "Submit Order"}
+                    {loading
+                      ? isEditing
+                        ? "Updating Receipt..."
+                        : "Generating Receipt..."
+                      : isEditing
+                        ? "Update & Resend"
+                        : "Submit Order"}
                   </button>
                 </div>
               </div>

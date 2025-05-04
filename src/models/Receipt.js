@@ -3,94 +3,75 @@ import mongoose from "mongoose"
 const ReceiptSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "LicenseUser",
     required: true,
   },
   brandName: {
     type: String,
     required: true,
   },
-  customerName: {
-    type: String,
-    required: false, // Make fields optional to support different templates
-  },
   email: {
     type: String,
     required: true,
   },
-  deliveryAddress: {
+  customerName: {
     type: String,
-    required: false,
   },
-  // Added new fields for both templates
-  streetAddress: {
+  orderNumber: {
     type: String,
-    required: false,
-  },
-  city: {
-    type: String,
-    required: false,
-  },
-  zipCode: {
-    type: String,
-    required: false,
-  },
-  country: {
-    type: String,
-    required: false,
-  },
-  currencySymbol: {
-    type: String,
-    required: false,
-  },
-  productName: {
-    type: String,
-    required: false,
   },
   orderDate: {
     type: Date,
-    required: false,
   },
-  deliveryDate: {
-    type: Date,
-    required: false,
-  },
-  shipping: {
+  productName: {
     type: String,
-    required: false,
   },
   productSize: {
     type: String,
-    required: false,
-  },
-  subtotal: {
-    type: Number,
-    required: false,
-  },
-  tax: {
-    type: Number,
-    required: false,
-  },
-  total: {
-    type: Number,
-    required: false,
   },
   productImageUrl: {
     type: String,
-    required: false,
+  },
+  subtotal: {
+    type: Number,
+  },
+  shipping: {
+    type: String,
+  },
+  tax: {
+    type: Number,
+  },
+  total: {
+    type: Number,
+  },
+  currencySymbol: {
+    type: String,
+  },
+  streetAddress: {
+    type: String,
+  },
+  city: {
+    type: String,
+  },
+  zipCode: {
+    type: String,
+  },
+  country: {
+    type: String,
   },
   cardLastFour: {
     type: String,
-    required: false,
   },
   // Store all form data as JSON to accommodate different templates
   formData: {
-    type: String, // JSON string of all form fields
-    required: true,
+    type: String,
   },
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
   },
 })
 
