@@ -15,6 +15,7 @@ import { useAvailableBrands } from "@/components/dashboard-brands"
 import DashboardLoading from "@/components/dashboard/DashboardLoading"
 import ReceiptHistory from "@/components/dashboard/ReceiptHistory"
 import OrderNumberGenerator from "@/components/dashboard/OrderNumberGenerator"
+import EmailReceipt from "@/components/dashboard/EmailReceipt"
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -460,13 +461,7 @@ export default function Dashboard() {
 
           {/* Email Receipts Section */}
           <div className="px-6 mb-6">
-            <div className="relative flex justify-between items-center pb-6">
-              <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Email Receipts</h2>
-              <div className="flex items-center">
-                <Mail className="w-5 h-5 text-[var(--accent-text)]" />
-              </div>
-              <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
-            </div>
+            <EmailReceipt/>
 
             <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 py-9">
               <p className="text-2xl tracking-tighter text-[var(--accent-text)] mb-4 sm:mb-0">
