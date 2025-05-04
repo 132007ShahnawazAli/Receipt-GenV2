@@ -14,6 +14,7 @@ import Link from "next/link"
 import { useAvailableBrands } from "@/components/dashboard-brands"
 import DashboardLoading from "@/components/dashboard/DashboardLoading"
 import ReceiptHistory from "@/components/dashboard/ReceiptHistory"
+import OrderNumberGenerator from "@/components/dashboard/OrderNumberGenerator"
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -535,6 +536,7 @@ export default function Dashboard() {
 
           {/* Learning Resources Section */}
           {/* <CategoryBoxes /> */}
+          <OrderNumberGenerator />
           <ReceiptHistory/>
         </div>
 
