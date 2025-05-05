@@ -21,5 +21,6 @@ export default function WarehousePage() {
         </p>
       </div>
     </div>
+    
   )
 }
