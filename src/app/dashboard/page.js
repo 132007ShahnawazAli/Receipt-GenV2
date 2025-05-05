@@ -13,6 +13,7 @@ import { useAvailableBrands } from "@/components/dashboard-brands"
 import ReceiptHistory from "@/components/dashboard/ReceiptHistory"
 import OrderNumberGenerator from "@/components/dashboard/OrderNumberGenerator"
 import EmailReceipt from "@/components/dashboard/EmailReceipt"
+import ReceiptCategories from "@/components/dashboard/ReceiptCategories"
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -476,6 +477,8 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
+
+        <ReceiptCategories />
 
         {/* Order Number Generator */}
         <OrderNumberGenerator />

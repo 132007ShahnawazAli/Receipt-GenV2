@@ -149,7 +149,7 @@ export default function DashboardLayout({ children }) {
 
             {/* Sidebar - fixed position */}
             <div
-                className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-zinc-900 transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+                className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-(--background) border-r border-zinc-800 transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
                     }`}
             >
                 <div className="flex h-full flex-col">

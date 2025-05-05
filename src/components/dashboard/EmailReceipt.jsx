@@ -15,7 +15,7 @@ function EmailReceipt() {
             {/* Responsive Flexbox Layout */}
             <div className="flex flex-wrap gap-6 justify-between">
                 <div className="p-5 rounded-xl bg-zinc-900/80 border border-[var(--accent-text)]/30 flex-1 min-w-[250px]">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex justify-between items-center mb-6">
                         <span className="text-2xl font-bold text-[var(--accent-text)]">1.</span>
                     </div>
                     <h3 className="text-lg font-semibold mb-2">Choose your receipt</h3>
@@ -23,7 +23,7 @@ function EmailReceipt() {
                 </div>
 
                 <div className="p-5 rounded-xl bg-zinc-900/80 border border-[var(--accent-text)]/30 flex-1 min-w-[250px]">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex justify-between items-center mb-6">
                         <span className="text-2xl font-bold text-[var(--accent-text)]">2.</span>
                     </div>
                     <h3 className="text-lg font-semibold mb-2">Fill in the details</h3>
@@ -31,7 +31,7 @@ function EmailReceipt() {
                 </div>
 
                 <div className="p-5 rounded-xl bg-zinc-900/80 border border-[var(--accent-text)]/30 flex-1 min-w-[250px]">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex justify-between items-center mb-6">
                         <span className="text-2xl font-bold text-[var(--accent-text)]">3.</span>
                     </div>
                     <h3 className="text-lg font-semibold mb-2">Submit your receipt</h3>
@@ -39,7 +39,7 @@ function EmailReceipt() {
                 </div>
 
                 <div className="p-5 rounded-xl bg-zinc-900/80 border border-[var(--accent-text)]/30 flex-1 min-w-[250px]">
-                    <div className="flex justify-between items-center mb-4">
+                    <div className="flex justify-between items-center mb-6">
                         <span className="text-2xl font-bold text-[var(--accent-text)]">4.</span>
                     </div>
                     <h3 className="text-lg font-semibold mb-2">Wait a few seconds</h3>
