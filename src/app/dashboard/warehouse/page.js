@@ -11,7 +11,7 @@ export default function WarehousePage() {
       <div className="text-center p-8 max-w-md mx-auto">
         <h2 className="text-4xl font-bold mb-6 text-[var(--accent-text)]">Coming Soon</h2>
         <p className="text-xl text-gray-300 mb-8">
-          We're working on building your warehouse management system. Check back soon!
+          We&apos;re working on building your warehouse management system. Check back soon!
         </p>
         <div className="w-full h-1 bg-zinc-800 relative mb-8">
           <div className="absolute top-0 left-0 h-full bg-[var(--accent-text)] w-3/4 animate-pulse"></div>

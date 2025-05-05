@@ -16,7 +16,7 @@ export default function LeaderboardPage() {
         </div>
         <h2 className="text-4xl font-bold mb-6 text-[var(--accent-text)]">Leaderboard Coming Soon</h2>
         <p className="text-xl text-gray-300 mb-8">
-          We're building a competitive leaderboard to showcase top performers. Stay tuned!
+          We&apos;re building a competitive leaderboard to showcase top performers. Stay tuned!
         </p>
         <div className="w-full h-1 bg-zinc-800 relative mb-8">
           <div className="absolute top-0 left-0 h-full bg-[var(--accent-text)] w-1/2 animate-pulse"></div>

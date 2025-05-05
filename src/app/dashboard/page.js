@@ -319,7 +319,7 @@ export default function Dashboard() {
     <>
       <div className="p-6 pb-24">
         {/* Header */}
-        <div className="flex flex-col items-start w-full pb-6 gap-5">
+        <div className="flex flex-col items-start w-full pb-6 gap-5 ">
           <h1 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Receipt Generator</h1>
           <hr className=" w-full text-(--accent-text) " />
         </div>
