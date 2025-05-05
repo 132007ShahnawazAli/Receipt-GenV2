@@ -1,20 +1,21 @@
-import { DM_Sans } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar"
+import { DM_Sans } from "next/font/google"
+import "./globals.css"
 import { AuthProvider } from "@/components/AuthProvider"
 import { ScrollProvider } from "@/components/ScrollProvider"
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
-});
+})
 
 export const metadata = {
   title: "RESELLORA | Reselling Platform",
-  description: "Set-up your reselling game with top tools and resources including guides, marketplace tools, generators and more.",
+  description:
+    "Set-up your reselling game with top tools and resources including guides, marketplace tools, generators and more.",
   openGraph: {
     title: "RESELLORA | Reselling Platform",
-    description: "Set-up your reselling game with top tools and resources including guides, marketplace tools, generators and more.",
+    description:
+      "Set-up your reselling game with top tools and resources including guides, marketplace tools, generators and more.",
     url: "https://resellora.com",
     siteName: "RESELLORA",
     images: [
@@ -31,30 +32,22 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "RESELLORA | Reselling Platform",
-    description: "Set-up your reselling game with top tools and resources including guides, marketplace tools, generators and more.",
+    description:
+      "Set-up your reselling game with top tools and resources including guides, marketplace tools, generators and more.",
     images: ["/assets/Logo_1.png"],
   },
-};
+}
 
 export default function RootLayout({ children }) {
-  // Get the current pathname
-  let isNotDashboard = true;
-  if (typeof window !== 'undefined') {
-    isNotDashboard = !window.location.pathname.includes('/dashboard');
-  }
-
   return (
     <html lang="en">
-      <body className={`${dmSans.variable}  antialiased overflow-x-hidden bg-(--background) text-(--primary-text)`}>
+      <body className={`${dmSans.variable} antialiased overflow-x-hidden bg-(--background) text-(--primary-text)`}>
         <ScrollProvider>
           <div className="w-screen h-fit">
-            <AuthProvider>
-              {isNotDashboard && <Navbar />}
-              {children}
-            </AuthProvider>
+            <AuthProvider>{children}</AuthProvider>
           </div>
         </ScrollProvider>
       </body>
     </html>
-  );
+  )
 }

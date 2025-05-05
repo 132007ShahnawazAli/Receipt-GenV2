@@ -88,9 +88,9 @@ export default function ReceiptHistory() {
   }
 
   return (
-    <div className="px-6 mb-6 gap-6 flex flex-col">
+    <div className=" mb-6 gap-6 flex flex-col w-full">
       {/* Section Header */}
-      <div className="relative flex justify-between items-center pb-6">
+      <div className="relative flex justify-between items-center pb-6 w-full">
         <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">History</h2>
         <LiaHistorySolid className="w-6 h-6 text-(--accent-text)" />
         <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
@@ -110,7 +110,7 @@ export default function ReceiptHistory() {
       )}
 
       {/* Data Boxes Wrapper */}
-      <div className="flex flex-wrap justify-between gap-6">
+      <div className="flex flex-wrap justify-between gap-6 w-full">
         {receipts.length === 0 ? (
           <div className="text-[var(--primary-text)] bg-[var(--background)] tablet:px-7 px-3 py-6 border border-[var(--primary-text)]/10 rounded-xl text-l md:text-xl shadow-[0px_0px_10px_-1px_#000000] w-full text-center">
             <p>No receipt history found. Generate your first receipt!</p>

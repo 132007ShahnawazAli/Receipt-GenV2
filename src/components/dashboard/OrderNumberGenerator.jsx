@@ -191,7 +191,7 @@ export default function OrderNumberGenerator() {
   }
 
   return (
-    <div className="px-6 mb-6 gap-6 flex flex-col">
+    <div className="mb-6 gap-6 flex flex-col">
       {/* Section Header */}
       <div className="relative flex justify-between items-center pb-6">
         <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Order Number Generator</h2>
