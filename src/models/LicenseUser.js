@@ -43,6 +43,33 @@ const LicenseUserSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  // New fields for onboarding
+  username: {
+    type: String,
+    default: null,
+  },
+  onboardingCompleted: {
+    type: Boolean,
+    default: false,
+  },
+  onboardingData: {
+    productInterests: {
+      type: String,
+      default: null,
+    },
+    experience: {
+      type: String,
+      default: null,
+    },
+    sellingPlatforms: {
+      type: String,
+      default: null,
+    },
+    goal: {
+      type: String,
+      default: null,
+    },
+  },
 })
 
 export default mongoose.models.LicenseUser || mongoose.model("LicenseUser", LicenseUserSchema)
