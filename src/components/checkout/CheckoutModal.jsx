@@ -30,14 +30,14 @@ export default function CheckoutModal({ isOpen, onClose, initialPlan = null }) {
     {
       id: "price_monthly",
       name: "Monthly",
-      price: "$29.99",
+      price: "$19.95",
       period: "per month",
       features: ["Access to all receipt templates", "Email support", "Regular updates"],
     },
     {
       id: "price_lifetime",
       name: "Lifetime",
-      price: "$99.99",
+      price: "$69.95",
       period: "one-time payment",
       features: ["Lifetime access to all templates", "Priority support", "All future updates"],
     },

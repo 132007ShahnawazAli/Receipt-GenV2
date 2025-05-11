@@ -74,7 +74,7 @@ export default function UnlimitedGenerator() {
             <div className="md:w-2/3 flex flex-col gap-6">
               <AnimatedText delay={0.3}>
                 <p className="text-3xl font-semibold tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
-                  {selectedPeriod === "1 Month" ? "$29.99" : "$99.99"}
+                  {selectedPeriod === "1 Month" ? "$19.95" : "$69.95"}
                 </p>
               </AnimatedText>
 
