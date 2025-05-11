@@ -21,7 +21,7 @@ function BestSellersSection() {
                     <AnimatedText delay={0.6}>
                         <div className="flex flex-col gap-2">
                             <h3 className="tablet:w-44  text-2xl font-light text-(--primary-text)">Receipt Generator - 1 MONTH</h3>
-                            <p className="text-2xl font-light tracking-tight text-(--primary-text)">$29.95</p>
+                            <p className="text-2xl font-light tracking-tight text-(--primary-text)">$19.95</p>
                         </div>
                     </AnimatedText>
                     <AnimatedText delay={0.8}>
@@ -35,7 +35,7 @@ function BestSellersSection() {
                     <AnimatedText delay={1.0}>
                         <div className="flex flex-col gap-2 ">
                             <h3 className="tablet:w-44  text-2xl font-light text-(--primary-text)">Receipt Generator - LIFETIME</h3>
-                            <p className="text-2xl font-light tracking-tight text-(--primary-text)">$99.95</p>
+                            <p className="text-2xl font-light tracking-tight text-(--primary-text)">$69.95</p>
                         </div>
                     </AnimatedText>
                     <AnimatedText delay={1.2}>
