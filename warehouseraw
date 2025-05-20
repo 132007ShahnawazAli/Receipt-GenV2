@@ -1,0 +1,330 @@
+  if (!hasAccess) {
+    return (
+      <div className="p-6 h-full">
+        <div className="relative flex justify-between items-center pb-6 mb-6">
+          <h1 className="tablet:text-4xl text-3xl font-semibold tracking-tight">My Warehouse</h1>
+          <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
+        </div>
+
+        <div className="text-center p-8 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-bold mb-6 text-[var(--accent-text)]">Warehouse Access Required</h2>
+          <p className="text-xl text-gray-300 mb-8">
+            Track your inventory, monitor profits, and manage your reselling business with our Warehouse feature.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
+              <Package className="w-10 h-10 text-[var(--accent-text)] mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Inventory Management</h3>
+              <p className="text-gray-400">Keep track of all your items in one place</p>
+            </div>
+            <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
+              <TrendingUp className="w-10 h-10 text-[var(--accent-text)] mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Profit Tracking</h3>
+              <p className="text-gray-400">Monitor your profits and sales performance</p>
+            </div>
+            <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
+              <ShoppingCart className="w-10 h-10 text-[var(--accent-text)] mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Sales Management</h3>
+              <p className="text-gray-400">Record sales and track revenue</p>
+            </div>
+            <div className="bg-zinc-900/50 p-6 rounded-lg border border-zinc-800">
+              <DollarSign className="w-10 h-10 text-[var(--accent-text)] mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Financial Insights</h3>
+              <p className="text-gray-400">Get insights into your business performance</p>
+            </div>
+          </div>
+          <Link
+            href="/warehouse-subscription"
+            className="inline-block px-6 py-3 bg-[var(--accent-text)] text-black font-medium rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Get Warehouse Access
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-6 pb-24">
+      <div className="relative flex justify-between items-center pb-6 mb-6">
+        <h1 className="tablet:text-4xl text-3xl font-semibold tracking-tight">My Warehouse</h1>
+        <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
+          <div className="flex justify-between items-center mb-8">
+            <span className="text-2xl tracking-tighter">Total revenue</span>
+            <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
+              <DollarSign className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
+            {formatCurrency(stats.totalRevenue)}
+          </div>
+        </div>
+
+        <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
+          <div className="flex justify-between items-center mb-8">
+            <span className="text-2xl tracking-tighter">Items sold</span>
+            <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
+              <ShoppingCart className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
+            {stats.itemsSold}
+          </div>
+        </div>
+
+        <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
+          <div className="flex justify-between items-center mb-8">
+            <span className="text-2xl tracking-tighter">Items in stock</span>
+            <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
+              <Package className="w-6 h-6" />
+            </div>
+          </div>
+          <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
+            {stats.itemsInStock}
+          </div>
+        </div>
+      </div>
+
+      {/* My Items Section */}
+      <div className="mb-10">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">My items</h2>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--accent-text)] text-black rounded-lg hover:opacity-90 transition-opacity"
+          >
+            <Plus size={16} />
+            <span>Add Item</span>
+          </button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="border-b border-zinc-800">
+                <th className="py-3 text-left">My items</th>
+                <th className="py-3 text-left">Bought for</th>
+                <th className="py-3 text-left">Note</th>
+                <th className="py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="py-6 text-center text-gray-400">
+                    No items in your inventory. Add your first item to get started.
+                  </td>
+                </tr>
+              ) : (
+                items.map((item) => (
+                  <tr key={item._id} className="border-b border-zinc-800">
+                    <td className="py-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[var(--accent-text)]"></span>
+                      {item.name}
+                    </td>
+                    <td className="py-4">{formatCurrency(item.purchasePrice)}</td>
+                    <td className="py-4 text-gray-400">{item.notes || "-"}</td>
+                    <td className="py-4 text-right">
+                      <button
+                        onClick={() => handleMarkAsSold(item)}
+                        className="px-3 py-1 bg-[var(--accent-text)]/20 text-[var(--accent-text)] rounded-lg hover:bg-[var(--accent-text)]/30 transition-colors"
+                      >
+                        Mark as sold
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Sold Items Section */}
+      <div>
+        <h2 className="text-2xl font-semibold mb-4">Sold items</h2>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="border-b border-zinc-800">
+                <th className="py-3 text-left">Sold items</th>
+                <th className="py-3 text-left">Sold for</th>
+                <th className="py-3 text-left">Profit</th>
+                <th className="py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {soldItems.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="py-6 text-center text-gray-400">
+                    No sold items yet. Mark an item as sold to see it here.
+                  </td>
+                </tr>
+              ) : (
+                soldItems.map((item) => (
+                  <tr key={item._id} className="border-b border-zinc-800">
+                    <td className="py-4 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                      {item.name}
+                    </td>
+                    <td className="py-4">{formatCurrency(item.soldPrice)}</td>
+                    <td className="py-4 text-green-500">{formatCurrency(item.profit)}</td>
+                    <td className="py-4 text-right">
+                      <button
+                        onClick={() => handleDeleteItem(item._id)}
+                        className="px-3 py-1 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Add Item Modal */}
+      {showAddModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="relative w-full max-w-md bg-[var(--background)] rounded-xl shadow-2xl overflow-hidden">
+            <div className="p-4 border-b border-zinc-800 flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-[var(--accent-text)]">Add New Item</h2>
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddItem} className="p-6">
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Item Name</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g. Louis Vuitton T-Shirt"
+                  className="w-full px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-[var(--accent-text)]"
+                  required
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Purchase Price</label>
+                <input
+                  type="number"
+                  value={formData.purchasePrice}
+                  onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
+                  placeholder="e.g. 120"
+                  className="w-full px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-[var(--accent-text)]"
+                  required
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Category (Optional)</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  className="w-full px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-[var(--accent-text)]"
+                >
+                  <option value="">Select a category</option>
+                  <option value="Clothing">Clothing</option>
+                  <option value="Shoes">Shoes</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-1">Notes (Optional)</label>
+                <textarea
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="Add any additional information"
+                  className="w-full px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-[var(--accent-text)] min-h-[80px]"
+                ></textarea>
+              </div>
+
+              {formError && <p className="text-red-500 mb-4 text-sm">{formError}</p>}
+
+              <button
+                type="submit"
+                className="w-full px-4 py-3 bg-[var(--accent-text)] text-black rounded-lg hover:opacity-90 transition-opacity"
+              >
+                Add Item
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Mark as Sold Modal */}
+      {showSoldModal && currentItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="relative w-full max-w-md bg-[var(--background)] rounded-xl shadow-2xl overflow-hidden">
+            <div className="p-4 border-b border-zinc-800 flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-[var(--accent-text)]">Mark Item as Sold</h2>
+              <button
+                onClick={() => setShowSoldModal(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSoldSubmit} className="p-6">
+              <div className="mb-4">
+                <p className="text-lg font-medium">{currentItem.name}</p>
+                <p className="text-gray-400">Purchase price: {formatCurrency(currentItem.purchasePrice)}</p>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-1">Selling Price</label>
+                <input
+                  type="number"
+                  value={soldFormData.soldPrice}
+                  onChange={(e) => setSoldFormData({ ...soldFormData, soldPrice: e.target.value })}
+                  placeholder="e.g. 200"
+                  className="w-full px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-lg focus:outline-none focus:border-[var(--accent-text)]"
+                  required
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+
+              {formError && <p className="text-red-500 mb-4 text-sm">{formError}</p>}
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowSoldModal(false)}
+                  className="flex-1 px-4 py-3 bg-zinc-800 text-white rounded-lg hover:bg-zinc-700 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 px-4 py-3 bg-[var(--accent-text)] text-black rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  Mark as Sold
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  )

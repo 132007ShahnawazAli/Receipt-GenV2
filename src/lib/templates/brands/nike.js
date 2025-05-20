@@ -59,7 +59,8 @@ const nikeTemplate = {
  * @returns {string} The HTML content for the receipt email
  */
 function generateNikeReceiptHtml(data) {
-  const logoUrl = `https://res.cloudinary.com/drbew77vx/image/upload/v1743604967/resolora-receipt-logos/${data.brandLogo}`
+  // Use the direct logo URL provided by the admin without any path modifications
+  const logoUrl = data.brandLogo || `https://res.cloudinary.com/drbew77vx/image/upload/v1743604967/resolora-receipt-logos/nike.png`
   const formattedDate = new Date(data.orderDate).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",

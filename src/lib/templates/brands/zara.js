@@ -67,7 +67,7 @@ const getHtml = (data) => {
                                     <tbody style="direction: ltr;">
                                       <tr style="direction: ltr;">
                                         <td style="direction: ltr; width: 149px;" width="149">
-                                          <img src="http://static.zara.net/photos/contents/apps/logo_Zara_2019.png" style="direction: ltr; border: 0; display: block; outline: none; text-decoration: none; height: auto; width: 100%; font-size: 13px;" width="149" height="auto">
+                                          <img src="${data.brandLogo || 'http://static.zara.net/photos/contents/apps/logo_Zara_2019.png'}" style="direction: ltr; border: 0; display: block; outline: none; text-decoration: none; height: auto; width: 100%; font-size: 13px;" width="149" height="auto">
                                         </td>
                                       </tr>
                                     </tbody>

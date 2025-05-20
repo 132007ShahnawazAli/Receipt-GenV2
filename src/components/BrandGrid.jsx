@@ -12,9 +12,13 @@ export default function BrandGrid({ brands, onBrandClick }) {
           <div className="text-center">
             <div className="mx-auto mb-2 relative">
               <img
-                src={`/assets/brand-logos/${brand.logo}`}
+                src={brand.logo}
                 alt={`${brand.name} logo`}
                 className="object-contain h-40"
+                onError={(e) => {
+                  console.error('Error loading logo:', brand.logo);
+                  e.target.src = '/placeholder-logo.png'; // Fallback image
+                }}
               />
             </div>
             <h3 className="text-white font-medium">{brand.name}</h3>

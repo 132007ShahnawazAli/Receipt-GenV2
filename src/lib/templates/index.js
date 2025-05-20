@@ -33,6 +33,7 @@ import flannelsTemplate from "./brands/flannels"
 import hermesTemplate from "./brands/hermes";
 import galleryDeptTemplate from "./brands/gallery-dept";
 import zalandoTemplate from "./brands/zalando";
+import chewforeverTemplate from "./brands/chewforever";
 
 // Register all templates here
 const templates = {
@@ -61,7 +62,8 @@ const templates = {
   flannels: flannelsTemplate,
   hermes: hermesTemplate,
   gallery_dept: galleryDeptTemplate,
-  zalando: zalandoTemplate
+  zalando: zalandoTemplate,
+  chewforever: chewforeverTemplate
 }
 
 // Export templates object
@@ -96,45 +98,42 @@ export function getEnabledTemplates() {
  * @returns {Object|null} The template configuration or null if not found
  */
 export function getTemplateByBrandId(brandId) {
-  // First try direct match
-  if (templates[brandId]) {
-    return templates[brandId]
-  }
-
-  // Try to find by display name
-  const normalizedBrandId = brandId.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "")
+  if (!brandId) return null;
   
-  // Check for special cases
-  if (normalizedBrandId === "trapstar_london") {
-    return templates.trapstar
+  const normalizedId = String(brandId).toLowerCase().trim();
+  
+  // First try direct match (case-insensitive)
+  const directMatch = Object.entries(templates).find(
+    ([key]) => key.toLowerCase() === normalizedId
+  );
+  
+  if (directMatch) return directMatch[1];
+  
+  // Handle special cases and aliases
+  const specialCases = {
+    'trapstar_london': 'trapstar',
+    'denim_tears': 'denimtears',
+    'chrome_hearts': 'chromehearts',
+    'flight_club': 'flightclub',
+    'sp5der': 'spider',
+    'jdsports': 'jd_sports',
+    'flannels_london': 'flannels',
+    'herms': 'hermes',
+    'chew_forever': 'chewforever'
+  };
+  
+  if (specialCases[normalizedId]) {
+    return templates[specialCases[normalizedId]] || null;
   }
-  if (normalizedBrandId === "denim_tears") {
-    return templates.denimtears
-  }
-  if (normalizedBrandId === "chrome_hearts") {
-    return templates.chromehearts
-  }
-  if (normalizedBrandId === "balenciaga") {
-    return templates.balenciaga
-  }
-  if (normalizedBrandId === "flight_club") {
-    return templates.flightclub
-  }
-  if (normalizedBrandId === "sp5der" || normalizedBrandId === "spider") {
-    return templates.spider
-  }
-  if (normalizedBrandId === "jd_sports" || normalizedBrandId === "jdsports") {
-    return templates.jd_sports
-  }
-  if (normalizedBrandId === "flannels" || normalizedBrandId === "flannels_london") {
-    return templates.flannels
-  }
-  if (normalizedBrandId === "herms") {
-    return templates.hermes;
-  }
-
-  // Try normalized match
-  return templates[normalizedBrandId] || null
+  
+  // Try to find by display name (case-insensitive)
+  const displayNameMatch = Object.entries(templates).find(
+    ([_, template]) => 
+      template.name && 
+      template.name.toLowerCase() === normalizedId
+  );
+  
+  return displayNameMatch ? displayNameMatch[1] : null;
 }
 
 /**

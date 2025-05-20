@@ -66,6 +66,20 @@ const ReceiptSchema = new mongoose.Schema({
   formData: {
     type: String,
   },
+  // Store the generated HTML for the receipt
+  receiptHtml: {
+    type: String,
+  },
+  // Track the status of the receipt
+  status: {
+    type: String,
+    enum: ['pending', 'sent', 'error'],
+    default: 'pending',
+  },
+  // Store any error messages if receipt generation fails
+  error: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

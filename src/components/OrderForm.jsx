@@ -7,6 +7,7 @@ import { getTemplateByBrandId } from "@/lib/templates"
 
 export default function OrderForm({
   brand,
+  template: passedTemplate = null,
   onClose,
   onReceiptGenerated,
   initialData = null,
@@ -14,155 +15,220 @@ export default function OrderForm({
   receiptId = null,
 }) {
   const { data: session } = useSession()
-  const [formData, setFormData] = useState({})
+  const [formData, setFormData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [template, setTemplate] = useState(null)
+  const [template, setTemplate] = useState(passedTemplate)
+  const [isTemplateLoaded, setIsTemplateLoaded] = useState(false)
 
-  // Get the template configuration when brand changes
-  useEffect(() => {
-    if (brand) {
-      const brandId = brand.id || brand.name.toLowerCase().replace(/\s+/g, "_")
-      const templateConfig = getTemplateByBrandId(brandId)
+  // Initialize form data with template defaults
+  const initializeFormData = (templateData) => {
+    // Start with basic required fields
+    let initialFormData = {
+      email: session?.user?.email || "",
+      brandId: brand?.id || brand?.name?.toLowerCase().replace(/\s+/g, "_"),
+      templateId: templateData._id || templateData.id,
+    };
 
-      if (templateConfig) {
-        setTemplate(templateConfig)
-
-        // Initialize form data with default values and email from session
-        let initialFormData = {
-          email: session?.user?.email || "",
-          brandId: brandId, // Store the brand ID for reference
+    // Add template fields with their defaults
+    if (templateData.fields && Array.isArray(templateData.fields)) {
+      templateData.fields.forEach((field) => {
+        // Set default value based on field type
+        if (field.type === 'number') {
+          initialFormData[field.name] = field.defaultValue !== '' ? Number(field.defaultValue) : '';
+        } else if (field.type === 'date') {
+          initialFormData[field.name] = field.defaultValue || new Date().toISOString().split("T")[0];
+        } else {
+          initialFormData[field.name] = field.defaultValue || '';
         }
+      });
+    }
 
-        // Add default values from template fields
-        templateConfig.fields.forEach((field) => {
-          if (field.defaultValue !== undefined) {
-            initialFormData[field.name] = field.defaultValue
+    // If we have initial data (for editing), merge it
+    if (initialData) {
+      if (initialData.formData) {
+        // Parse and merge form data
+        const parsedFormData = typeof initialData.formData === 'string' 
+          ? JSON.parse(initialData.formData) 
+          : initialData.formData;
+
+        Object.entries(parsedFormData).forEach(([key, value]) => {
+          if (value !== null && value !== undefined) {
+            initialFormData[key] = value;
           }
-        })
-
-        // Set current date for date fields if not specified
-        templateConfig.fields.forEach((field) => {
-          if (field.type === "date" && !initialFormData[field.name]) {
-            initialFormData[field.name] = new Date().toISOString().split("T")[0]
+        });
+      } else {
+        // Merge direct properties
+        Object.entries(initialData).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && 
+              !['id', 'date', 'description', 'brand', 'receiptId', 'formData'].includes(key)) {
+            initialFormData[key] = value;
           }
-        })
-
-        // If we have initial data (for editing), override defaults with that data
-        if (initialData) {
-          // First try to use the parsed formData if available
-          if (initialData.formData && Object.keys(initialData.formData).length > 0) {
-            initialFormData = { ...initialFormData, ...initialData.formData }
-          } else {
-            // Otherwise use the individual fields
-            Object.keys(initialData).forEach((key) => {
-              if (
-                key !== "id" &&
-                key !== "date" &&
-                key !== "description" &&
-                key !== "brand" &&
-                key !== "receiptId" &&
-                key !== "formData"
-              ) {
-                initialFormData[key] = initialData[key]
-              }
-            })
-          }
-        }
-
-        setFormData(initialFormData)
+        });
       }
     }
-  }, [brand, session, initialData])
+
+    return initialFormData;
+  };
+
+  // Load template and initialize form data
+  useEffect(() => {
+    const fetchTemplate = async () => {
+      try {
+        if (passedTemplate) {
+          setTemplate(passedTemplate);
+          setFormData(initializeFormData(passedTemplate));
+          setIsTemplateLoaded(true);
+        } else if (brand) {
+          const templateId = brand._id || brand.id;
+          
+          if (!templateId) {
+            throw new Error('No template ID found for brand');
+          }
+
+          const response = await fetch(`/api/templates/${templateId}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch template');
+          }
+          const templateData = await response.json();
+          
+          if (templateData) {
+            setTemplate(templateData);
+            setFormData(initializeFormData(templateData));
+            setIsTemplateLoaded(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching template:', error);
+        setError('Failed to load template. Please try again.');
+      }
+    };
+
+    fetchTemplate();
+  }, [passedTemplate, brand, session, initialData]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }))
-  }
+    const { name, value, type } = e.target;
+    
+    // Get the field definition
+    const fieldDef = template?.fields?.find(f => f.name === name);
+    
+    // Process the value based on field type
+    let processedValue = value;
+    if (fieldDef) {
+      if (fieldDef.type === 'number') {
+        processedValue = value === '' ? '' : Number(value);
+      } else if (fieldDef.type === 'date') {
+        processedValue = value;
+      } else {
+        processedValue = value;
+      }
+    }
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: processedValue
+    }));
+  };
 
   const validateForm = () => {
-    if (!template) return "Template configuration not found"
+    if (!template?.fields) return null;
 
-    // Check required fields based on template configuration
     for (const field of template.fields) {
-      if (field.required && (!formData[field.name] || formData[field.name].trim() === "")) {
-        return `${field.label} is required`
+      if (!field.required) continue;
+
+      const value = formData[field.name];
+      
+      // Check if required field is empty
+      if (value === undefined || value === null || value === '') {
+        return `${field.label} is required`;
       }
 
-      // Validate email fields
-      if (field.type === "email" && formData[field.name]) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!emailRegex.test(formData[field.name])) {
-          return `Please enter a valid email for ${field.label}`
-        }
-      }
+      // Type-specific validation
+      switch (field.type) {
+        case 'email':
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(value)) {
+            return `Please enter a valid email for ${field.label}`;
+          }
+          break;
 
-      // Validate URL fields
-      if (field.type === "url" && formData[field.name]) {
-        try {
-          new URL(formData[field.name])
-        } catch (e) {
-          return `Please enter a valid URL for ${field.label}`
-        }
+        case 'number':
+          if (isNaN(Number(value))) {
+            return `${field.label} must be a valid number`;
+          }
+          break;
+
+        case 'date':
+          if (isNaN(Date.parse(value))) {
+            return `${field.label} must be a valid date`;
+          }
+          break;
       }
     }
 
-    return null
-  }
+    return null;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-
-    const validationError = validateForm()
-    if (validationError) {
-      setError(validationError)
-      return
+    e.preventDefault();
+    
+    if (!isTemplateLoaded || !formData) {
+      setError("Please wait for the form to load completely");
+      return;
     }
 
-    setLoading(true)
-    setError("")
+    setLoading(true);
+    setError("");
 
     try {
-      // Determine if we're creating a new receipt or updating an existing one
-      const endpoint = isEditing ? "/api/user/update-receipt" : "/api/generate-receipt"
-      const payload = isEditing
-        ? { ...formData, receiptId }
-        : { ...formData, brandName: brand.displayName || brand.name, brandLogo: brand.logo }
+      // Validate form
+      const validationError = validateForm();
+      if (validationError) {
+        throw new Error(validationError);
+      }
+
+      // Prepare the payload
+      const payload = {
+        ...formData,
+        templateId: brand._id || brand.id,
+        brandName: brand.displayName || brand.name,
+        brandLogo: brand.logo
+      };
+
+      // Send to appropriate endpoint
+      const endpoint = isEditing ? "/api/user/update-receipt" : "/api/generate-receipt";
+      if (isEditing) {
+        payload.receiptId = receiptId;
+      }
 
       const response = await fetch(endpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || `Failed to ${isEditing ? "update" : "generate"} receipt`)
+        throw new Error(data.message || `Failed to ${isEditing ? 'update' : 'generate'} receipt`);
       }
 
-      // Notify parent component that a receipt was generated or updated
       if (onReceiptGenerated) {
-        onReceiptGenerated()
+        onReceiptGenerated();
       }
 
-      // Close the form immediately after successful generation
-      onClose()
+      onClose();
     } catch (error) {
-      console.error(`Error ${isEditing ? "updating" : "generating"} receipt:`, error)
-      setError(error.message || "Something went wrong. Please try again.")
+      console.error(`Error ${isEditing ? 'updating' : 'generating'} receipt:`, error);
+      setError(error.message || 'Something went wrong. Please try again.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  // If template isn't loaded yet, show loading state
-  if (!template) {
+  // Show loading state if template or form data isn't loaded
+  if (!isTemplateLoaded || !formData) {
     return (
       <div className="fixed inset-0 z-50" style={{ isolation: "isolate" }}>
         <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
@@ -174,7 +240,7 @@ export default function OrderForm({
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -205,8 +271,7 @@ export default function OrderForm({
               )}
 
               <div className="flex flex-col gap-4">
-                {/* Dynamically render form fields based on template configuration */}
-                {template.fields.map((field) => (
+                {template?.fields?.map((field) => (
                   <div key={field.name}>
                     <label className="block text-sm font-medium text-[var(--primary-text)] mb-2">{field.label}</label>
 

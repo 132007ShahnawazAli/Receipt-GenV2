@@ -14,12 +14,16 @@ import ReceiptHistory from "@/components/dashboard/ReceiptHistory"
 import OrderNumberGenerator from "@/components/dashboard/OrderNumberGenerator"
 import EmailReceipt from "@/components/dashboard/EmailReceipt"
 import ReceiptCategories from "@/components/dashboard/ReceiptCategories"
+import Modal from '@/components/Modal';
+import { toast } from "react-hot-toast";
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [selectedBrand, setSelectedBrand] = useState(null)
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [showForm, setShowForm] = useState(false)
+  const [showTemplateSelect, setShowTemplateSelect] = useState(false);
   const [userStats, setUserStats] = useState({
     receiptsGenerated: 0,
     subscriptionStatus: "Not subscribed",
@@ -37,9 +41,48 @@ export default function Dashboard() {
   const [overlayOpacity, setOverlayOpacity] = useState(1)
   const [showSuccessNotification, setShowSuccessNotification] = useState(false)
   const loadingAnimationRef = useRef(null)
+  const [allDataLoaded, setAllDataLoaded] = useState(false)
 
   // Get available brands with templates from our template system
-  const availableBrands = useAvailableBrands()
+  const { brands: availableBrands, isLoading: brandsLoading, error: brandsError } = useAvailableBrands();
+
+  // Handle brand click: check subscription, then open form with selected template
+  const handleBrandClick = async (brand) => {
+    if (!isSubscribed) {
+      router.push("/store");
+      return;
+    }
+
+    try {
+      // Fetch the full template data
+      const response = await fetch(`/api/templates/${brand._id}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch template');
+      }
+      const templateData = await response.json();
+      
+      setSelectedBrand(brand);
+      setSelectedTemplate(templateData);
+      setShowForm(true);
+    } catch (error) {
+      console.error('Error fetching template:', error);
+      toast.error('Failed to load template. Please try again.');
+    }
+  };
+
+  // Handle template selection from modal
+  const handleTemplateSelect = (template) => {
+    setSelectedTemplate(template);
+    setShowTemplateSelect(false);
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setSelectedTemplate(null);
+    setSelectedBrand(null);
+    document.body.classList.remove("modal-open");
+  };
 
   // Placeholder texts for typewriter effect
   const placeholderTexts = [
@@ -97,6 +140,8 @@ export default function Dashboard() {
 
   // Custom search function
   const getFilteredBrands = () => {
+    // Defensive: always return an array
+    if (!Array.isArray(availableBrands)) return []
     if (!debouncedSearchQuery) return availableBrands
 
     // Process the search query to make it more user-friendly
@@ -122,7 +167,9 @@ export default function Dashboard() {
       if (brandName.includes(processedQuery)) return true
 
       // Word-by-word matching - if brand name contains any of the query words
-      const hasMatchingWord = queryWords.some((word) => word.length > 2 && brandName.includes(word))
+      const hasMatchingWord = queryWords.some(
+        (word) => word.length > 2 && brandName.includes(word)
+      )
 
       if (hasMatchingWord) return true
 
@@ -133,7 +180,10 @@ export default function Dashboard() {
 
       // Check if any brand part matches any query part
       return brandParts.some((brandPart) =>
-        queryParts.some((queryPart) => brandPart.includes(queryPart) || queryPart.includes(brandPart)),
+        queryParts.some(
+          (queryPart) =>
+            brandPart.includes(queryPart) || queryPart.includes(brandPart)
+        )
       )
     })
   }
@@ -155,14 +205,16 @@ export default function Dashboard() {
         setIsSubscribed(true)
       }
 
-      fetchUserStats()
-
-      // Check URL parameters for payment success
-      const urlParams = new URLSearchParams(window.location.search)
-      if (urlParams.get("payment") === "success") {
-        // Force refresh user session to get updated subscription status
-        refreshSession()
-      }
+      // Fetch all required data
+      Promise.all([
+        fetchUserStats(),
+        // Add any other API calls here that need to complete before showing dashboard
+      ]).then(() => {
+        setAllDataLoaded(true)
+      }).catch((error) => {
+        console.error("Error loading dashboard data:", error)
+        toast.error("Failed to load some dashboard data")
+      })
     }
   }, [status, session, dataFetchAttempted, router])
 
@@ -172,8 +224,8 @@ export default function Dashboard() {
     setShowLoadingOverlay(true)
     setOverlayOpacity(1)
 
-    // Always show the loading animation for at least 2.5 seconds
-    const animationTimer = setTimeout(() => {
+    // Only start fade out when all data is loaded
+    if (allDataLoaded && !brandsLoading) {
       // Start fading out the overlay
       const fadeOutAnimation = () => {
         setOverlayOpacity((prevOpacity) => {
@@ -192,38 +244,8 @@ export default function Dashboard() {
 
       // Clean up the interval when component unmounts
       return () => clearInterval(fadeInterval)
-    }, 2500)
-
-    return () => clearTimeout(animationTimer)
-  }, [])
-
-  const refreshSession = async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetch("/api/auth/session?update=true")
-
-      if (!response.ok) {
-        throw new Error(`Failed to refresh session: ${response.status}`)
-      }
-
-      const data = await response.json()
-
-      if (data.user) {
-        setIsSubscribed(data.user.hasActiveSubscription)
-        // Refresh the page stats without full reload
-        fetchUserStats()
-
-        // Remove the query parameter without page reload
-        const url = new URL(window.location.href)
-        url.searchParams.delete("payment")
-        window.history.replaceState({}, document.title, url.toString())
-      }
-    } catch (error) {
-      console.error("Failed to refresh session:", error)
-    } finally {
-      setIsLoading(false)
     }
-  }
+  }, [allDataLoaded, brandsLoading])
 
   const fetchUserStats = async () => {
     try {
@@ -250,28 +272,10 @@ export default function Dashboard() {
       }
     } catch (error) {
       console.error("Failed to fetch user stats:", error)
+      throw error // Propagate error to Promise.all
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const handleBrandClick = (brand) => {
-    if (!isSubscribed) {
-      router.push("/store")
-      return
-    }
-
-    setSelectedBrand(brand)
-    setShowForm(true)
-    // Add modal-open class to body
-    document.body.classList.add("modal-open")
-  }
-
-  const handleCloseForm = () => {
-    setShowForm(false)
-    setSelectedBrand(null)
-    // Remove modal-open class from body
-    document.body.classList.remove("modal-open")
   }
 
   // Function to handle receipt generation
@@ -354,7 +358,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
-              {availableBrands.length}
+              {brandsLoading ? '...' : availableBrands.length}
             </div>
           </div>
 
@@ -455,28 +459,72 @@ export default function Dashboard() {
         {/* Brand Grid */}
         <div className="pb-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3">
-            {filteredBrands.map((brand) => (
-              <div
-                key={brand.id}
-                className={`aspect-square bg-[var(--accent-text)] rounded-xl flex items-center justify-center p-3 cursor-pointer hover:scale-95 transition-transform duration-300`}
-                onClick={() => handleBrandClick(brand)}
-              >
-                <div className="w-full h-full flex items-center justify-center flex-row">
-                  <img
-                    src={`https://res.cloudinary.com/drbew77vx/image/upload/resolora-receipt-logos/${brand.logo}`}
-                    className="h-12 max-w-full object-contain"
-                    alt={brand.displayName || brand.name}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.onerror = null
-                      e.target.src = `/assets/brand-logos/${brand.logo}`
-                    }}
-                  />
+            {brandsLoading ? (
+              <div className="col-span-full flex justify-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
+              </div>
+            ) : brandsError ? (
+              <div className="col-span-full bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-red-700">
+                      {brandsError.message || 'Failed to load templates. Please try again later.'}
+                    </p>
+                  </div>
                 </div>
               </div>
-            ))}
+            ) : Array.isArray(filteredBrands) && filteredBrands.length > 0 ? (
+              filteredBrands.map((brand) => (
+                <div
+                  key={brand.id}
+                  className={`aspect-square bg-[var(--accent-text)] rounded-xl flex items-center justify-center p-3 cursor-pointer hover:scale-95 transition-transform duration-300`}
+                  onClick={() => handleBrandClick(brand)}
+                >
+                  <div className="w-full h-full flex items-center justify-center flex-row">
+                    <img
+                      src={brand.logo && brand.logo.startsWith && brand.logo.startsWith('http')
+                        ? brand.logo
+                        : (brand.logo ? `/assets/brand-logos/${brand.logo}` : '/placeholder-logo.png')}
+                      className="h-12 max-w-full object-contain"
+                      alt={brand.displayName || brand.name}
+                      loading="lazy"
+                      onError={(e) => {
+                        console.error('Error loading logo:', brand.logo);
+                        e.target.onerror = null;
+                        e.target.src = '/placeholder-logo.png';
+                      }}
+                    />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-8 text-gray-500">
+                No templates available. Please check back later.
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Template Select Modal */}
+        <Modal isOpen={showTemplateSelect} onClose={() => setShowTemplateSelect(false)} title={selectedBrand ? `Select Template for ${selectedBrand.displayName || selectedBrand.name}` : 'Select Template'}>
+          <div className="space-y-4">
+            {selectedBrand && selectedBrand.templates && selectedBrand.templates.map((template) => (
+              <button
+                key={template._id || template.id}
+                className="w-full px-4 py-3 bg-blue-50 hover:bg-blue-100 rounded-lg flex items-center justify-between text-left"
+                onClick={() => handleTemplateSelect(template)}
+              >
+                <span className="font-medium text-gray-900">{template.name}</span>
+                <span className="text-xs text-gray-500">/{template.slug}</span>
+              </button>
+            ))}
+          </div>
+        </Modal>
 
         <ReceiptCategories />
 
@@ -488,8 +536,8 @@ export default function Dashboard() {
       </div>
 
       {/* Order Form Modal */}
-      {showForm && (
-        <OrderForm brand={selectedBrand} onClose={handleCloseForm} onReceiptGenerated={handleReceiptGenerated} />
+      {showForm && selectedTemplate && (
+        <OrderForm template={selectedTemplate} brand={selectedBrand} onClose={handleCloseForm} onReceiptGenerated={handleReceiptGenerated} />
       )}
 
       {/* Loading Overlay - positioned above the dashboard */}
