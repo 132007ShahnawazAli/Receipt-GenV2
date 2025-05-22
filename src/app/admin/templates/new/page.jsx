@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,6 +17,7 @@ import Link from 'next/link';
 import CodeMirror from '@uiw/react-codemirror';
 import { html } from '@codemirror/lang-html';
 import { dracula } from '@uiw/codemirror-theme-dracula';
+import TemplateHtmlEditor from '@/components/TemplateHtmlEditor';
 
 // Form validation schema
 const templateSchema = z.object({
@@ -47,6 +48,7 @@ const NewTemplatePage = () => {
   const [fields, setFields] = useState([]);
   const [currentField, setCurrentField] = useState(null);
   const [showFieldForm, setShowFieldForm] = useState(false);
+  const editorRef = useRef();
   
   const { register, handleSubmit, formState: { errors }, watch, setValue, control } = useForm({
     resolver: zodResolver(templateSchema),
@@ -293,6 +295,13 @@ const NewTemplatePage = () => {
     });
     
     return previewHtml;
+  };
+
+  // Add this function to handle field insertion
+  const handleInsertField = (fieldName) => {
+    if (editorRef?.current?.insertAtCursor) {
+      editorRef.current.insertAtCursor(fieldName);
+    }
   };
 
   return (
@@ -782,15 +791,11 @@ const NewTemplatePage = () => {
                           <Info className="w-3.5 h-3.5 mr-1.5 text-[var(--accent-text)]" />
                           Use <code className="bg-zinc-900 text-[var(--accent-text)] px-1 mx-1 rounded">{'{fieldName}'}</code> to insert dynamic field values in your template
                         </div>
-                        <CodeMirror
+                        <TemplateHtmlEditor
+                          ref={editorRef}
                           value={formData.html || ''}
-                          height="500px"
-                          extensions={[html()]}
-                          theme={dracula}
                           onChange={(value) => setValue('html', value)}
-                          className="rounded-md overflow-hidden border border-zinc-700"
-                          onClick={(e) => e.stopPropagation()}
-                          onWheel={(e) => e.stopPropagation()}
+                          height="500px"
                         />
                       </div>
                       {errors.html && (
@@ -808,23 +813,7 @@ const NewTemplatePage = () => {
                             <button
                               key={index}
                               type="button"
-                              onClick={() => {
-                                const fieldPlaceholder = `{${field.name}}`;
-                                const editor = document.querySelector('.cm-editor');
-                                if (editor) {
-                                  const view = editor.cmView;
-                                  const state = view.state;
-                                  const selection = state.selection.main;
-                                  const doc = state.doc;
-                                  const newDoc = doc.replace(selection.from, selection.to, fieldPlaceholder);
-                                  const newState = state.update({
-                                    changes: { from: selection.from, to: selection.to, insert: fieldPlaceholder },
-                                    selection: { anchor: selection.from + fieldPlaceholder.length }
-                                  });
-                                  view.dispatch(newState);
-                                  setValue('html', newDoc.toString());
-                                }
-                              }}
+                              onClick={() => handleInsertField(field.name)}
                               className="flex items-center px-3 py-2 text-sm bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700 rounded-lg text-[var(--primary-text)] transition-colors"
                             >
                               <span className="truncate">{field.label || field.name}</span>
