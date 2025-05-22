@@ -441,7 +441,7 @@ const NewTemplatePage = () => {
                       className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
                     />
                     <p className="mt-1 text-sm text-[var(--secondary-text)]">
-                      Use {{fieldName}} to insert dynamic field values
+                      Use {'{{orderNumber}}'} to insert dynamic field values
                     </p>
                   </div>
 
