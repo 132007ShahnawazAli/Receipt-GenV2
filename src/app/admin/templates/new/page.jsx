@@ -323,7 +323,7 @@ const NewTemplatePage = () => {
             <div className="mt-4 md:mt-0">
               <div className="text-sm text-[var(--secondary-text)] flex items-center">
                 <Info className="w-4 h-4 mr-2 text-[var(--accent-text)]" />
-                <span>Design your template and add dynamic fields</span>
+                <span>Design {formData.name || 'New'} Template</span>
               </div>
             </div>
           </div>
@@ -438,12 +438,11 @@ const NewTemplatePage = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-[var(--primary-text)] mb-2">Subject Template</label>
+                  <label htmlFor="subject" className="block text-sm font-medium text-[var(--primary-text)] mb-2">Subject Template</label>
                   <input
                     type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={(e) => handleFieldChange(null, 'subject', e.target.value)}
+                    id="subject"
+                    {...register('subject')}
                     placeholder="Order Confirmation - {{orderNumber}}"
                     className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder-zinc-400"
                   />
@@ -453,12 +452,11 @@ const NewTemplatePage = () => {
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-[var(--primary-text)] mb-2">Placeholder Text</label>
+                  <label htmlFor="placeholder" className="block text-sm font-medium text-[var(--primary-text)] mb-2">Placeholder Text</label>
                   <input
                     type="text"
-                    name="placeholder"
-                    value={formData.placeholder}
-                    onChange={(e) => handleFieldChange(null, 'placeholder', e.target.value)}
+                    id="placeholder"
+                    {...register('placeholder')}
                     placeholder="Enter placeholder text for the template"
                     className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder-zinc-400"
                   />
