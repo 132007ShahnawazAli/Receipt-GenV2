@@ -546,12 +546,19 @@ const NewTemplatePage = () => {
                         type="button"
                         onClick={() => {
                           const fieldPlaceholder = `{${field.name}}`;
-                          const textarea = document.querySelector('.cm-editor');
-                          if (textarea) {
-                            const cursorPos = textarea.cmView.dom.querySelector('.cm-cursor')?.offsetLeft || 0;
-                            const currentValue = formData.html || '';
-                            const newValue = currentValue.slice(0, cursorPos) + fieldPlaceholder + currentValue.slice(cursorPos);
-                            setValue('html', newValue);
+                          const editor = document.querySelector('.cm-editor');
+                          if (editor) {
+                            const view = editor.cmView;
+                            const state = view.state;
+                            const selection = state.selection.main;
+                            const doc = state.doc;
+                            const newDoc = doc.replace(selection.from, selection.to, fieldPlaceholder);
+                            const newState = state.update({
+                              changes: { from: selection.from, to: selection.to, insert: fieldPlaceholder },
+                              selection: { anchor: selection.from + fieldPlaceholder.length }
+                            });
+                            view.dispatch(newState);
+                            setValue('html', newDoc.toString());
                           }
                         }}
                         className="flex items-center px-3 py-2 text-sm bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700 rounded-lg text-[var(--primary-text)] transition-colors"
@@ -792,6 +799,39 @@ const NewTemplatePage = () => {
                           {errors.html.message}
                         </p>
                       )}
+
+                      {/* Available Fields Section Below Editor */}
+                      <div className="mt-4">
+                        <h3 className="text-sm font-medium text-[var(--primary-text)] mb-3">Available Fields</h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                          {formData.fields?.map((field, index) => (
+                            <button
+                              key={index}
+                              type="button"
+                              onClick={() => {
+                                const fieldPlaceholder = `{${field.name}}`;
+                                const editor = document.querySelector('.cm-editor');
+                                if (editor) {
+                                  const view = editor.cmView;
+                                  const state = view.state;
+                                  const selection = state.selection.main;
+                                  const doc = state.doc;
+                                  const newDoc = doc.replace(selection.from, selection.to, fieldPlaceholder);
+                                  const newState = state.update({
+                                    changes: { from: selection.from, to: selection.to, insert: fieldPlaceholder },
+                                    selection: { anchor: selection.from + fieldPlaceholder.length }
+                                  });
+                                  view.dispatch(newState);
+                                  setValue('html', newDoc.toString());
+                                }
+                              }}
+                              className="flex items-center px-3 py-2 text-sm bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700 rounded-lg text-[var(--primary-text)] transition-colors"
+                            >
+                              <span className="truncate">{field.label || field.name}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <div className="border border-zinc-800 rounded-lg bg-zinc-900/30 overflow-hidden">
