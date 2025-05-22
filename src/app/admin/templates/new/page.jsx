@@ -595,7 +595,7 @@ const NewTemplatePage = () => {
                       
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium">
+                          <label className="block text-sm font-medium text-[var(--primary-text)]">
                             Field Name
                             <span className="text-red-500 ml-1">*</span>
                           </label>
@@ -604,11 +604,11 @@ const NewTemplatePage = () => {
                             value={field.name}
                             onChange={(e) => handleFieldChange(index, 'name', e.target.value)}
                             placeholder="e.g. customerName"
-                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder-zinc-400"
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium">
+                          <label className="block text-sm font-medium text-[var(--primary-text)]">
                             Label
                             <span className="text-red-500 ml-1">*</span>
                           </label>
@@ -617,21 +617,21 @@ const NewTemplatePage = () => {
                             value={field.label}
                             onChange={(e) => handleFieldChange(index, 'label', e.target.value)}
                             placeholder="e.g. Customer Name"
-                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder-zinc-400"
                           />
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 gap-4 mt-4">
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium">
+                          <label className="block text-sm font-medium text-[var(--primary-text)]">
                             Type
                             <span className="text-red-500 ml-1">*</span>
                           </label>
                           <select
                             value={field.type}
                             onChange={(e) => handleFieldChange(index, 'type', e.target.value)}
-                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
                           >
                             <option value="text">Text</option>
                             <option value="number">Number</option>
@@ -641,7 +641,7 @@ const NewTemplatePage = () => {
                           </select>
                         </div>
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium">
+                          <label className="block text-sm font-medium text-[var(--primary-text)]">
                             Placeholder
                             <span className="text-xs text-[var(--secondary-text)] ml-1">(Optional)</span>
                           </label>
@@ -650,14 +650,14 @@ const NewTemplatePage = () => {
                             value={field.placeholder || ''}
                             onChange={(e) => handleFieldChange(index, 'placeholder', e.target.value)}
                             placeholder="e.g. Enter customer name"
-                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder-zinc-400"
                           />
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-2 gap-4 mt-4">
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium">
+                          <label className="block text-sm font-medium text-[var(--primary-text)]">
                             Default Value
                             <span className="text-xs text-[var(--secondary-text)] ml-1">(Optional)</span>
                           </label>
@@ -666,20 +666,25 @@ const NewTemplatePage = () => {
                             value={field.defaultValue || ''}
                             onChange={(e) => handleFieldChange(index, 'defaultValue', e.target.value)}
                             placeholder="e.g. John Doe"
-                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder-zinc-400"
                           />
                         </div>
                         <div className="space-y-2">
-                          <label className="block text-sm font-medium">
+                          <label className="block text-sm font-medium text-[var(--primary-text)]">
                             Required
                           </label>
-                          <input
-                            type="checkbox"
-                            id={`required-${index}`}
-                            checked={field.required}
-                            onChange={(e) => handleFieldChange(index, 'required', e.target.checked)}
-                            className="rounded border-[var(--accent-text)]/30 text-[var(--accent-text)] focus:ring-[var(--accent-text)]/50"
-                          />
+                          <div className="flex items-center mt-2">
+                            <input
+                              type="checkbox"
+                              id={`required-${index}`}
+                              checked={field.required}
+                              onChange={(e) => handleFieldChange(index, 'required', e.target.checked)}
+                              className="w-4 h-4 text-[var(--accent-text)] bg-zinc-900 border-zinc-700 rounded focus:ring-[var(--accent-text)] focus:ring-offset-zinc-900"
+                            />
+                            <span className="ml-2 text-sm text-[var(--secondary-text)]">
+                              This field is required
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
