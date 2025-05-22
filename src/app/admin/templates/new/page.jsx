@@ -323,7 +323,7 @@ const NewTemplatePage = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             {/* Left Column - Template Info and Fields */}
-            <div className="space-y-6 lg:col-span-8">
+            <div className="space-y-6 lg:col-span-7">
               {/* Template Information Card */}
               <div className="bg-gradient-to-b from-zinc-900 to-zinc-950 overflow-hidden shadow-lg rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all duration-300">
                 <div className="px-6 py-5 border-b border-zinc-800 flex items-center justify-between">
@@ -350,7 +350,7 @@ const NewTemplatePage = () => {
                           placeholder="My Store Receipt"
                           className={`bg-zinc-900 border ${
                             errors.name ? 'border-red-500' : 'border-zinc-700'
-                          } text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-500 transition-all duration-200 shadow-sm`}
+                          } text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-400 transition-all duration-200 shadow-sm`}
                         />
                         {errors.name && (
                           <p className="mt-1.5 text-sm text-red-500 flex items-center">
@@ -374,7 +374,7 @@ const NewTemplatePage = () => {
                           {...register('slug')}
                           className={`bg-zinc-900 border ${
                             errors.slug ? 'border-red-500' : 'border-zinc-700'
-                          } text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-500 transition-all duration-200 shadow-sm`}
+                          } text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-400 transition-all duration-200 shadow-sm`}
                           placeholder="my-store-receipt"
                         />
                         {errors.slug && (
@@ -406,7 +406,7 @@ const NewTemplatePage = () => {
                           {...register('logo')}
                           className={`bg-zinc-900 border ${
                             errors.logo ? 'border-red-500' : 'border-zinc-700'
-                          } text-[var(--primary-text)] rounded-r-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-500 transition-all duration-200 shadow-sm`}
+                          } text-[var(--primary-text)] rounded-r-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-400 transition-all duration-200 shadow-sm`}
                           placeholder="https://example.com/logo.png"
                         />
                       </div>
@@ -431,14 +431,14 @@ const NewTemplatePage = () => {
                   </div>
 
                   <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2">Subject Template</label>
+                    <label className="block text-sm font-medium text-[var(--primary-text)] mb-2">Subject Template</label>
                     <input
                       type="text"
                       name="subject"
                       value={formData.subject}
                       onChange={(e) => handleFieldChange(null, 'subject', e.target.value)}
                       placeholder="Order Confirmation - {{orderNumber}}"
-                      className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder-zinc-400"
                     />
                     <p className="mt-1 text-sm text-[var(--secondary-text)]">
                       Use {'{{orderNumber}}'} to insert dynamic field values
@@ -446,14 +446,14 @@ const NewTemplatePage = () => {
                   </div>
 
                   <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2">Placeholder Text</label>
+                    <label className="block text-sm font-medium text-[var(--primary-text)] mb-2">Placeholder Text</label>
                     <input
                       type="text"
                       name="placeholder"
                       value={formData.placeholder}
                       onChange={(e) => handleFieldChange(null, 'placeholder', e.target.value)}
                       placeholder="Enter placeholder text for the template"
-                      className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                      className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder-zinc-400"
                     />
                     <p className="mt-1 text-sm text-[var(--secondary-text)]">
                       This text will be shown in the order form when no value is entered
@@ -469,7 +469,7 @@ const NewTemplatePage = () => {
                         id="description"
                         rows={3}
                         {...register('description')}
-                        className="bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-500 transition-all duration-200 shadow-sm"
+                        className="bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-400 transition-all duration-200 shadow-sm"
                         placeholder="A brief description of this template for internal reference"
                       />
                       <div className="mt-1.5 flex items-center justify-end">
@@ -689,7 +689,7 @@ const NewTemplatePage = () => {
             </div>
 
             {/* Right Column - Preview and Actions */}
-            <div className="space-y-6 lg:col-span-4">
+            <div className="space-y-6 lg:col-span-5">
               {/* Template Preview Card */}
               <div className="bg-gradient-to-b from-zinc-900 to-zinc-950 overflow-hidden shadow-lg rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all duration-300">
                 <div className="px-6 py-5 border-b border-zinc-800 flex items-center justify-between">
