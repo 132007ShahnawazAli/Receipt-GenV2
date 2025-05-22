@@ -32,12 +32,30 @@ const templateSchema = new mongoose.Schema({
     required: true,
   },
   fields: [{
-    name: String,
-    type: { type: String, enum: ['text', 'number', 'email', 'date', 'select'] },
-    label: String,
-    required: Boolean,
-    options: [String],
-    defaultValue: mongoose.Schema.Types.Mixed
+    name: {
+      type: String,
+      required: true,
+    },
+    label: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      default: 'text',
+    },
+    required: {
+      type: Boolean,
+      default: false,
+    },
+    defaultValue: {
+      type: String,
+      default: '',
+    },
+    placeholder: {
+      type: String,
+      default: '',
+    },
   }],
   enabled: {
     type: Boolean,
@@ -69,7 +87,7 @@ templateSchema.index({ slug: 1, enabled: 1 });
 
 // Add pre-save hook to update timestamps
 templateSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
+  this.updatedAt = new Date();
   next();
 });
 

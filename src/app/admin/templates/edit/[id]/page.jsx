@@ -592,8 +592,7 @@ const EditTemplatePage = () => {
                     {formData.fields?.[index]?.type === 'select' && (
                       <div className="mt-4 border-t border-zinc-800 pt-4">
                         <label className="block text-xs font-medium text-[var(--secondary-text)] mb-1 flex items-center">
-                          <span>Options</span>
-                          <span className="ml-1.5 text-xs text-[var(--secondary-text)] bg-zinc-800 px-1.5 py-0.5 rounded">One per line</span>
+                          Options
                         </label>
                         <textarea
                           rows={3}
@@ -617,6 +616,28 @@ Option 3"
                             ))}
                           </div>
                         )}
+                      </div>
+                    )}
+
+                    {formData.fields?.[index]?.type !== 'select' && (
+                      <div className="mt-4 border-t border-zinc-800 pt-4">
+                        <label className="block text-xs font-medium text-[var(--secondary-text)] mb-1">
+                          Placeholder <span className="text-xs text-[var(--secondary-text)]">Optional</span>
+                        </label>
+                        <div className="flex">
+                          <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-zinc-700 bg-zinc-800 text-[var(--secondary-text)] text-sm">
+                            <span className="text-xs">Hint</span>
+                          </span>
+                          <input
+                            type="text"
+                            {...register(`fields.${index}.placeholder`)}
+                            className="bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-r-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2 placeholder-zinc-500 transition-all duration-200 shadow-sm text-sm"
+                            placeholder="Enter placeholder text"
+                          />
+                        </div>
+                        <p className="mt-1 text-xs text-[var(--secondary-text)]">
+                          This text will be shown in the input field when empty
+                        </p>
                       </div>
                     )}
 

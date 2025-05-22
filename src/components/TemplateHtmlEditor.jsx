@@ -3,12 +3,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { dracula } from "@uiw/codemirror-theme-dracula";
 
-/**
- * Admin Template HTML Editor (final version):
- * - NO available fields section or messages.
- * - Exposes insertAtCursor(fieldName) as an imperative method via ref (to enable parent to call insert directly).
- * - All other UI is unchanged (matches admin style, stacked editor/preview, perfect scrolling).
- */
+
 const TemplateHtmlEditor = forwardRef(function TemplateHtmlEditor(
   {
     value,

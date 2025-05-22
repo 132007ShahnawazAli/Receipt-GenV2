@@ -430,34 +430,34 @@ const NewTemplatePage = () => {
                     </p>
                   </div>
 
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-[var(--primary-text)] mb-1 flex items-center">
-                      <span>Email Subject</span>
-                      <span className="ml-1 text-[var(--accent-text)]">*</span>
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        id="subject"
-                        {...register('subject')}
-                        className={`bg-zinc-900 border ${
-                          errors.subject ? 'border-red-500' : 'border-zinc-700'
-                        } text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-500 transition-all duration-200 shadow-sm`}
-                        placeholder="Order Confirmation - {{orderNumber}}"
-                      />
-                      {errors.subject && (
-                        <p className="mt-1.5 text-sm text-red-500 flex items-center">
-                          <AlertCircle className="w-3.5 h-3.5 mr-1.5" />
-                          {errors.subject.message}
-                        </p>
-                      )}
-                      <div className="mt-1.5 flex items-center">
-                        <div className="text-xs text-[var(--secondary-text)] bg-zinc-800/80 rounded-md px-2 py-1 flex items-center">
-                          <Info className="w-3.5 h-3.5 mr-1.5 text-[var(--accent-text)]" />
-                          Use <code className="bg-zinc-900 text-[var(--accent-text)] px-1 mx-1 rounded">{'{fieldName}'}</code> to insert dynamic field values
-                        </div>
-                      </div>
-                    </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">Subject Template</label>
+                    <input
+                      type="text"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={(e) => handleFieldChange(null, 'subject', e.target.value)}
+                      placeholder="Order Confirmation - {{orderNumber}}"
+                      className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                    />
+                    <p className="mt-1 text-sm text-[var(--secondary-text)]">
+                      Use {{fieldName}} to insert dynamic field values
+                    </p>
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">Placeholder Text</label>
+                    <input
+                      type="text"
+                      name="placeholder"
+                      value={formData.placeholder}
+                      onChange={(e) => handleFieldChange(null, 'placeholder', e.target.value)}
+                      placeholder="Enter placeholder text for the template"
+                      className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                    />
+                    <p className="mt-1 text-sm text-[var(--secondary-text)]">
+                      This text will be shown in the order form when no value is entered
+                    </p>
                   </div>
 
                   <div>
@@ -593,42 +593,45 @@ const NewTemplatePage = () => {
                         </button>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                        <div className="md:col-span-4">
-                          <label className="block text-xs font-medium text-[var(--secondary-text)] mb-1">
-                            Field Name <span className="text-[var(--accent-text)]">*</span>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium">
+                            Field Name
+                            <span className="text-red-500 ml-1">*</span>
                           </label>
                           <input
                             type="text"
-                            {...register(`fields.${index}.name`)}
-                            value={formData.fields[index]?.name || ''}
+                            value={field.name}
                             onChange={(e) => handleFieldChange(index, 'name', e.target.value)}
-                            className="bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2 placeholder-zinc-500 transition-all duration-200 shadow-sm text-sm"
-                            placeholder="orderNumber"
+                            placeholder="e.g. customerName"
+                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
                           />
                         </div>
-                        <div className="md:col-span-4">
-                          <label className="block text-xs font-medium text-[var(--secondary-text)] mb-1">
-                            Display Label <span className="text-[var(--accent-text)]">*</span>
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium">
+                            Label
+                            <span className="text-red-500 ml-1">*</span>
                           </label>
                           <input
                             type="text"
-                            {...register(`fields.${index}.label`)}
-                            value={formData.fields[index]?.label || ''}
+                            value={field.label}
                             onChange={(e) => handleFieldChange(index, 'label', e.target.value)}
-                            className="bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2 placeholder-zinc-500 transition-all duration-200 shadow-sm text-sm"
-                            placeholder="Order Number"
+                            placeholder="e.g. Customer Name"
+                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
                           />
                         </div>
-                        <div className="md:col-span-2">
-                          <label className="block text-xs font-medium text-[var(--secondary-text)] mb-1">
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium">
                             Type
+                            <span className="text-red-500 ml-1">*</span>
                           </label>
                           <select
-                            {...register(`fields.${index}.type`)}
-                            value={formData.fields[index]?.type || 'text'}
+                            value={field.type}
                             onChange={(e) => handleFieldChange(index, 'type', e.target.value)}
-                            className="bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2 placeholder-zinc-500 transition-all duration-200 shadow-sm text-sm"
+                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
                           >
                             <option value="text">Text</option>
                             <option value="number">Number</option>
@@ -637,79 +640,48 @@ const NewTemplatePage = () => {
                             <option value="select">Select</option>
                           </select>
                         </div>
-                        <div className="md:col-span-2 flex items-end">
-                          <div className="flex items-center h-5 bg-zinc-900/70 px-3 py-2 rounded-lg border border-zinc-800">
-                            <input
-                              type="checkbox"
-                              id={`required-${index}`}
-                              checked={formData.fields[index]?.required || false}
-                              onChange={(e) => handleFieldChange(index, 'required', e.target.checked)}
-                              className="w-4 h-4 text-[var(--accent-text)] bg-zinc-900 border-zinc-700 rounded focus:ring-[var(--accent-text)] focus:ring-offset-zinc-900"
-                            />
-                            <label htmlFor={`required-${index}`} className="ml-2 block text-xs text-[var(--primary-text)]">
-                              Required
-                            </label>
-                          </div>
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium">
+                            Placeholder
+                            <span className="text-xs text-[var(--secondary-text)] ml-1">(Optional)</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={field.placeholder || ''}
+                            onChange={(e) => handleFieldChange(index, 'placeholder', e.target.value)}
+                            placeholder="e.g. Enter customer name"
+                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
+                          />
                         </div>
                       </div>
 
-                      {formData.fields[index]?.type === 'select' && (
-                        <div className="mt-4 border-t border-zinc-800 pt-4">
-                          <label className="block text-xs font-medium text-[var(--secondary-text)] mb-1 flex items-center">
-                            <span>Options</span>
-                            <span className="ml-1.5 text-xs text-[var(--secondary-text)] bg-zinc-800 px-1.5 py-0.5 rounded">One per line</span>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium">
+                            Default Value
+                            <span className="text-xs text-[var(--secondary-text)] ml-1">(Optional)</span>
                           </label>
-                          <textarea
-                            rows={3}
-                            className="bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2.5 placeholder-zinc-500 transition-all duration-200 shadow-sm text-sm"
-                            placeholder="Option 1
-Option 2
-Option 3"
-                            value={formData.fields[index]?.options?.join('\n') || ''}
-                            onChange={(e) => {
-                              const options = e.target.value.split('\n').filter(Boolean);
-                              handleFieldChange(index, 'options', options);
-                            }}
+                          <input
+                            type="text"
+                            value={field.defaultValue || ''}
+                            onChange={(e) => handleFieldChange(index, 'defaultValue', e.target.value)}
+                            placeholder="e.g. John Doe"
+                            className="w-full px-3 py-2 bg-[var(--background)] border border-[var(--accent-text)]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50"
                           />
-                          {formData.fields[index]?.options?.length > 0 && (
-                            <div className="mt-2 flex flex-wrap gap-1">
-                              {formData.fields[index]?.options?.map((option, optionIndex) => (
-                                <span key={optionIndex} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-zinc-800 text-[var(--secondary-text)]">
-                                  {option}
-                                </span>
-                              ))}
-                            </div>
-                          )}
                         </div>
-                      )}
-
-                      {formData.fields[index]?.type !== 'select' && (
-                        <div className="mt-4 border-t border-zinc-800 pt-4">
-                          <label className="block text-xs font-medium text-[var(--secondary-text)] mb-1">
-                            Default Value <span className="text-xs text-[var(--secondary-text)]">Optional</span>
+                        <div className="space-y-2">
+                          <label className="block text-sm font-medium">
+                            Required
                           </label>
-                          <div className="flex">
-                            <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-zinc-700 bg-zinc-800 text-[var(--secondary-text)] text-sm">
-                              <span className="text-xs">Default</span>
-                            </span>
-                            <input
-                              type={formData.fields[index]?.type === 'number' ? 'number' : 'text'}
-                              value={formData.fields[index]?.defaultValue || ''}
-                              onChange={(e) => {
-                                const value = formData.fields[index]?.type === 'number' 
-                                  ? parseFloat(e.target.value) || 0 
-                                  : e.target.value;
-                                handleFieldChange(index, 'defaultValue', value);
-                              }}
-                              className="bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-r-lg focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] block w-full p-2 placeholder-zinc-500 transition-all duration-200 shadow-sm text-sm"
-                              placeholder={formData.fields[index]?.type === 'number' ? '0' : 'Default value'}
-                            />
-                          </div>
-                          <p className="mt-1 text-xs text-[var(--secondary-text)]">
-                            This value will be used when no value is provided
-                          </p>
+                          <input
+                            type="checkbox"
+                            id={`required-${index}`}
+                            checked={field.required}
+                            onChange={(e) => handleFieldChange(index, 'required', e.target.checked)}
+                            className="rounded border-[var(--accent-text)]/30 text-[var(--accent-text)] focus:ring-[var(--accent-text)]/50"
+                          />
                         </div>
-                      )}
+                      </div>
                     </div>
                   ))}
                 </div>

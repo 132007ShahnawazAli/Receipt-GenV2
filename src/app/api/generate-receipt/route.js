@@ -55,99 +55,43 @@ export async function POST(request) {
     }
 
     try {
-      // Generate email subject
-      const subject = template.subject || `Your ${template.name} Receipt`;
-      
-      // Get template HTML
-      let html = template.html;
-      
       // Process template with form data
-      const replacementData = {};
-      
-      // First, add all form data values
-      Object.entries(formData).forEach(([key, value]) => {
-        if (key === 'templateId') return; // Skip templateId
-        
-        // Preserve the exact value from form data
-        if (value != null && value !== '') {
-          if (value instanceof Date) {
-            replacementData[key] = value.toLocaleDateString();
-          } else {
-            replacementData[key] = value;
-          }
-        }
-      });
-      
-      // Then, add template field defaults only for missing fields
-      if (template.fields && Array.isArray(template.fields)) {
-        template.fields.forEach(field => {
-          const fieldName = field.name;
-          // Only use default if form data doesn't have this field
-          if (!(fieldName in formData) || formData[fieldName] === '') {
-            replacementData[fieldName] = field.defaultValue || 'N/A';
-          }
-        });
+      const processedTemplate = processTemplate(template, formData.formData)
+
+      // Ensure email is present
+      if (!formData.formData.email) {
+        throw new Error('Email address is required')
       }
-      
-      // Replace placeholders in template
-      let processedHtml = html;
-      
-      // Replace each field's placeholder
-      Object.entries(replacementData).forEach(([fieldName, value]) => {
-        const placeholder = `{{${fieldName}}}`;
-        processedHtml = processedHtml.replace(
-          new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
-          value
-        );
-      });
-      
-      // Clean up any remaining placeholders
-      processedHtml = processedHtml.replace(/\{\{[^}]+\}\}/g, 'N/A');
-      
-      html = processedHtml;
-      
+
       // Create receipt in database
       const receiptData = {
         userId: session.user.id,
-        brandName: formData.brandName || template.name,
-        email: formData.email,
-        customerName: formData.customerName,
-        orderNumber: formData.orderNumber,
-        orderDate: formData.orderDate ? new Date(formData.orderDate) : new Date(),
-        formData: JSON.stringify(formData),
-        receiptHtml: html,
+        brandName: formData.formData.brandName || template.name,
+        email: formData.formData.email,
+        customerName: formData.formData.customerName,
+        orderNumber: formData.formData.orderNumber,
+        orderDate: formData.formData.orderDate ? new Date(formData.formData.orderDate) : new Date(),
+        formData: JSON.stringify(formData.formData),
+        receiptHtml: processedTemplate.html,
         status: 'pending',
       };
-      
-      // Add optional fields
-      const optionalFields = [
-        'productName', 'productSize', 'productImageUrl', 'subtotal',
-        'shipping', 'tax', 'total', 'currencySymbol', 'streetAddress',
-        'city', 'zipCode', 'country', 'cardLastFour'
-      ];
-      
-      optionalFields.forEach(field => {
-        if (formData[field] !== undefined) {
-          receiptData[field] = formData[field];
-        }
-      });
-      
+
       const receipt = new Receipt(receiptData);
       await receipt.save();
-      
+
       // Update user's receipt count
       await LicenseUser.findByIdAndUpdate(session.user.id, {
         $inc: { receiptsGenerated: 1 },
       });
-      
+
       // Send email
       try {
-        await sendReceiptEmail(formData.email, subject, html);
+        await sendReceiptEmail(formData.formData.email, processedTemplate.subject, processedTemplate.html);
         
         // Update receipt status to sent
         receipt.status = 'sent';
         await receipt.save();
-        
+
         return NextResponse.json({
           success: true,
           message: 'Receipt generated and sent successfully',
@@ -178,9 +122,9 @@ export async function POST(request) {
       try {
         const errorReceipt = new Receipt({
           userId: session?.user?.id || null,
-          brandName: formData?.brandName || 'Unknown',
-          email: formData?.email || 'unknown@example.com',
-          formData: formData ? JSON.stringify(formData) : '{}',
+          brandName: formData?.formData?.brandName || 'Unknown',
+          email: formData?.formData?.email || 'unknown@example.com',
+          formData: formData ? JSON.stringify(formData.formData) : '{}',
           status: 'error',
           error: templateError.message || 'Unknown error',
           receiptHtml: `
@@ -191,7 +135,7 @@ export async function POST(request) {
                 <h3>Error Details:</h3>
                 <pre>${templateError.stack || 'No stack trace available'}</pre>
                 <h3>Form Data:</h3>
-                <pre>${formData ? JSON.stringify(formData, null, 2) : 'No form data'}</pre>
+                <pre>${formData ? JSON.stringify(formData.formData, null, 2) : 'No form data'}</pre>
               </body>
             </html>
           `
@@ -224,7 +168,80 @@ export async function POST(request) {
     console.error("Error in generate-receipt route:", error);
     return NextResponse.json({ 
       success: false,
-      message: "Internal server error" 
+      message: "Internal server error",
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     }, { status: 500 });
   }
+}
+
+// Process template with form data
+const processTemplate = (template, formData) => {
+  // Create a copy of the template to avoid modifying the original
+  let processedTemplate = {
+    subject: template.subject,
+    html: template.html
+  }
+
+  // Process subject with both single and double brackets
+  if (processedTemplate.subject) {
+    // Handle single brackets {variable}
+    processedTemplate.subject = processedTemplate.subject.replace(/\{([^}]+)\}/g, (match, fieldName) => {
+      const normalizedFieldName = fieldName.trim().toLowerCase()
+      // Try to find the value in formData, case-insensitive
+      const value = Object.entries(formData).find(([key]) => 
+        key.toLowerCase() === normalizedFieldName
+      )?.[1]
+      return value || match
+    })
+    
+    // Handle double brackets {{variable}}
+    processedTemplate.subject = processedTemplate.subject.replace(/\{\{([^}]+)\}\}/g, (match, fieldName) => {
+      const normalizedFieldName = fieldName.trim().toLowerCase()
+      // Try to find the value in formData, case-insensitive
+      const value = Object.entries(formData).find(([key]) => 
+        key.toLowerCase() === normalizedFieldName
+      )?.[1]
+      return value || match
+    })
+  }
+
+  // Process HTML content with both single and double brackets
+  if (processedTemplate.html) {
+    // Handle single brackets {variable}
+    processedTemplate.html = processedTemplate.html.replace(/\{([^}]+)\}/g, (match, fieldName) => {
+      const normalizedFieldName = fieldName.trim().toLowerCase()
+      // Try to find the value in formData, case-insensitive
+      const value = Object.entries(formData).find(([key]) => 
+        key.toLowerCase() === normalizedFieldName
+      )?.[1]
+      return value || match
+    })
+    
+    // Handle double brackets {{variable}}
+    processedTemplate.html = processedTemplate.html.replace(/\{\{([^}]+)\}\}/g, (match, fieldName) => {
+      const normalizedFieldName = fieldName.trim().toLowerCase()
+      // Try to find the value in formData, case-insensitive
+      const value = Object.entries(formData).find(([key]) => 
+        key.toLowerCase() === normalizedFieldName
+      )?.[1]
+      return value || match
+    })
+  }
+
+  return processedTemplate
+}
+
+// Generate PDF
+const generatePDF = async (template) => {
+  // Implementation of generatePDF function
+  // This is a placeholder and should be replaced with the actual implementation
+  throw new Error('PDF generation not implemented')
+}
+
+// Send email
+const sendEmail = async (subject, html, email) => {
+  // Implementation of sendEmail function
+  // This is a placeholder and should be replaced with the actual implementation
+  throw new Error('Email sending not implemented')
 }

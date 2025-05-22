@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useCallback } from "react"
 import { X } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { getTemplateByBrandId } from "@/lib/templates"
+import { toast } from "react-hot-toast"
 
 export default function OrderForm({
   brand,
@@ -20,92 +21,108 @@ export default function OrderForm({
   const [error, setError] = useState("")
   const [template, setTemplate] = useState(passedTemplate)
   const [isTemplateLoaded, setIsTemplateLoaded] = useState(false)
+  const [formErrors, setFormErrors] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  // Initialize form data with template defaults
-  const initializeFormData = (templateData) => {
-    // Start with basic required fields
-    let initialFormData = {
-      email: session?.user?.email || "",
-      brandId: brand?.id || brand?.name?.toLowerCase().replace(/\s+/g, "_"),
-      templateId: templateData._id || templateData.id,
-    };
-
-    // Add template fields with their defaults
-    if (templateData.fields && Array.isArray(templateData.fields)) {
-      templateData.fields.forEach((field) => {
-        // Set default value based on field type
-        if (field.type === 'number') {
-          initialFormData[field.name] = field.defaultValue !== '' ? Number(field.defaultValue) : '';
-        } else if (field.type === 'date') {
-          initialFormData[field.name] = field.defaultValue || new Date().toISOString().split("T")[0];
-        } else {
-          initialFormData[field.name] = field.defaultValue || '';
-        }
-      });
-    }
-
-    // If we have initial data (for editing), merge it
-    if (initialData) {
-      if (initialData.formData) {
-        // Parse and merge form data
-        const parsedFormData = typeof initialData.formData === 'string' 
-          ? JSON.parse(initialData.formData) 
-          : initialData.formData;
-
-        Object.entries(parsedFormData).forEach(([key, value]) => {
-          if (value !== null && value !== undefined) {
-            initialFormData[key] = value;
-          }
-        });
-      } else {
-        // Merge direct properties
-        Object.entries(initialData).forEach(([key, value]) => {
-          if (value !== null && value !== undefined && 
-              !['id', 'date', 'description', 'brand', 'receiptId', 'formData'].includes(key)) {
-            initialFormData[key] = value;
-          }
-        });
+  // Initialize form data with default values
+  useEffect(() => {
+    if (template?.fields) {
+      const initialFormData = {}
+      template.fields.forEach((field) => {
+        // Use initialData if provided, otherwise use field's defaultValue or empty string
+        initialFormData[field.name] = initialData?.[field.name] || field.defaultValue || ''
+      })
+      
+      // Always add email field with user's email if not already present
+      if (!initialFormData.email && session?.user?.email) {
+        initialFormData.email = session.user.email
       }
+      
+      setFormData(initialFormData)
     }
+  }, [template?.fields, initialData, session?.user?.email])
 
-    return initialFormData;
-  };
+  // Optimize field change handler
+  const handleFieldChange = useCallback((field, name, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+    // Clear error when field is modified
+    if (formErrors[name]) {
+      setFormErrors((prev) => {
+        const newErrors = { ...prev }
+        delete newErrors[name]
+        return newErrors
+      })
+    }
+  }, [formErrors])
+
+  // Memoize form fields to prevent unnecessary re-renders
+  const formFields = useMemo(() => {
+    if (!template?.fields) return []
+    
+    // Always include email field
+    const fields = [...template.fields]
+    if (!fields.find(f => f.type === 'email')) {
+      fields.unshift({
+        name: 'email',
+        label: 'Email Address',
+        type: 'email',
+        required: true,
+        placeholder: 'Enter email address',
+        value: session?.user?.email || ''
+      })
+    }
+    
+    return fields.map((field) => {
+      // Get the current value from formData (which includes default values)
+      const currentValue = formData?.[field.name] || ''
+      
+      return {
+        ...field,
+        value: currentValue,
+        onChange: (e) => handleFieldChange(field, field.name, e.target.value),
+        // Only use placeholder if it was explicitly defined by admin
+        placeholder: field.placeholder || ''
+      }
+    })
+  }, [template?.fields, formData, handleFieldChange, session?.user?.email])
 
   // Load template and initialize form data
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
         if (passedTemplate) {
-          setTemplate(passedTemplate);
-          setFormData(initializeFormData(passedTemplate));
-          setIsTemplateLoaded(true);
+          setTemplate(passedTemplate)
+          setIsTemplateLoaded(true)
         } else if (brand) {
-          const templateId = brand._id || brand.id;
+          const templateId = brand._id || brand.id
           
           if (!templateId) {
-            throw new Error('No template ID found for brand');
+            throw new Error('No template ID found for brand')
           }
 
-          const response = await fetch(`/api/templates/${templateId}`);
+          const response = await fetch(`/api/templates/${templateId}`)
           if (!response.ok) {
-            throw new Error('Failed to fetch template');
+            throw new Error('Failed to fetch template')
           }
-          const templateData = await response.json();
+          const templateData = await response.json()
           
           if (templateData) {
-            setTemplate(templateData);
-            setFormData(initializeFormData(templateData));
-            setIsTemplateLoaded(true);
+            setTemplate(templateData)
+            setIsTemplateLoaded(true)
           }
         }
       } catch (error) {
-        console.error('Error fetching template:', error);
-        setError('Failed to load template. Please try again.');
+        console.error('Error fetching template:', error)
+        setError('Failed to load template. Please try again.')
+        toast.error('Failed to load template. Please try again.')
       }
-    };
+    }
 
-    fetchTemplate();
-  }, [passedTemplate, brand, session, initialData]);
+    fetchTemplate()
+  }, [passedTemplate, brand])
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
@@ -131,104 +148,98 @@ export default function OrderForm({
     }));
   };
 
-  const validateForm = () => {
-    if (!template?.fields) return null;
-
-    for (const field of template.fields) {
-      if (!field.required) continue;
-
-      const value = formData[field.name];
-      
-      // Check if required field is empty
-      if (value === undefined || value === null || value === '') {
-        return `${field.label} is required`;
-      }
-
-      // Type-specific validation
-      switch (field.type) {
-        case 'email':
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(value)) {
-            return `Please enter a valid email for ${field.label}`;
-          }
-          break;
-
-        case 'number':
-          if (isNaN(Number(value))) {
-            return `${field.label} must be a valid number`;
-          }
-          break;
-
-        case 'date':
-          if (isNaN(Date.parse(value))) {
-            return `${field.label} must be a valid date`;
-          }
-          break;
-      }
-    }
-
-    return null;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Memoize the form fields to prevent unnecessary re-renders
+  const memoizedFormFields = useMemo(() => {
+    if (!template?.fields) return []
     
-    if (!isTemplateLoaded || !formData) {
-      setError("Please wait for the form to load completely");
-      return;
+    return template.fields.map((field) => ({
+      ...field,
+      value: formData?.[field.name] || '',
+      onChange: (e) => handleChange(e),
+    }))
+  }, [template?.fields, formData, handleChange])
+
+  // Memoize the form validation
+  const validateForm = useCallback(() => {
+    if (!template?.fields || !formData) return {}
+    
+    const errors = {}
+    template.fields.forEach((field) => {
+      if (field.required && !formData[field.name]) {
+        errors[field.name] = `${field.label} is required`
+      }
+    })
+    return errors
+  }, [template?.fields, formData])
+
+  // Optimize form submission
+  const handleSubmit = useCallback(async (e) => {
+    e.preventDefault()
+    
+    if (!template?._id) {
+      toast.error('Template configuration is missing')
+      return
     }
 
-    setLoading(true);
-    setError("");
+    if (!brand?._id) {
+      toast.error('Brand information is missing')
+      return
+    }
 
+    // Ensure email is present
+    if (!formData?.email) {
+      toast.error('Email address is required')
+      return
+    }
+
+    const errors = validateForm()
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors)
+      toast.error('Please fill in all required fields')
+      return
+    }
+
+    setIsSubmitting(true)
     try {
-      // Validate form
-      const validationError = validateForm();
-      if (validationError) {
-        throw new Error(validationError);
+      // Add brand and template info to form data
+      const submissionData = {
+        templateId: template._id,
+        formData: {
+          ...formData,
+          brandName: brand.displayName || brand.name,
+          brandId: brand._id,
+          email: formData.email, // Ensure email is included
+        },
+        brandId: brand._id,
       }
 
-      // Prepare the payload
-      const payload = {
-        ...formData,
-        templateId: brand._id || brand.id,
-        brandName: brand.displayName || brand.name,
-        brandLogo: brand.logo
-      };
-
-      // Send to appropriate endpoint
-      const endpoint = isEditing ? "/api/user/update-receipt" : "/api/generate-receipt";
-      if (isEditing) {
-        payload.receiptId = receiptId;
-      }
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await response.json();
+      const response = await fetch('/api/generate-receipt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      })
 
       if (!response.ok) {
-        throw new Error(data.message || `Failed to ${isEditing ? 'update' : 'generate'} receipt`);
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Failed to generate receipt')
       }
 
-      if (onReceiptGenerated) {
-        onReceiptGenerated();
-      }
-
-      onClose();
+      const data = await response.json()
+      onReceiptGenerated(data)
+      onClose()
+      toast.success('Receipt generated successfully')
     } catch (error) {
-      console.error(`Error ${isEditing ? 'updating' : 'generating'} receipt:`, error);
-      setError(error.message || 'Something went wrong. Please try again.');
+      console.error('Error generating receipt:', error)
+      toast.error(error.message || 'Failed to generate receipt. Please try again.')
     } finally {
-      setLoading(false);
+      setIsSubmitting(false)
     }
-  };
+  }, [template, formData, brand, validateForm, onReceiptGenerated, onClose])
 
   // Show loading state if template or form data isn't loaded
-  if (!isTemplateLoaded || !formData) {
+  if (!isTemplateLoaded || !formData || !template?.fields) {
     return (
       <div className="fixed inset-0 z-50" style={{ isolation: "isolate" }}>
         <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
@@ -271,30 +282,24 @@ export default function OrderForm({
               )}
 
               <div className="flex flex-col gap-4">
-                {template?.fields?.map((field) => (
-                  <div key={field.name}>
-                    <label className="block text-sm font-medium text-[var(--primary-text)] mb-2">{field.label}</label>
-
-                    {field.type === "textarea" ? (
-                      <textarea
-                        name={field.name}
-                        value={formData[field.name] || ""}
-                        onChange={handleChange}
-                        required={field.required}
-                        placeholder={field.placeholder || ""}
-                        className="w-full p-3 border-[.7px] border-[var(--secondary-text)] rounded-md bg-[var(--background)] text-[var(--primary-text)] shadow-[0px_0px_6px_-1px_#000000]"
-                        rows="3"
-                      />
-                    ) : (
-                      <input
-                        type={field.type}
-                        name={field.name}
-                        value={formData[field.name] || ""}
-                        onChange={handleChange}
-                        required={field.required}
-                        placeholder={field.placeholder || ""}
-                        className="w-full p-3 border-[.7px] border-[var(--secondary-text)] rounded-md bg-[var(--background)] text-[var(--primary-text)] shadow-[0px_0px_6px_-1px_#000000]"
-                      />
+                {formFields.map((field) => (
+                  <div key={field.name} className="space-y-2">
+                    <label className="block text-sm font-medium">
+                      {field.label}
+                      {field.required && <span className="text-red-500 ml-1">*</span>}
+                    </label>
+                    <input
+                      type={field.type || 'text'}
+                      name={field.name}
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder={field.placeholder}
+                      className={`w-full px-3 py-2 bg-[var(--background)] border ${
+                        formErrors[field.name] ? 'border-red-500' : 'border-[var(--accent-text)]/30'
+                      } rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder:text-[var(--secondary-text)] placeholder:opacity-70`}
+                    />
+                    {formErrors[field.name] && (
+                      <p className="text-sm text-red-500">{formErrors[field.name]}</p>
                     )}
                   </div>
                 ))}
@@ -302,16 +307,10 @@ export default function OrderForm({
                 <div className="pt-4">
                   <button
                     type="submit"
-                    disabled={loading}
+                    disabled={isSubmitting}
                     className="w-full py-3 px-4 bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 text-black font-bold rounded-md transition-colors disabled:opacity-70"
                   >
-                    {loading
-                      ? isEditing
-                        ? "Updating Receipt..."
-                        : "Generating Receipt..."
-                      : isEditing
-                        ? "Update & Resend"
-                        : "Submit Order"}
+                    {isSubmitting ? 'Generating...' : 'Generate Receipt'}
                   </button>
                 </div>
               </div>

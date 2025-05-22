@@ -40,6 +40,7 @@ export default function Dashboard() {
   const [showLoadingOverlay, setShowLoadingOverlay] = useState(true)
   const [overlayOpacity, setOverlayOpacity] = useState(1)
   const [showSuccessNotification, setShowSuccessNotification] = useState(false)
+  const [showLogoAnimation, setShowLogoAnimation] = useState(false)
   const loadingAnimationRef = useRef(null)
   const [allDataLoaded, setAllDataLoaded] = useState(false)
 
@@ -211,6 +212,8 @@ export default function Dashboard() {
         // Add any other API calls here that need to complete before showing dashboard
       ]).then(() => {
         setAllDataLoaded(true)
+        // Show logo animation after data is loaded
+        setShowLogoAnimation(true)
       }).catch((error) => {
         console.error("Error loading dashboard data:", error)
         toast.error("Failed to load some dashboard data")
@@ -218,32 +221,40 @@ export default function Dashboard() {
     }
   }, [status, session, dataFetchAttempted, router])
 
-  // Always show loading animation on dashboard load
+  // Handle loading overlay and animations
   useEffect(() => {
     // Reset loading state
     setShowLoadingOverlay(true)
     setOverlayOpacity(1)
+    setShowLogoAnimation(false)
 
-    // Only start fade out when all data is loaded
+    // Only start fade out when all data is loaded and logo animation is shown
     if (allDataLoaded && !brandsLoading) {
-      // Start fading out the overlay
-      const fadeOutAnimation = () => {
-        setOverlayOpacity((prevOpacity) => {
-          const newOpacity = prevOpacity - 0.05
-          if (newOpacity <= 0) {
-            // When fully transparent, remove the overlay
-            setShowLoadingOverlay(false)
-            return 0
-          }
-          return newOpacity
-        })
-      }
+      // Show logo animation first
+      setShowLogoAnimation(true)
+      
+      // After logo animation completes, start fading out
+      const timer = setTimeout(() => {
+        const fadeOutAnimation = () => {
+          setOverlayOpacity((prevOpacity) => {
+            const newOpacity = prevOpacity - 0.05
+            if (newOpacity <= 0) {
+              // When fully transparent, remove the overlay
+              setShowLoadingOverlay(false)
+              return 0
+            }
+            return newOpacity
+          })
+        }
 
-      // Create a smooth fade-out effect
-      const fadeInterval = setInterval(fadeOutAnimation, 30)
+        // Create a smooth fade-out effect
+        const fadeInterval = setInterval(fadeOutAnimation, 30)
 
-      // Clean up the interval when component unmounts
-      return () => clearInterval(fadeInterval)
+        // Clean up the interval when component unmounts
+        return () => clearInterval(fadeInterval)
+      }, 1200) // Wait for logo animation to complete
+
+      return () => clearTimeout(timer)
     }
   }, [allDataLoaded, brandsLoading])
 
@@ -544,20 +555,27 @@ export default function Dashboard() {
       {showLoadingOverlay && (
         <div
           className="fixed inset-0 bg-[var(--background)] flex justify-center items-center z-50"
-          style={{ opacity: overlayOpacity, transition: "opacity 0.5s ease-out" }}
+          style={{ opacity: overlayOpacity, transition: "opacity 0.3s ease-out" }}
           ref={loadingAnimationRef}
         >
-          <div className="animate-logo-grow">
-            <img
-              src="/assets/Logo_1.png"
-              alt="Resolora Logo"
-              className="w-15 h-15 object-contain"
-              onError={(e) => {
-                e.target.onerror = null
-                e.target.src = "/placeholder.svg?height=60&width=60"
-              }}
-            />
-          </div>
+          {!allDataLoaded ? (
+            <div className="flex flex-col items-center gap-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
+              <p className="text-[var(--accent-text)]">Loading dashboard data...</p>
+            </div>
+          ) : showLogoAnimation ? (
+            <div className="animate-logo-grow">
+              <img
+                src="/assets/Logo_1.png"
+                alt="Resolora Logo"
+                className="w-15 h-15 object-contain"
+                onError={(e) => {
+                  e.target.onerror = null
+                  e.target.src = "/placeholder.svg?height=60&width=60"
+                }}
+              />
+            </div>
+          ) : null}
         </div>
       )}
     </>
