@@ -688,6 +688,7 @@ const NewTemplatePage = () => {
               </div>
             </div>
 
+            {/* Right Column - Preview and Actions */}
             <div className="space-y-6 lg:col-span-4">
               {/* Template Preview Card */}
               <div className="bg-gradient-to-b from-zinc-900 to-zinc-950 overflow-hidden shadow-lg rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all duration-300">
@@ -697,7 +698,7 @@ const NewTemplatePage = () => {
                     <h2 className="text-lg font-medium text-[var(--primary-text)]">Template Preview</h2>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-xs text-[var(--secondary-text)] bg-zinc-800 px-2 py-1 rounded-md mr-3">Step 3 of 3</span>
+                    <span className="text-xs text-[var(--secondary-text)] bg-zinc-800 px-2 py-1 rounded-md">Step 3 of 3</span>
                   </div>
                 </div>
                 <div className="px-6 py-5">
@@ -839,16 +840,13 @@ const NewTemplatePage = () => {
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Right Column - Preview and Actions */}
-            <div className="space-y-6">
-              {/* Actions Card */}
-              <div className="sticky top-4 bg-gradient-to-b from-zinc-900 to-zinc-950 overflow-hidden shadow-lg rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all duration-300">
+              {/* Template Actions Card */}
+              <div className="bg-gradient-to-b from-zinc-900 to-zinc-950 overflow-hidden shadow-lg rounded-xl border border-zinc-800 hover:border-zinc-700 transition-all duration-300">
                 <div className="px-6 py-5 border-b border-zinc-800 flex items-center justify-between">
                   <div className="flex items-center">
                     <Settings className="w-5 h-5 mr-2 text-[var(--accent-text)]" />
-                    <h2 className="text-lg font-medium text-[var(--primary-text)]">Actions</h2>
+                    <h2 className="text-lg font-medium text-[var(--primary-text)]">Template Actions</h2>
                   </div>
                 </div>
                 <div className="px-6 py-5 space-y-4">
