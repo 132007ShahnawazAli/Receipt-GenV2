@@ -11,13 +11,29 @@ import {
   Settings, Layout, FileText, Check, X, ChevronDown, 
   ChevronUp, ExternalLink, Copy, Smartphone, Tablet, 
   Monitor, RefreshCw, HelpCircle, AlertCircle, Info,
-  Edit, Mail, Clipboard, FileCode
+  Edit, Mail, Clipboard, FileCode, GripVertical
 } from 'lucide-react';
 import Link from 'next/link';
 import CodeMirror from '@uiw/react-codemirror';
 import { html } from '@codemirror/lang-html';
 import { dracula } from '@uiw/codemirror-theme-dracula';
 import TemplateHtmlEditor from '@/components/TemplateHtmlEditor';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 // Form validation schema
 const templateSchema = z.object({
@@ -38,6 +54,71 @@ const templateSchema = z.object({
   enabled: z.boolean().default(true),
 });
 
+// Update Modal component with improved UI
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="flex min-h-screen items-center justify-center p-4 text-center">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm transition-opacity" aria-hidden="true" onClick={onClose}></div>
+        <div className="relative transform overflow-hidden rounded-lg bg-zinc-900 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--accent-text)] via-purple-500 to-blue-500"></div>
+          <div className="px-6 py-5">
+            {children}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Update SortableFieldItem component
+const SortableFieldItem = ({ field, index, onInsertField, onEdit }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: field.name });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center px-3 py-2 text-sm bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700 rounded-lg text-[var(--primary-text)] transition-all duration-200 group"
+    >
+      <span className="text-xs text-[var(--secondary-text)] mr-2">{index + 1}</span>
+      <span className="truncate flex-grow">{field.label || field.name}</span>
+      <div className="flex items-center space-x-2">
+        <button
+          type="button"
+          onClick={onEdit}
+          className="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--secondary-text)] hover:text-[var(--primary-text)] p-1 rounded hover:bg-zinc-700"
+        >
+          <Edit className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          className="cursor-grab active:cursor-grabbing text-[var(--secondary-text)] hover:text-[var(--primary-text)]"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const NewTemplatePage = () => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,6 +130,16 @@ const NewTemplatePage = () => {
   const [currentField, setCurrentField] = useState(null);
   const [showFieldForm, setShowFieldForm] = useState(false);
   const editorRef = useRef();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingFieldIndex, setEditingFieldIndex] = useState(null);
+  const [newField, setNewField] = useState({
+    name: '',
+    type: 'text',
+    label: '',
+    placeholder: '',
+    defaultValue: '',
+    required: true
+  });
   
   const { register, handleSubmit, formState: { errors }, watch, setValue, control } = useForm({
     resolver: zodResolver(templateSchema),
@@ -304,6 +395,82 @@ const NewTemplatePage = () => {
     }
   };
 
+  // Add this new function to handle drag end
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    
+    if (active.id !== over.id) {
+      const oldIndex = formData.fields.findIndex(field => field.name === active.id);
+      const newIndex = formData.fields.findIndex(field => field.name === over.id);
+      
+      const newFields = arrayMove(formData.fields, oldIndex, newIndex);
+      setValue('fields', newFields);
+    }
+  };
+
+  // Add sensors for drag and drop
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Add function to handle field edit
+  const handleEditField = (index) => {
+    const field = formData.fields[index];
+    setNewField({
+      name: field.name,
+      type: field.type,
+      label: field.label,
+      placeholder: field.placeholder || '',
+      defaultValue: field.defaultValue || '',
+      required: field.required
+    });
+    setEditingFieldIndex(index);
+    setIsModalOpen(true);
+  };
+
+  // Update handleNewFieldSubmit to handle both new and edit cases
+  const handleNewFieldSubmit = () => {
+    const currentFields = formData.fields || [];
+    if (editingFieldIndex !== null) {
+      // Update existing field
+      const updatedFields = [...currentFields];
+      updatedFields[editingFieldIndex] = newField;
+      setValue('fields', updatedFields);
+    } else {
+      // Add new field
+      setValue('fields', [...currentFields, newField]);
+    }
+    
+    // Reset form and close modal
+    setNewField({
+      name: '',
+      type: 'text',
+      label: '',
+      placeholder: '',
+      defaultValue: '',
+      required: true
+    });
+    setEditingFieldIndex(null);
+    setIsModalOpen(false);
+  };
+
+  // Update modal close handler
+  const handleModalClose = () => {
+    setNewField({
+      name: '',
+      type: 'text',
+      label: '',
+      placeholder: '',
+      defaultValue: '',
+      required: true
+    });
+    setEditingFieldIndex(null);
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-[var(--background)] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -451,20 +618,6 @@ const NewTemplatePage = () => {
                   </p>
                 </div>
 
-                <div className="mb-4">
-                  <label htmlFor="placeholder" className="block text-sm font-medium text-[var(--primary-text)] mb-2">Placeholder Text</label>
-                  <input
-                    type="text"
-                    id="placeholder"
-                    {...register('placeholder')}
-                    placeholder="Enter placeholder text for the template"
-                    className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 text-[var(--primary-text)] rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder-zinc-400"
-                  />
-                  <p className="mt-1 text-sm text-[var(--secondary-text)]">
-                    This text will be shown in the order form when no value is entered
-                  </p>
-                </div>
-
                 <div>
                   <label htmlFor="description" className="block text-sm font-medium text-[var(--primary-text)] mb-1">
                     Description <span className="text-xs text-[var(--secondary-text)] ml-1">(Optional)</span>
@@ -528,11 +681,8 @@ const NewTemplatePage = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      const currentFields = formData.fields || [];
-                      setValue('fields', [
-                        ...currentFields,
-                        { name: '', type: 'text', label: '', required: false }
-                      ]);
+                      setEditingFieldIndex(null);
+                      setIsModalOpen(true);
                     }}
                     className="inline-flex items-center px-3 py-1.5 border border-[var(--accent-text)]/30 text-xs font-medium rounded-lg shadow-sm text-[var(--accent-text)] bg-[var(--accent-text)]/10 hover:bg-[var(--accent-text)]/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accent-text)] transition-all duration-200"
                   >
@@ -546,34 +696,28 @@ const NewTemplatePage = () => {
                 {/* Available Fields Section */}
                 <div className="mb-6">
                   <h3 className="text-sm font-medium text-[var(--primary-text)] mb-3">Available Fields</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                    {formData.fields?.map((field, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => {
-                          const fieldPlaceholder = `{${field.name}}`;
-                          const editor = document.querySelector('.cm-editor');
-                          if (editor) {
-                            const view = editor.cmView;
-                            const state = view.state;
-                            const selection = state.selection.main;
-                            const doc = state.doc;
-                            const newDoc = doc.replace(selection.from, selection.to, fieldPlaceholder);
-                            const newState = state.update({
-                              changes: { from: selection.from, to: selection.to, insert: fieldPlaceholder },
-                              selection: { anchor: selection.from + fieldPlaceholder.length }
-                            });
-                            view.dispatch(newState);
-                            setValue('html', newDoc.toString());
-                          }
-                        }}
-                        className="flex items-center px-3 py-2 text-sm bg-zinc-800/50 hover:bg-zinc-800 border border-zinc-700 rounded-lg text-[var(--primary-text)] transition-colors"
-                      >
-                        <span className="truncate">{field.label || field.name}</span>
-                      </button>
-                    ))}
-                  </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={formData.fields?.map(field => field.name) || []}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                        {formData.fields?.map((field, index) => (
+                          <SortableFieldItem
+                            key={field.name}
+                            field={field}
+                            index={index}
+                            onInsertField={() => handleInsertField(field.name)}
+                            onEdit={() => handleEditField(index)}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 </div>
 
                 {/* Fields List */}
@@ -805,7 +949,20 @@ const NewTemplatePage = () => {
 
                       {/* Available Fields Section Below Editor */}
                       <div className="mt-4">
-                        <h3 className="text-sm font-medium text-[var(--primary-text)] mb-3">Available Fields</h3>
+                        <div className="flex items-center justify-between mb-3">
+                          <h3 className="text-sm font-medium text-[var(--primary-text)]">Available Fields</h3>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingFieldIndex(null);
+                              setIsModalOpen(true);
+                            }}
+                            className="inline-flex items-center px-2 py-1 border border-[var(--accent-text)]/30 text-xs font-medium rounded-lg shadow-sm text-[var(--accent-text)] bg-[var(--accent-text)]/10 hover:bg-[var(--accent-text)]/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accent-text)] transition-all duration-200"
+                          >
+                            <Plus className="w-3.5 h-3.5 mr-1" />
+                            Add Field
+                          </button>
+                        </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                           {formData.fields?.map((field, index) => (
                             <button
@@ -835,7 +992,6 @@ const NewTemplatePage = () => {
                           type="button"
                           className="text-[var(--secondary-text)] hover:text-[var(--primary-text)] p-1 rounded hover:bg-zinc-800 transition-colors"
                           onClick={() => {
-                            // Open preview in new tab
                             const previewWindow = window.open('', '_blank');
                             previewWindow.document.write(getPreviewHtml(formData.html));
                             previewWindow.document.close();
@@ -851,7 +1007,6 @@ const NewTemplatePage = () => {
                             className="bg-zinc-800/80 backdrop-blur-sm text-[var(--secondary-text)] hover:text-[var(--primary-text)] p-1.5 rounded-full hover:bg-zinc-700 transition-colors"
                             title="Refresh Preview"
                             onClick={() => {
-                              // Force refresh preview
                               setActiveTab('editor');
                               setTimeout(() => setActiveTab('preview'), 10);
                             }}
@@ -860,7 +1015,9 @@ const NewTemplatePage = () => {
                           </button>
                         </div>
                         <div 
-                          className="p-4 overflow-auto h-[500px] bg-white"
+                          className="h-[700px] overflow-auto bg-white"
+                          onWheel={(e) => e.stopPropagation()}
+                          onMouseDown={(e) => e.stopPropagation()}
                           dangerouslySetInnerHTML={{ 
                             __html: getPreviewHtml(formData.html) 
                           }} 
@@ -945,6 +1102,141 @@ const NewTemplatePage = () => {
           </div>
         </form>
       </div>
+
+      {/* Update Modal content with improved UI */}
+      <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold text-[var(--primary-text)]">
+              {editingFieldIndex !== null ? 'Edit Field' : 'Add New Field'}
+            </h3>
+            <button
+              onClick={handleModalClose}
+              className="text-[var(--secondary-text)] hover:text-[var(--primary-text)] transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[var(--primary-text)] mb-1">
+                  Field Name <span className="text-[var(--accent-text)]">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={newField.name}
+                  onChange={(e) => setNewField({ ...newField, name: e.target.value })}
+                  className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-[var(--primary-text)] focus:ring-2 focus:ring-[var(--accent-text)]/50 focus:border-[var(--accent-text)]"
+                  placeholder="e.g. customerName"
+                />
+                <p className="mt-1 text-xs text-[var(--secondary-text)]">Used in template as {'{fieldName}'}</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[var(--primary-text)] mb-1">
+                  Label <span className="text-[var(--accent-text)]">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={newField.label}
+                  onChange={(e) => setNewField({ ...newField, label: e.target.value })}
+                  className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-[var(--primary-text)] focus:ring-2 focus:ring-[var(--accent-text)]/50 focus:border-[var(--accent-text)]"
+                  placeholder="e.g. Customer Name"
+                />
+                <p className="mt-1 text-xs text-[var(--secondary-text)]">Display name in the form</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[var(--primary-text)] mb-1">
+                Type <span className="text-[var(--accent-text)]">*</span>
+              </label>
+              <select
+                value={newField.type}
+                onChange={(e) => setNewField({ ...newField, type: e.target.value })}
+                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-[var(--primary-text)] focus:ring-2 focus:ring-[var(--accent-text)]/50 focus:border-[var(--accent-text)]"
+              >
+                <option value="text">Text</option>
+                <option value="number">Number</option>
+                <option value="email">Email</option>
+                <option value="date">Date</option>
+                <option value="select">Select</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[var(--primary-text)] mb-1">
+                Placeholder
+              </label>
+              <input
+                type="text"
+                value={newField.placeholder}
+                onChange={(e) => setNewField({ ...newField, placeholder: e.target.value })}
+                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-[var(--primary-text)] focus:ring-2 focus:ring-[var(--accent-text)]/50 focus:border-[var(--accent-text)]"
+                placeholder="e.g. Enter customer name"
+              />
+              <p className="mt-1 text-xs text-[var(--secondary-text)]">Hint text shown in empty field</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[var(--primary-text)] mb-1">
+                Default Value
+              </label>
+              <input
+                type="text"
+                value={newField.defaultValue}
+                onChange={(e) => setNewField({ ...newField, defaultValue: e.target.value })}
+                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-[var(--primary-text)] focus:ring-2 focus:ring-[var(--accent-text)]/50 focus:border-[var(--accent-text)]"
+                placeholder="e.g. John Doe"
+              />
+              <p className="mt-1 text-xs text-[var(--secondary-text)]">Initial value for this field</p>
+            </div>
+
+            <div className="flex items-center p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
+              <input
+                type="checkbox"
+                id="required"
+                checked={newField.required}
+                onChange={(e) => setNewField({ ...newField, required: e.target.checked })}
+                className="h-4 w-4 text-[var(--accent-text)] border-zinc-700 rounded focus:ring-[var(--accent-text)]"
+              />
+              <label htmlFor="required" className="ml-3 text-sm text-[var(--primary-text)]">
+                Required field
+              </label>
+              <div className="ml-auto">
+                {newField.required ? (
+                  <span className="px-2 py-1 text-xs font-medium rounded-full bg-[var(--accent-text)]/20 text-[var(--accent-text)] border border-[var(--accent-text)]/30">
+                    Required
+                  </span>
+                ) : (
+                  <span className="px-2 py-1 text-xs font-medium rounded-full bg-zinc-800/50 text-zinc-400 border border-zinc-700/50">
+                    Optional
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={handleModalClose}
+              className="px-4 py-2 text-sm font-medium text-[var(--primary-text)] bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleNewFieldSubmit}
+              className="px-4 py-2 text-sm font-medium text-black bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/90 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accent-text)] transition-colors"
+            >
+              {editingFieldIndex !== null ? 'Save Changes' : 'Add Field'}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
