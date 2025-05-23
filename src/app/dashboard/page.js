@@ -537,8 +537,6 @@ export default function Dashboard() {
           </div>
         </Modal>
 
-        <ReceiptCategories />
-
         {/* Order Number Generator */}
         <OrderNumberGenerator />
 
