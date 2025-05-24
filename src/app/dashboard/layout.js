@@ -22,6 +22,7 @@ import {
 } from "lucide-react"
 import DashboardLoading from "@/components/dashboard/DashboardLoading"
 import OnboardingModal from "@/components/dashboard/OnboardingModal"
+import Image from "next/image"
 
 export default function DashboardLayout({ children }) {
   const router = useRouter()
@@ -139,7 +140,7 @@ export default function DashboardLayout({ children }) {
   const navItems = [
     {
       id: "welcome",
-      label: `Welcome, ${username}`,
+      label: "Dashboard",
       icon: Home,
       href: "/dashboard",
       active: currentTab === "welcome",
@@ -225,19 +226,26 @@ export default function DashboardLayout({ children }) {
 
       {/* Sidebar - fixed position */}
       <div
-        className={`fixed inset-y-0 left-0 z-30 ${sidebarCollapsed ? 'w-20' : 'w-64'} transform bg-[var(--background)] border-r border-zinc-800 transition-all duration-300 ease-in-out lg:relative lg:translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-30 bg-[#1A1A1A] ${sidebarCollapsed ? 'w-20' : 'w-64'} transform border-r border-zinc-800 transition-all duration-300 ease-in-out lg:relative lg:translate-x-0`}
       >
         <div className="flex h-full flex-col relative">
-          {/* Collapse/Expand Button */}
+          {/* Collapse/Expand Button - Vertically Centered */}
           <button
             className="absolute left-full top-1/2 -translate-y-1/2 z-40 bg-zinc-900 border border-zinc-800 rounded-full p-1 shadow-lg hover:bg-zinc-800 transition-colors"
-            style={{ marginLeft: '-18px' }}
+            style={{ marginLeft: '-18px', transition: 'left 0.3s' }}
             onClick={() => setSidebarCollapsed((prev) => !prev)}
             aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
             {sidebarCollapsed ? <ChevronRight className="text-[var(--accent-text)]" size={20} /> : <ChevronLeft className="text-[var(--accent-text)]" size={20} />}
           </button>
-          <div className="flex-1 overflow-y-auto py-4 px-3 flex flex-col gap-2">
+          {/* Brand Logo and Divider */}
+          <div className={`flex flex-col gap-2 ${sidebarCollapsed ? 'items-center px-2' : 'items-start pl-8'} pt-6 pb-2 transition-all duration-300`}>
+            <div className={`flex ${sidebarCollapsed ? 'justify-center' : 'justify-start'} w-full transition-all duration-300`}>
+              <Image src="/assets/Logo_1.png" alt="Logo" width={36} height={36} />
+            </div>
+            <div className={`border-t border-zinc-700 transition-all duration-300 ${sidebarCollapsed ? 'w-full mx-2' : 'w-auto ml-8 mr-8'}`}></div>
+          </div>
+          <div className={`flex-1 overflow-y-auto ${sidebarCollapsed ? 'px-2' : 'px-3'} flex flex-col gap-2 transition-all duration-300`}>
             <nav className="space-y-2">
               {navItems.map((item) => {
                 const NavItem = item.disabled ? (props) => <div {...props} /> : Link
@@ -246,9 +254,8 @@ export default function DashboardLayout({ children }) {
                     key={item.id}
                     href={item.disabled ? "#" : item.href}
                     className={`
-                      flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'} px-4 py-4 rounded-lg transition-all duration-200
-                      ${item.active ? "bg-[var(--accent-text)] text-zinc-900 drop-shadow-[0px_0px_10px_var(--accent-text)]" : "text-gray-300 hover:bg-zinc-800"}
-                      ${item.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+                      flex items-center ${sidebarCollapsed ? 'justify-center' : ''} gap-2 px-8 py-3 rounded-lg transition-all duration-200
+                      text-(--secondary-text) hover:bg-zinc-800
                     `}
                     onClick={(e) => {
                       if (item.disabled) {
@@ -256,8 +263,16 @@ export default function DashboardLayout({ children }) {
                       }
                     }}
                   >
-                    <span className={`text-sm font-medium transition-all duration-200 ${sidebarCollapsed ? 'sr-only' : ''}`}>{item.label}</span>
-                    <item.icon size={20} className={`${item.active ? "text-zinc-900" : "text-[var(--accent-text)]"}`} />
+                    <item.icon size={16} className="text-(--secondary-text) flex-shrink-0" />
+                    <span
+                      className={`text-sm font-medium tracking-tight transition-all duration-300
+                        ${sidebarCollapsed ? 'opacity-0 translate-x-4 pointer-events-none w-0' : 'opacity-100 translate-x-0 w-auto'}
+                        whitespace-nowrap overflow-hidden`
+                      }
+                      style={{ transitionProperty: 'opacity,transform,width' }}
+                    >
+                      {item.label}
+                    </span>
                   </NavItem>
                 )
               })}

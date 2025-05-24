@@ -16,6 +16,7 @@ import EmailReceipt from "@/components/dashboard/EmailReceipt"
 import ReceiptCategories from "@/components/dashboard/ReceiptCategories"
 import Modal from '@/components/Modal';
 import { toast } from "react-hot-toast";
+import { IoClose } from "react-icons/io5";
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -43,6 +44,7 @@ export default function Dashboard() {
   const [showLogoAnimation, setShowLogoAnimation] = useState(false)
   const loadingAnimationRef = useRef(null)
   const [allDataLoaded, setAllDataLoaded] = useState(false)
+  const [showNotice, setShowNotice] = useState(true);
 
   // Get available brands with templates from our template system
   const { brands: availableBrands, isLoading: brandsLoading, error: brandsError } = useAvailableBrands();
@@ -335,10 +337,24 @@ export default function Dashboard() {
     <>
       <div className="p-6 pb-24">
         {/* Header */}
-        <div className="flex flex-col items-start w-full pb-6 gap-5 ">
-          <h1 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Receipt Generator</h1>
-          <hr className=" w-full text-(--accent-text) " />
+        <div className="flex flex-col items-start w-full pb-3 ">
+          <h1 className="tablet:text-3xl text-2xl font-normal tracking-tight">Dashboard</h1>
         </div>
+
+        {/* Notice Bar */}
+        {showNotice && (
+          <div className="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-xl px-6 py-3 mb-6">
+            <span className="text-base font-semibold text-[var(--primary-text)]">Some receipts may arrive in the spam folder</span>
+            <button
+              className="ml-4 text-[var(--accent-text)] text-xl hover:scale-125 transition-transform"
+              onClick={() => setShowNotice(false)}
+              aria-label="Dismiss notice"
+            >
+              < IoClose />
+
+            </button>
+          </div>
+        )}
 
         {/* Success Notification */}
         {showSuccessNotification && (
@@ -361,53 +377,35 @@ export default function Dashboard() {
 
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
-            <div className="flex justify-between items-center mb-8">
-              <span className="text-2xl tracking-tighter">Available templates</span>
-              <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
-                <MdEditCalendar className="w-6 h-6" />
-              </div>
+          <div className="p-4 rounded-xl overflow-hidden border border-zinc-800 bg-[#1A1A1A]">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-md font-medium tracking-tight text-(--secondary-text)">Available templates</span>
             </div>
-            <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
-              {brandsLoading ? '...' : availableBrands.length}
+            <div className="text-2xl font-medium text-[var(--primary-text)]">
+              {brandsLoading ? '0' : availableBrands.length}
             </div>
           </div>
 
-          <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
-            <div className="flex justify-between items-center mb-8">
-              <span className="text-2xl tracking-tighter">Generated receipts</span>
-              <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
-                <LuMailCheck className="w-6 h-6" />
-              </div>
+          <div className="p-4 rounded-xl overflow-hidden border border-zinc-800 bg-[#1A1A1A]">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-md font-medium tracking-tight text-(--secondary-text)">Generated receipts</span>
             </div>
-            <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
+            <div className="text-2xl font-medium text-[var(--primary-text)]">
               {userStats.receiptsGenerated}
             </div>
           </div>
 
-          <div className="p-5 rounded-xl shadow-[0px_0px_10px_-1px_#000000] overflow-hidden border border-zinc-800">
-            <div className="flex justify-between items-center mb-8">
-              <span className="text-2xl tracking-tighter">Days left</span>
-              <div className="w-8 h-8 flex items-center justify-center text-[var(--accent-text)]">
-                <IoTimerOutline className="w-6 h-6" />
-              </div>
+          <div className="p-4 rounded-xl overflow-hidden border border-zinc-800 bg-[#1A1A1A]">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-md font-medium tracking-tight text-(--secondary-text)">Days left</span>
             </div>
-            <div className="text-7xl font-bold text-[var(--accent-text)] drop-shadow-[0px_0px_39px_var(--accent-text)]">
+            <div className="text-2xl font-medium text-[var(--primary-text)]">
               {userStats.subscriptionStatus === "lifetime" ? "∞" : userStats.daysLeft || "0"}
             </div>
           </div>
         </div>
 
         {/* Status Section */}
-        <div className="mb-6">
-          <div className="relative flex justify-between items-center pb-6">
-            <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Status</h2>
-            <div className="flex items-center text-[var(--accent-text)]">
-              <BiBarChartAlt className="w-6 h-6" />
-            </div>
-            <hr className="absolute bottom-0 w-full text-zinc-800" />
-          </div>
-        </div>
 
         {/* Subscription Notice */}
         {!isSubscribed && (
@@ -426,99 +424,6 @@ export default function Dashboard() {
         {/* Email Receipts Section */}
         <div className="mb-6">
           <EmailReceipt />
-
-          <div className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 py-9">
-            <p className="text-2xl tracking-tighter text-[var(--accent-text)] mb-4 sm:mb-0">
-              Some receipts may arrive in the spam folder
-            </p>
-            <div className="flex items-center w-full sm:w-auto">
-              <div className="relative w-full sm:w-auto">
-                <input
-                  type="text"
-                  placeholder={currentPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full sm:w-60 px-2 py-1 bg-transparent border-b-1 border-[var(--accent-text)] text-[var(--primary-text)] placeholder-[var(--secondary-text)] placeholder:text-2xl focus:outline-none"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--accent-text)] hover:text-white transition-colors"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18"></line>
-                      <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                  </button>
-                )}
-              </div>
-            </div>
-            <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
-          </div>
-        </div>
-
-        {/* Brand Grid */}
-        <div className="pb-6">
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3">
-            {brandsLoading ? (
-              <div className="col-span-full flex justify-center py-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
-              </div>
-            ) : brandsError ? (
-              <div className="col-span-full bg-red-50 border-l-4 border-red-400 p-4 mb-6">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-red-700">
-                      {brandsError.message || 'Failed to load templates. Please try again later.'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : Array.isArray(filteredBrands) && filteredBrands.length > 0 ? (
-              filteredBrands.map((brand) => (
-                <div
-                  key={brand.id}
-                  className={`aspect-square bg-[var(--accent-text)] rounded-xl flex items-center justify-center p-3 cursor-pointer hover:scale-95 transition-transform duration-300`}
-                  onClick={() => handleBrandClick(brand)}
-                >
-                  <div className="w-full h-full flex items-center justify-center flex-row">
-                    <img
-                      src={brand.logo && brand.logo.startsWith && brand.logo.startsWith('http')
-                        ? brand.logo
-                        : (brand.logo ? `/assets/brand-logos/${brand.logo}` : '/placeholder-logo.png')}
-                      className="h-12 max-w-full object-contain"
-                      alt={brand.displayName || brand.name}
-                      loading="lazy"
-                      onError={(e) => {
-                        console.error('Error loading logo:', brand.logo);
-                        e.target.onerror = null;
-                        e.target.src = '/placeholder-logo.png';
-                      }}
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-8 text-gray-500">
-                No templates available. Please check back later.
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Template Select Modal */}
