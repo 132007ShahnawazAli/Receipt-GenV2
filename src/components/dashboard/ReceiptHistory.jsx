@@ -6,6 +6,7 @@ import OrderForm from "@/components/OrderForm"
 import { useAvailableBrands } from "@/components/dashboard-brands"
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import Link from 'next/link';
+import { LineChart, Line } from 'recharts';
 
 export default function ReceiptHistory() {
   const [receipts, setReceipts] = useState([])
@@ -119,12 +120,12 @@ export default function ReceiptHistory() {
       )}
 
       {/* Chart + History Box Layout */}
-      <div className="flex flex-col md:flex-row gap-6 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
         {/* Dot Chart */}
-        <div className="flex-1 bg-[var(--background-secondary)] border border-zinc-800 rounded-2xl min-h-[340px] flex items-center justify-center">
-          {/* Increased chart width and height for more space and professional look */}
+        <div className="md:col-span-2 col-span-1 bg-[var(--background-secondary)] border border-zinc-800 rounded-2xl min-h-[340px] flex items-center justify-center p-4">
+          {/* Professional smooth line chart with glowing points and custom tooltip */}
           <ResponsiveContainer width="100%" height={340}>
-            <ScatterChart margin={{ top: 48, right: 48, left: 48, bottom: 48 }}>
+            <LineChart data={dotData} margin={{ top: 48, right: 48, left: 48, bottom: 48 }}>
               <CartesianGrid stroke="#444" strokeDasharray="0" vertical={false} horizontal={true} />
               <XAxis dataKey="date" hide axisLine={false} tickLine={false} />
               <YAxis 
@@ -132,51 +133,102 @@ export default function ReceiptHistory() {
                 tick={{ fill: '#888', fontSize: 15 }} 
                 axisLine={false} 
                 tickLine={false} 
-                // Always show 5 equally spaced constraints (ticks/lines) with constant unit gap, regardless of data distribution
                 domain={[0, (dataMax) => {
-                  // Find the max value (at least 4 for spacing)
                   const max = dotData.length ? Math.max(...dotData.map(d => d.count), 4) : 4;
-                  // Round up to nearest nice number for clean spacing
                   const niceMax = Math.ceil(max / 4) * 4;
                   return niceMax;
                 }]} 
                 ticks={(() => {
-                  // Calculate 5 linearly spaced ticks from 0 to niceMax (constant unit gap)
                   const max = dotData.length ? Math.max(...dotData.map(d => d.count), 4) : 4;
                   const niceMax = Math.ceil(max / 4) * 4;
                   return Array.from({length: 5}, (_, i) => Math.round(i * (niceMax / 4)));
                 })()}
                 width={40}
               />
-              <Tooltip 
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke="var(--accent-text)"
+                strokeWidth={3}
+                dot={({ cx, cy }) => (
+                  <circle cx={cx} cy={cy} r={6} fill="var(--accent-text)" />
+                )}
+                activeDot={({ cx, cy }) => (
+                  <circle cx={cx} cy={cy} r={7} fill="var(--accent-text)" />
+                )}
+                isAnimationActive={true}
+              />
+              <Tooltip
                 cursor={false}
-                // Clean, professional tooltip: formatted receipt date and count
                 content={({ active, payload }) => {
                   if (!active || !payload || !payload.length) return null;
-                  // Get date from data object, not label
                   const rawDate = payload[0].payload?.date;
                   let formattedDate = 'Unknown';
                   if (rawDate) {
                     const dateObj = new Date(rawDate);
-                    formattedDate = isNaN(dateObj) ? 'Unknown' : dateObj.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+                    formattedDate = isNaN(dateObj) ? 'Unknown' : dateObj.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
                   }
                   const count = payload[0].value;
                   return (
-                    <div style={{ background: '#181818', borderRadius: 8, padding: '10px 16px', color: 'var(--primary-text)', minWidth: 120 }}>
-                      <div style={{ fontSize: 13, color: 'var(--secondary-text)', marginBottom: 2 }}>Receipt Date</div>
-                      <div style={{ fontSize: 14, fontWeight: 500, marginBottom: 8 }}>{formattedDate}</div>
-                      <div style={{ fontSize: 13, color: 'var(--secondary-text)', marginBottom: 2 }}>Receipts generated</div>
-                      <div style={{ fontWeight: 600, color: 'var(--accent-text)', fontSize: 14 }}>{count}</div>
+                    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none' }}>
+                      {/* Tooltip box with pointer on top */}
+                      <div style={{
+                        position: 'relative',
+                        background: '#181818',
+                        borderRadius: 8,
+                        padding: '10px 22px',
+                        color: 'var(--primary-text)',
+                        minWidth: 240,
+                        fontSize: 16,
+                        fontWeight: 500,
+                        boxShadow: '0 2px 12px 0 rgba(0,0,0,0.18)',
+                        textAlign: 'center',
+                        border: '1px solid #222',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 8,
+                        marginTop: 16,
+                      }}>
+                        {/* Pointer triangle on top */}
+                        <div style={{
+                          position: 'absolute',
+                          top: -14,
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          width: 0,
+                          height: 0,
+                          borderLeft: '10px solid transparent',
+                          borderRight: '10px solid transparent',
+                          borderBottom: '14px solid #181818',
+                          zIndex: 1,
+                        }} />
+                        <div style={{
+                          position: 'absolute',
+                          top: -16,
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          width: 0,
+                          height: 0,
+                          borderLeft: '11px solid transparent',
+                          borderRight: '11px solid transparent',
+                          borderBottom: '16px solid #222',
+                          zIndex: 0,
+                        }} />
+                        <span style={{ color: 'var(--secondary-text)', fontWeight: 400 }}>Date:</span>
+                        <span style={{ color: 'var(--accent-text)', fontWeight: 700, margin: '0 6px 0 2px' }}>{formattedDate}</span>
+                        <span style={{ color: 'var(--secondary-text)', fontWeight: 400 }}>Receipts:</span>
+                        <span style={{ color: 'var(--accent-text)', fontWeight: 700, marginLeft: 2 }}>{count}</span>
+                      </div>
                     </div>
                   );
                 }}
               />
-              <Scatter data={dotData} fill="var(--accent-text)" shape="circle" />
-            </ScatterChart>
+            </LineChart>
           </ResponsiveContainer>
         </div>
         {/* History Box */}
-        <div className="w-full md:w-[340px] bg-[var(--background-secondary)] border border-zinc-800 rounded-2xl p-6 flex flex-col justify-between min-h-[220px]">
+        <div className="md:col-span-1 col-span-1 w-full bg-[var(--background-secondary)] border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between min-h-[220px]">
           <div className="flex flex-col gap-2 flex-1">
             {recentReceipts.length === 0 ? (
               <div className="text-center text-[var(--secondary-text)] py-8">No receipt history found.</div>

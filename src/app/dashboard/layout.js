@@ -197,7 +197,7 @@ export default function DashboardLayout({ children }) {
 
       {/* Sidebar - fixed position */}
       <div
-        className={`fixed inset-y-0 left-0 z-30 bg-(--background-secondary) ${sidebarCollapsed ? 'w-20' : 'w-64'} min-w-0 overflow-x-hidden transform border-r border-zinc-800 transition-all duration-300 ease-in-out lg:relative lg:translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-30 bg-(--background-secondary) ${sidebarCollapsed ? 'w-20' : 'w-56'} min-w-0 overflow-x-hidden transform border-r border-zinc-800 transition-all duration-300 ease-in-out lg:relative lg:translate-x-0`}
       >
         <div className="flex h-full flex-col relative min-w-0 overflow-x-hidden">
           {/* Collapse/Expand Button - Vertically Centered */}
@@ -214,23 +214,27 @@ export default function DashboardLayout({ children }) {
             )}
           </button>
           {/* Brand Logo and Divider */}
-          <div className={`flex flex-col gap-2 min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'items-center px-2' : 'items-start pl-8'} pt-6 pb-2 transition-all duration-300`}>
+          <div className={`flex flex-col min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'items-center px-2' : 'items-start pl-4'} pt-4 pb-2 transition-all duration-300`}>
             <div className={`flex min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'justify-center' : 'justify-start'} w-full transition-all duration-300`}>
-              <Image src="/assets/Logo_1.png" alt="Logo" width={36} height={36} />
+              <Image src="/assets/Logo_1.png" alt="Logo" width={40} height={40} />
             </div>
-            <div className={`border-t border-zinc-800 transition-all duration-300 ${sidebarCollapsed ? 'w-full mx-2' : 'ml-8 mr-8 w-auto'}`}></div>
+            {/* Top divider */}
+            <div className="border-t border-zinc-800 mx-2 my-2 w-full"></div>
           </div>
-          <div className={`flex-1 overflow-y-auto min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'px-2' : 'px-3'} flex flex-col gap-2 transition-all duration-300`}>
-            <nav className="space-y-2">
+          <div className={`flex-1 overflow-y-auto min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'px-2' : 'px-2'} flex flex-col transition-all duration-300`}>
+            <nav className="mt-2 flex flex-col gap-1">
               {navItems.map((item) => {
                 const NavItem = item.disabled ? (props) => <div {...props} /> : Link
+                const isActive = item.active;
                 return (
-                  <div className="relative flex items-center group min-w-0 overflow-x-hidden" key={item.id}>
+                  <div className={`relative group min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'flex justify-center items-center' : 'flex items-center'}`} key={item.id}>
                     <NavItem
                       href={item.disabled ? "#" : item.href}
                       className={`
-                        flex items-center min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'justify-center' : ''} gap-2 px-8 py-3 rounded-lg transition-all duration-200
-                        text-(--secondary-text) hover:bg-zinc-800
+                        flex items-center min-w-0 overflow-x-hidden gap-2 px-4 py-2 rounded-lg transition-all duration-200
+                        text-sm font-medium tracking-tight
+                        ${isActive ? 'border-2 border-[var(--accent-text)] text-[var(--accent-text)] bg-(--accent-text)/10 rounded-lg' : 'text-(--secondary-text) hover:bg-zinc-800 hover:text-[var(--accent-text)]'}
+                        ${sidebarCollapsed ? 'w-12 h-12 justify-center items-center mx-2' : 'w-full mx-2'}
                       `}
                       onClick={(e) => {
                         if (item.disabled) {
@@ -238,9 +242,11 @@ export default function DashboardLayout({ children }) {
                         }
                       }}
                     >
-                      <item.icon size={16} className="text-(--secondary-text) flex-shrink-0" />
+                      <div className={`flex items-center justify-center ${sidebarCollapsed ? 'w-full h-full' : ''}`}>
+                        <item.icon size={20} className={`${isActive ? 'text-[var(--accent-text)]' : 'text-(--secondary-text) group-hover:text-[var(--accent-text)]'} flex-shrink-0`} />
+                      </div>
                       <span
-                        className={`text-sm font-medium tracking-tight transition-all duration-300
+                        className={`transition-all duration-300
                           ${sidebarCollapsed ? 'opacity-0 translate-x-4 pointer-events-none w-0' : 'opacity-100 translate-x-0 w-auto'}
                           whitespace-nowrap overflow-hidden`
                         }
@@ -253,11 +259,12 @@ export default function DashboardLayout({ children }) {
                 )
               })}
             </nav>
-            {/* Spacer for collapse button on mobile */}
             <div className="flex-1"></div>
           </div>
+          {/* Divider above plan info */}
+          <div className="border-t border-zinc-800 mx-2 my-2"></div>
           {/* Plan info row at bottom of sidebar - styled like navlinks */}
-          <div className={`flex items-center min-w-0 overflow-x-hidden gap-2 px-8 py-3 rounded-lg text-(--secondary-text) text-sm font-medium tracking-tight mb-2 ${sidebarCollapsed ? 'justify-center' : ''}`}>
+          <div className={`flex items-center min-w-0 overflow-x-hidden gap-2 px-4 py-2 rounded-lg text-(--secondary-text) text-sm font-medium tracking-tight mb-2 ${sidebarCollapsed ? 'justify-center' : ''}`}>
             {planInfo.plan === "lifetime" ? (
               <>
                 <Trophy size={16} className="text-(--secondary-text) flex-shrink-0" />
@@ -275,7 +282,6 @@ export default function DashboardLayout({ children }) {
               </>
             )}
           </div>
-          <div className="p-4 border-t border-zinc-800 space-y-2"></div>
         </div>
       </div>
 
