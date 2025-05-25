@@ -17,6 +17,7 @@ import ReceiptCategories from "@/components/dashboard/ReceiptCategories"
 import Modal from '@/components/Modal';
 import { toast } from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
+import { Hourglass, LogOut } from "lucide-react"
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -333,17 +334,40 @@ export default function Dashboard() {
     }, 1000)
   }
 
+  // Add sign out handler
+  const handleSignOut = async () => {
+    try {
+      const { signOut } = await import("next-auth/react");
+      await signOut({ redirect: false });
+      router.push("/dashboard-login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <>
       <div className="p-6 pb-24">
         {/* Header */}
-        <div className="flex flex-col items-start w-full pb-3 ">
+        <div className="flex items-center justify-between w-full pb-3 ">
           <h1 className="tablet:text-3xl text-2xl font-normal tracking-tight">Dashboard</h1>
+          <div className="flex items-center gap-3">
+            {userStats.subscriptionStatus === "monthly" && userStats.daysLeft && userStats.daysLeft !== "∞" && (
+              <span className="px-4 py-2 rounded bg-yellow-400 text-(--background) text-sm font-semibold flex items-center gap-2"> License key expires in {userStats.daysLeft} days!
+              </span>
+            )}
+            <button
+              onClick={handleSignOut}
+              className="px-4 py-2 rounded bg-(--accent-text) text-(--background) text-sm font-semibold flex items-center gap-2 hover:scale-95 transition-transform"
+            >
+              <LogOut size={16} /> Log out
+            </button>
+          </div>
         </div>
 
         {/* Notice Bar */}
         {showNotice && (
-          <div className="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-xl px-6 py-3 mb-6">
+          <div className="flex items-center justify-between bg-(--background-secondary) border border-zinc-800 rounded-xl px-6 py-3 mb-6">
             <span className="text-base font-semibold text-[var(--primary-text)]">Some receipts may arrive in the spam folder</span>
             <button
               className="ml-4 text-[var(--accent-text)] text-xl hover:scale-125 transition-transform"
@@ -423,7 +447,7 @@ export default function Dashboard() {
 
         {/* Email Receipts Section */}
         <div className="mb-6">
-          <EmailReceipt />
+          <EmailReceipt onBrandClick={handleBrandClick} />
         </div>
 
         {/* Template Select Modal */}

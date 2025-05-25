@@ -2,6 +2,7 @@
 
 :root {
   --background: #121212;
+  --background-secondary: #1A1A1A;
   --primary-text: #EDEDED;
   --secondary-text: #ededed80;
   --accent-text:#a2bef7;
@@ -56,6 +57,7 @@ body {
   --accent-text: #a2bef7;
   --primary-button-text-color: #0000;
   --breakpoint-tablet: 800px;
+  --background-secondary: #1A1A1A;
 }
 
 

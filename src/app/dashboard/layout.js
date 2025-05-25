@@ -19,6 +19,8 @@ import {
   RefreshCw,
   ChevronLeft,
   ChevronRight,
+  Hourglass,
+  LogOut,
 } from "lucide-react"
 import DashboardLoading from "@/components/dashboard/DashboardLoading"
 import OnboardingModal from "@/components/dashboard/OnboardingModal"
@@ -33,6 +35,7 @@ export default function DashboardLayout({ children }) {
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [username, setUsername] = useState("User")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [planInfo, setPlanInfo] = useState({ plan: null, daysLeft: null, subscriptionStatus: null })
 
   // Determine active tab based on pathname
   const determineActiveTab = () => {
@@ -96,6 +99,22 @@ export default function DashboardLayout({ children }) {
     setMobileMenuOpen(false)
   }, [pathname])
 
+  // Fetch plan info on mount after authentication
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetch("/api/user/stats")
+        .then(res => res.json())
+        .then(data => {
+          setPlanInfo({
+            plan: data.plan,
+            daysLeft: data.daysLeft,
+            subscriptionStatus: data.subscriptionStatus,
+          })
+        })
+        .catch(() => {})
+    }
+  }, [status])
+
   const handleSignOut = async () => {
     try {
       await signOut({ redirect: false })
@@ -146,66 +165,18 @@ export default function DashboardLayout({ children }) {
       active: currentTab === "welcome",
     },
     {
-      id: "warehouse",
-      label: "My warehouse",
+      id: "history",
+      label: "History",
       icon: Package,
       href: "/dashboard/warehouse",
       active: currentTab === "warehouse",
     },
     {
-      id: "leaderboard",
-      label: "Leaderboard",
+      id: "account",
+      label: "Account",
       icon: Trophy,
       href: "/dashboard/leaderboard",
       active: currentTab === "leaderboard",
-    },
-    {
-      id: "trending",
-      label: "Trending",
-      icon: TrendingUp,
-      href: "#",
-      disabled: true,
-      active: currentTab === "trending",
-    },
-    {
-      id: "receipts",
-      label: "Receipts",
-      icon: Receipt,
-      href: "#",
-      disabled: true,
-      active: currentTab === "receipts",
-    },
-    {
-      id: "factories",
-      label: "Factories",
-      icon: Factory,
-      href: "#",
-      disabled: true,
-      active: currentTab === "factories",
-    },
-    {
-      id: "suppliers",
-      label: "Suppliers",
-      icon: Truck,
-      href: "#",
-      disabled: true,
-      active: currentTab === "suppliers",
-    },
-    {
-      id: "middlemen",
-      label: "Middlemen",
-      icon: Users,
-      href: "#",
-      disabled: true,
-      active: currentTab === "middlemen",
-    },
-    {
-      id: "guides",
-      label: "Guides",
-      icon: BookOpen,
-      href: "#",
-      disabled: true,
-      active: currentTab === "guides",
     },
   ]
 
@@ -226,7 +197,7 @@ export default function DashboardLayout({ children }) {
 
       {/* Sidebar - fixed position */}
       <div
-        className={`fixed inset-y-0 left-0 z-30 bg-[#1A1A1A] ${sidebarCollapsed ? 'w-20' : 'w-64'} transform border-r border-zinc-800 transition-all duration-300 ease-in-out lg:relative lg:translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-30 bg-(--background-secondary) ${sidebarCollapsed ? 'w-20' : 'w-64'} transform border-r border-zinc-800 transition-all duration-300 ease-in-out lg:relative lg:translate-x-0`}
       >
         <div className="flex h-full flex-col relative">
           {/* Collapse/Expand Button - Vertically Centered */}
@@ -250,44 +221,48 @@ export default function DashboardLayout({ children }) {
               {navItems.map((item) => {
                 const NavItem = item.disabled ? (props) => <div {...props} /> : Link
                 return (
-                  <NavItem
-                    key={item.id}
-                    href={item.disabled ? "#" : item.href}
-                    className={`
-                      flex items-center ${sidebarCollapsed ? 'justify-center' : ''} gap-2 px-8 py-3 rounded-lg transition-all duration-200
-                      text-(--secondary-text) hover:bg-zinc-800
-                    `}
-                    onClick={(e) => {
-                      if (item.disabled) {
-                        e.preventDefault()
-                      }
-                    }}
-                  >
-                    <item.icon size={16} className="text-(--secondary-text) flex-shrink-0" />
-                    <span
-                      className={`text-sm font-medium tracking-tight transition-all duration-300
-                        ${sidebarCollapsed ? 'opacity-0 translate-x-4 pointer-events-none w-0' : 'opacity-100 translate-x-0 w-auto'}
-                        whitespace-nowrap overflow-hidden`
-                      }
-                      style={{ transitionProperty: 'opacity,transform,width' }}
+                  <div className="relative flex items-center group" key={item.id}>
+                    <NavItem
+                      href={item.disabled ? "#" : item.href}
+                      className={`
+                        flex items-center ${sidebarCollapsed ? 'justify-center' : ''} gap-2 px-8 py-3 rounded-lg transition-all duration-200
+                        text-(--secondary-text) hover:bg-zinc-800
+                      `}
+                      onClick={(e) => {
+                        if (item.disabled) {
+                          e.preventDefault()
+                        }
+                      }}
                     >
-                      {item.label}
-                    </span>
-                  </NavItem>
+                      <item.icon size={16} className="text-(--secondary-text) flex-shrink-0" />
+                      <span
+                        className={`text-sm font-medium tracking-tight transition-all duration-300
+                          ${sidebarCollapsed ? 'opacity-0 translate-x-4 pointer-events-none w-0' : 'opacity-100 translate-x-0 w-auto'}
+                          whitespace-nowrap overflow-hidden`
+                        }
+                        style={{ transitionProperty: 'opacity,transform,width' }}
+                      >
+                        {item.label}
+                      </span>
+                    </NavItem>
+                  </div>
                 )
               })}
             </nav>
             {/* Spacer for collapse button on mobile */}
             <div className="flex-1"></div>
           </div>
-          <div className="p-4 border-t border-zinc-800 space-y-2">
-            <button
-              onClick={handleSignOut}
-              className="w-full px-4 py-2 rounded-lg bg-[var(--accent-text)] hover:scale-95 transition-transform cursor-pointer text-zinc-900"
-            >
-              Logout
-            </button>
+          {/* Plan info row at bottom of sidebar - styled like navlinks */}
+          <div className="flex items-center gap-2 px-8 py-3 rounded-lg text-(--secondary-text) text-sm font-medium tracking-tight mb-2">
+            {planInfo.plan === "lifetime" ? (
+              <><Trophy size={16} className="text-(--secondary-text) flex-shrink-0" /> <span>Lifetime Plan</span></>
+            ) : planInfo.plan === "monthly" ? (
+              <><Hourglass size={16} className="text-(--secondary-text) flex-shrink-0" /> <span>Monthly Plan</span></>
+            ) : (
+              <><Hourglass size={16} className="text-(--secondary-text) flex-shrink-0" /> <span>No Plan</span></>
+            )}
           </div>
+          <div className="p-4 border-t border-zinc-800 space-y-2"></div>
         </div>
       </div>
 
