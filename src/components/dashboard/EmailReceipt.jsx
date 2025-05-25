@@ -5,6 +5,9 @@ import { useAvailableBrands } from "@/components/dashboard-brands"
 
 function EmailReceipt({ onBrandClick = () => {} }) {
     const [searchQuery, setSearchQuery] = useState("");
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const brandsPerPage = 9;
     const { brands: availableBrands, isLoading: brandsLoading, error: brandsError } = useAvailableBrands();
 
     // Filtering logic (copied from dashboard page, without typewriter effect)
@@ -43,6 +46,9 @@ function EmailReceipt({ onBrandClick = () => {} }) {
         const nameB = (b.displayName || b.name || '').toLowerCase();
         return nameA.localeCompare(nameB);
     });
+    // Pagination logic: slice brands for current page
+    const totalPages = Math.ceil(filteredBrands.length / brandsPerPage);
+    const paginatedBrands = filteredBrands.slice((currentPage - 1) * brandsPerPage, currentPage * brandsPerPage);
 
     return (
         <div className="flex flex-col gap-6">
@@ -139,7 +145,7 @@ function EmailReceipt({ onBrandClick = () => {} }) {
                     </div>
                 ) : Array.isArray(filteredBrands) && filteredBrands.length > 0 ? (
                     <div className="flex flex-col gap-2">
-                        {filteredBrands.map((brand, idx) => (
+                        {paginatedBrands.map((brand, idx) => (
                             <div
                                 key={brand.id || (brand.name + '-' + idx)}
                                 className="flex items-center px-6 py-4 border-zinc-500 bg-[var(--background-secondary)] rounded-xl group shadow-sm"
@@ -157,6 +163,26 @@ function EmailReceipt({ onBrandClick = () => {} }) {
                                 </div>
                             </div>
                         ))}
+                        {/* Pagination UI (if needed) */}
+                        {totalPages > 1 && (
+                            <div className="flex mt-4 justify-center">
+                                {Array.from({ length: totalPages }, (_, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => setCurrentPage(i + 1)}
+                                        // Only first button has rounded left, only last has rounded right
+                                        className={`w-10 h-10 flex items-center justify-center font-semibold text-base border border-zinc-700 transition-colors cursor-pointer
+                                            ${currentPage === i + 1
+                                                ? 'bg-[var(--accent-text)] text-black'
+                                                : 'bg-[var(--background-secondary)] text-[var(--primary-text)]'}
+                                            ${i === 0 ? 'rounded-l-lg' : ''} ${i === totalPages - 1 ? 'rounded-r-lg' : ''}`}
+                                        style={{ outline: 'none' }}
+                                    >
+                                        {i + 1}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="text-center py-8 text-gray-500">

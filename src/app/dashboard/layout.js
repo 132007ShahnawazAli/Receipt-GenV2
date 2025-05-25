@@ -197,35 +197,39 @@ export default function DashboardLayout({ children }) {
 
       {/* Sidebar - fixed position */}
       <div
-        className={`fixed inset-y-0 left-0 z-30 bg-(--background-secondary) ${sidebarCollapsed ? 'w-20' : 'w-64'} transform border-r border-zinc-800 transition-all duration-300 ease-in-out lg:relative lg:translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-30 bg-(--background-secondary) ${sidebarCollapsed ? 'w-20' : 'w-64'} min-w-0 overflow-x-hidden transform border-r border-zinc-800 transition-all duration-300 ease-in-out lg:relative lg:translate-x-0`}
       >
-        <div className="flex h-full flex-col relative">
+        <div className="flex h-full flex-col relative min-w-0 overflow-x-hidden">
           {/* Collapse/Expand Button - Vertically Centered */}
           <button
-            className="absolute left-full top-1/2 -translate-y-1/2 z-40 bg-zinc-900 border border-zinc-800 rounded-full p-1 shadow-lg hover:bg-zinc-800 transition-colors"
-            style={{ marginLeft: '-18px', transition: 'left 0.3s' }}
+            className="absolute top-1/2 right-0 -translate-y-1/2 z-40 bg-(--background-secondary) border border-zinc-800 rounded-l-full pl-1 pr-2 py-1.5 flex items-center justify-center hover:bg-zinc-800 transition-colors"
+            style={{ transition: 'right 0.3s' }}
             onClick={() => setSidebarCollapsed((prev) => !prev)}
             aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
-            {sidebarCollapsed ? <ChevronRight className="text-[var(--accent-text)]" size={20} /> : <ChevronLeft className="text-[var(--accent-text)]" size={20} />}
+            {sidebarCollapsed ? (
+              <ChevronRight className="text-[var(--accent-text)]" size={20} />
+            ) : (
+              <ChevronLeft className="text-[var(--accent-text)]" size={20} />
+            )}
           </button>
           {/* Brand Logo and Divider */}
-          <div className={`flex flex-col gap-2 ${sidebarCollapsed ? 'items-center px-2' : 'items-start pl-8'} pt-6 pb-2 transition-all duration-300`}>
-            <div className={`flex ${sidebarCollapsed ? 'justify-center' : 'justify-start'} w-full transition-all duration-300`}>
+          <div className={`flex flex-col gap-2 min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'items-center px-2' : 'items-start pl-8'} pt-6 pb-2 transition-all duration-300`}>
+            <div className={`flex min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'justify-center' : 'justify-start'} w-full transition-all duration-300`}>
               <Image src="/assets/Logo_1.png" alt="Logo" width={36} height={36} />
             </div>
-            <div className={`border-t border-zinc-700 transition-all duration-300 ${sidebarCollapsed ? 'w-full mx-2' : 'w-auto ml-8 mr-8'}`}></div>
+            <div className={`border-t border-zinc-800 transition-all duration-300 ${sidebarCollapsed ? 'w-full mx-2' : 'ml-8 mr-8 w-auto'}`}></div>
           </div>
-          <div className={`flex-1 overflow-y-auto ${sidebarCollapsed ? 'px-2' : 'px-3'} flex flex-col gap-2 transition-all duration-300`}>
+          <div className={`flex-1 overflow-y-auto min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'px-2' : 'px-3'} flex flex-col gap-2 transition-all duration-300`}>
             <nav className="space-y-2">
               {navItems.map((item) => {
                 const NavItem = item.disabled ? (props) => <div {...props} /> : Link
                 return (
-                  <div className="relative flex items-center group" key={item.id}>
+                  <div className="relative flex items-center group min-w-0 overflow-x-hidden" key={item.id}>
                     <NavItem
                       href={item.disabled ? "#" : item.href}
                       className={`
-                        flex items-center ${sidebarCollapsed ? 'justify-center' : ''} gap-2 px-8 py-3 rounded-lg transition-all duration-200
+                        flex items-center min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'justify-center' : ''} gap-2 px-8 py-3 rounded-lg transition-all duration-200
                         text-(--secondary-text) hover:bg-zinc-800
                       `}
                       onClick={(e) => {
@@ -253,13 +257,22 @@ export default function DashboardLayout({ children }) {
             <div className="flex-1"></div>
           </div>
           {/* Plan info row at bottom of sidebar - styled like navlinks */}
-          <div className="flex items-center gap-2 px-8 py-3 rounded-lg text-(--secondary-text) text-sm font-medium tracking-tight mb-2">
+          <div className={`flex items-center min-w-0 overflow-x-hidden gap-2 px-8 py-3 rounded-lg text-(--secondary-text) text-sm font-medium tracking-tight mb-2 ${sidebarCollapsed ? 'justify-center' : ''}`}>
             {planInfo.plan === "lifetime" ? (
-              <><Trophy size={16} className="text-(--secondary-text) flex-shrink-0" /> <span>Lifetime Plan</span></>
+              <>
+                <Trophy size={16} className="text-(--secondary-text) flex-shrink-0" />
+                <span className={`${sidebarCollapsed ? 'opacity-0 pointer-events-none w-0' : 'opacity-100 w-auto'} transition-all duration-300 whitespace-nowrap overflow-hidden`}>Lifetime Plan</span>
+              </>
             ) : planInfo.plan === "monthly" ? (
-              <><Hourglass size={16} className="text-(--secondary-text) flex-shrink-0" /> <span>Monthly Plan</span></>
+              <>
+                <Hourglass size={16} className="text-(--secondary-text) flex-shrink-0" />
+                <span className={`${sidebarCollapsed ? 'opacity-0 pointer-events-none w-0' : 'opacity-100 w-auto'} transition-all duration-300 whitespace-nowrap overflow-hidden`}>Monthly Plan</span>
+              </>
             ) : (
-              <><Hourglass size={16} className="text-(--secondary-text) flex-shrink-0" /> <span>No Plan</span></>
+              <>
+                <Hourglass size={16} className="text-(--secondary-text) flex-shrink-0" />
+                <span className={`${sidebarCollapsed ? 'opacity-0 pointer-events-none w-0' : 'opacity-100 w-auto'} transition-all duration-300 whitespace-nowrap overflow-hidden`}>No Plan</span>
+              </>
             )}
           </div>
           <div className="p-4 border-t border-zinc-800 space-y-2"></div>

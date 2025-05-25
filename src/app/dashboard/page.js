@@ -64,7 +64,7 @@ export default function Dashboard() {
         throw new Error('Failed to fetch template');
       }
       const templateData = await response.json();
-      
+
       setSelectedBrand(brand);
       setSelectedTemplate(templateData);
       setShowForm(true);
@@ -235,7 +235,7 @@ export default function Dashboard() {
     if (allDataLoaded && !brandsLoading) {
       // Show logo animation first
       setShowLogoAnimation(true)
-      
+
       // After logo animation completes, start fading out
       const timer = setTimeout(() => {
         const fadeOutAnimation = () => {
@@ -353,14 +353,14 @@ export default function Dashboard() {
           <h1 className="tablet:text-3xl text-2xl font-normal tracking-tight">Dashboard</h1>
           <div className="flex items-center gap-3">
             {userStats.subscriptionStatus === "monthly" && userStats.daysLeft && userStats.daysLeft !== "∞" && (
-              <span className="px-4 py-2 rounded bg-yellow-400 text-(--background) text-sm font-semibold flex items-center gap-2"> License key expires in {userStats.daysLeft} days!
+              <span className="px-4 py-1 rounded bg-yellow-400 text-(--background) text-sm font-semibold flex items-center gap-2"> License key expires in {userStats.daysLeft} days!
               </span>
             )}
             <button
               onClick={handleSignOut}
-              className="px-4 py-2 rounded bg-(--accent-text) text-(--background) text-sm font-semibold flex items-center gap-2 hover:scale-95 transition-transform"
+              className="px-2 py-1 rounded bg-(--accent-text) text-(--background) text-sm font-semibold flex items-center gap-2 hover:scale-95 transition-transform cursor-pointer"
             >
-              <LogOut size={16} /> Log out
+              Log out
             </button>
           </div>
         </div>
@@ -445,6 +445,9 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Receipt History Section */}
+        <ReceiptHistory />
+
         {/* Email Receipts Section */}
         <div className="mb-6">
           <EmailReceipt onBrandClick={handleBrandClick} />
@@ -469,8 +472,6 @@ export default function Dashboard() {
         {/* Order Number Generator */}
         <OrderNumberGenerator />
 
-        {/* Receipt History Section */}
-        <ReceiptHistory />
       </div>
 
       {/* Order Form Modal */}
