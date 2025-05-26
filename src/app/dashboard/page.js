@@ -350,7 +350,7 @@ export default function Dashboard() {
       <div className="p-6 pb-24">
         {/* Header */}
         <div className="flex items-center justify-between w-full pb-3 ">
-          <h1 className="tablet:text-3xl text-2xl font-normal tracking-tight">Dashboard</h1>
+          <h1 className="tablet:text-3xl text-2xl font-medium tracking-tight">Dashboard</h1>
           <div className="flex items-center gap-3">
             {userStats.subscriptionStatus === "monthly" && userStats.daysLeft && userStats.daysLeft !== "∞" && (
               <span className="px-4 py-1 rounded bg-yellow-400 text-(--background) text-sm font-semibold flex items-center gap-2"> License key expires in {userStats.daysLeft} days!

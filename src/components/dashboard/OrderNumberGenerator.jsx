@@ -194,7 +194,7 @@ export default function OrderNumberGenerator() {
     <div className="mb-6 gap-6 flex flex-col">
       {/* Section Header */}
       <div className="relative flex justify-between items-center pb-6">
-        <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">Order Number Generator</h2>
+        <h2 className="tablet:text-3xl text-2xl font-medium tracking-tight">Order Number Generator</h2>
         <BsBadgeSd className="w-6 h-6 text-[var(--accent-text)]" />
         <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
       </div>

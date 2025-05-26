@@ -54,7 +54,7 @@ function EmailReceipt({ onBrandClick = () => {} }) {
         <div className="flex flex-col gap-6">
             {/* Search Bar and title */}
             <div className="relative flex justify-between items-center">
-                <h2 className="tablet:text-3xl text-2xl font-normal tracking-tight">Email Receipts</h2>
+                <h2 className="tablet:text-3xl text-2xl font-medium tracking-tight">Email Receipts</h2>
                 {/* Search Bar */}
                 <div className="flex items-center w-[calc(50%-0.75rem)] ml-auto">
                     <div className="relative w-full">

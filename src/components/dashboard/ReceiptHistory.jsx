@@ -30,8 +30,16 @@ export default function ReceiptHistory() {
       }
 
       const data = await response.json()
-      console.log("Fetched receipts:", data)
-      setReceipts(Array.isArray(data) ? data : [])
+      console.log("Raw API response:", data)
+      
+      // Ensure we have valid data
+      if (!Array.isArray(data)) {
+        console.error("API did not return an array:", data)
+        setError("Invalid data format received from server")
+        return
+      }
+
+      setReceipts(data)
     } catch (error) {
       console.error("Error fetching receipts:", error)
       setError(error.message)
@@ -39,6 +47,59 @@ export default function ReceiptHistory() {
       setLoading(false)
     }
   }
+
+  // Format date to "May 26, 2025" format
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No date'
+    
+    try {
+      const date = new Date(dateString)
+      if (isNaN(date.getTime())) {
+        console.log("Invalid date string:", dateString)
+        return 'Invalid date'
+      }
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    } catch (error) {
+      console.error("Error formatting date:", error)
+      return 'Invalid date'
+    }
+  }
+
+  // Prepare data for dot chart (group by date, count receipts per day)
+  const chartData = receipts.reduce((acc, r) => {
+    // Use orderDate if available, otherwise fall back to createdAt
+    const date = r.orderDate || r.createdAt
+    if (!date) return acc
+
+    const formattedDate = formatDate(date)
+    if (formattedDate === 'Invalid date') return acc
+
+    acc[formattedDate] = (acc[formattedDate] || 0) + 1
+    return acc
+  }, {})
+
+  const dotData = Object.entries(chartData).map(([date, count]) => ({ 
+    date, 
+    count,
+    rawDate: new Date(date)
+  }))
+
+  // Sort dotData by date ascending
+  dotData.sort((a, b) => a.rawDate - b.rawDate)
+
+  // Show only the 4 most recent receipts in the right box
+  const recentReceipts = [...receipts]
+    .filter(r => r.orderDate || r.createdAt)
+    .sort((a, b) => {
+      const dateA = new Date(a.orderDate || a.createdAt)
+      const dateB = new Date(b.orderDate || b.createdAt)
+      return dateB - dateA
+    })
+    .slice(0, 4)
 
   const handleEditClick = (receipt) => {
     // Find the brand that matches the receipt's brand name
@@ -75,20 +136,6 @@ export default function ReceiptHistory() {
     fetchReceipts()
   }
 
-  // Prepare data for dot chart (group by date, count receipts per day)
-  const chartData = receipts.reduce((acc, r) => {
-    const date = r.date;
-    acc[date] = (acc[date] || 0) + 1;
-    return acc;
-  }, {});
-  const dotData = Object.entries(chartData).map(([date, count]) => ({ date, count }));
-
-  // Sort dotData by date ascending
-  dotData.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // Show only the 4 most recent receipts in the right box
-  const recentReceipts = receipts.slice(0, 4);
-
   if (loading) {
     return (
       <div className="px-6 mb-6 gap-6 flex flex-col">
@@ -98,6 +145,34 @@ export default function ReceiptHistory() {
         </div>
         <div className="flex justify-center items-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--accent-text)]"></div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 bg-red-500/10 border border-red-500 text-red-500 rounded-xl mb-4">
+        <p>Error loading receipt history: {error}</p>
+        <button
+          onClick={fetchReceipts}
+          className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+        >
+          Try Again
+        </button>
+      </div>
+    )
+  }
+
+  if (receipts.length === 0) {
+    return (
+      <div className="px-6 mb-6 gap-6 flex flex-col">
+        <div className="relative flex justify-between items-center ">
+          <h2 className="tablet:text-3xl text-2xl font-normal tracking-tight">History</h2>
+          <LiaHistorySolid className="w-6 h-6 text-(--accent-text)" />
+        </div>
+        <div className="text-center text-[var(--secondary-text)] py-8">
+          No receipt history found.
         </div>
       </div>
     )
@@ -162,16 +237,10 @@ export default function ReceiptHistory() {
                 cursor={false}
                 content={({ active, payload }) => {
                   if (!active || !payload || !payload.length) return null;
-                  const rawDate = payload[0].payload?.date;
-                  let formattedDate = 'Unknown';
-                  if (rawDate) {
-                    const dateObj = new Date(rawDate);
-                    formattedDate = isNaN(dateObj) ? 'Unknown' : dateObj.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-                  }
+                  const date = payload[0].payload?.date;
                   const count = payload[0].value;
                   return (
                     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none' }}>
-                      {/* Tooltip box with pointer on top */}
                       <div style={{
                         position: 'relative',
                         background: '#181818',
@@ -216,7 +285,7 @@ export default function ReceiptHistory() {
                           zIndex: 0,
                         }} />
                         <span style={{ color: 'var(--secondary-text)', fontWeight: 400 }}>Date:</span>
-                        <span style={{ color: 'var(--accent-text)', fontWeight: 700, margin: '0 6px 0 2px' }}>{formattedDate}</span>
+                        <span style={{ color: 'var(--accent-text)', fontWeight: 700, margin: '0 6px 0 2px' }}>{date}</span>
                         <span style={{ color: 'var(--secondary-text)', fontWeight: 400 }}>Receipts:</span>
                         <span style={{ color: 'var(--accent-text)', fontWeight: 700, marginLeft: 2 }}>{count}</span>
                       </div>
@@ -239,15 +308,19 @@ export default function ReceiptHistory() {
                   onClick={() => handleEditClick(receipt)}
                   className="flex flex-col items-start text-left py-2 border-b border-zinc-800 last:border-b-0 hover:bg-zinc-900/40 rounded transition-colors"
                 >
-                  <span className="text-xs text-[var(--secondary-text)] mb-1">{receipt.date}</span>
-                  <span className="text-base font-semibold text-[var(--primary-text)]">{receipt.description}</span>
+                  <span className="text-xs text-[var(--secondary-text)] mb-1">
+                    {formatDate(receipt.orderDate || receipt.createdAt)}
+                  </span>
+                  <span className="text-base font-semibold text-[var(--primary-text)]">
+                    {receipt.description || receipt.productName || 'No description'}
+                  </span>
                 </button>
               ))
             )}
           </div>
           <Link
             href="/dashboard/warehouse"
-            className="mt-4 w-full block text-center bg-[var(--accent-text)] text-black font-semibold py-2 rounded-lg hover:bg-[var(--accent-text)]/90 transition-colors"
+            className="mt-4 w-full block text-center bg-[var(--accent-text)] text-black font-semibold py-1 rounded hover:bg-[var(--accent-text)]/90 transition-colors"
           >
             View full history
           </Link>

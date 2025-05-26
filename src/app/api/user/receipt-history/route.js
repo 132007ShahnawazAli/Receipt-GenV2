@@ -32,7 +32,6 @@ export async function GET(request) {
     console.log("License user found:", licenseUser._id)
 
     // Now find all receipts for this user
-    // Convert the ID to string to ensure consistent comparison
     const userId = licenseUser._id.toString()
 
     // Find receipts where userId matches either as string or ObjectId
@@ -54,27 +53,33 @@ export async function GET(request) {
         console.error("Error parsing receipt formData:", e)
       }
 
-      // Format date properly
-      const date = receipt.updatedAt || receipt.createdAt
-      const formattedDate = new Date(date).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      })
-
+      // Include all necessary date fields
       return {
         id: receipt._id.toString(),
-        date: formattedDate,
-        description: `${receipt.brandName} Receipt`,
+        orderDate: receipt.orderDate ? new Date(receipt.orderDate).toISOString() : null,
+        createdAt: receipt.createdAt ? new Date(receipt.createdAt).toISOString() : null,
+        updatedAt: receipt.updatedAt ? new Date(receipt.updatedAt).toISOString() : null,
+        description: receipt.productName || `${receipt.brandName} Receipt`,
         brandName: receipt.brandName,
         email: receipt.email,
+        productName: receipt.productName,
         formData: parsedFormData,
+        // Include other relevant fields
+        customerName: receipt.customerName,
+        orderNumber: receipt.orderNumber,
+        total: receipt.total,
+        currencySymbol: receipt.currencySymbol,
+        status: receipt.status
       }
     })
 
+    console.log("Sending formatted receipts:", formattedReceipts.length)
     return NextResponse.json(formattedReceipts)
   } catch (error) {
     console.error("Error fetching receipt history:", error)
-    return NextResponse.json({ message: "Error fetching receipt history", error: error.message }, { status: 500 })
+    return NextResponse.json(
+      { message: "Error fetching receipt history", error: error.message }, 
+      { status: 500 }
+    )
   }
 }
