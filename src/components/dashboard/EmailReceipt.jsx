@@ -120,8 +120,11 @@ function EmailReceipt({ onBrandClick = () => {} }) {
             <div className="w-full mt-2 flex flex-col gap-2">
                 {/* Header Row */}
                 <div className="flex items-center px-6 py-5 border rounded-xl border-zinc-800 bg-[var(--secondary-text)]/60 text-[var(--secondary-text)] font-medium text-sm">
-                    <div className="flex-1 text-left ">Store</div>
-                    <div className="w-32 text-right ">Action</div>
+                    <div className="flex-1 text-left">Store</div>
+                    <div className="w-px flex justify-center items-center">
+                        <span className="text-zinc-400">|</span>
+                    </div>
+                    <div className="w-32 flex items-center">Action</div>
                 </div>
                 {/* Brand Rows */}
                 {brandsLoading ? (
@@ -153,7 +156,10 @@ function EmailReceipt({ onBrandClick = () => {} }) {
                                 <div className="flex-1 min-w-0">
                                     <span className="truncate text-[var(--primary-text)] text-sm font-medium">{brand.displayName || brand.name}</span>
                                 </div>
-                                <div className="w-32 flex justify-end">
+                                <div className="w-px flex justify-center items-center">
+                                    <span className="text-zinc-700">|</span>
+                                </div>
+                                <div className="w-32 flex items-center">
                                     <button
                                         className="px-3 py-1.5 rounded-sm font-semibold text-sm bg-[var(--accent-text)] text-(--background) cursor-pointer hover:scale-95 transition-all"
                                         onClick={() => onBrandClick(brand)}

@@ -91,7 +91,7 @@ export default function ReceiptHistory() {
   // Sort dotData by date ascending
   dotData.sort((a, b) => a.rawDate - b.rawDate)
 
-  // Show only the 4 most recent receipts in the right box
+  // Show only the 5 most recent receipts in the right box
   const recentReceipts = [...receipts]
     .filter(r => r.orderDate || r.createdAt)
     .sort((a, b) => {
@@ -99,7 +99,7 @@ export default function ReceiptHistory() {
       const dateB = new Date(b.orderDate || b.createdAt)
       return dateB - dateA
     })
-    .slice(0, 4)
+    .slice(0, 5)
 
   const handleEditClick = (receipt) => {
     // Find the brand that matches the receipt's brand name
@@ -200,7 +200,7 @@ export default function ReceiptHistory() {
         <div className="md:col-span-2 col-span-1 bg-[var(--background-secondary)] border border-zinc-800 rounded-2xl min-h-[340px] flex items-center justify-center p-4">
           {/* Professional smooth line chart with glowing points and custom tooltip */}
           <ResponsiveContainer width="100%" height={340}>
-            <LineChart data={dotData} margin={{ top: 48, right: 48, left: 48, bottom: 48 }}>
+            <LineChart data={dotData} margin={{ top: 34, right: 30, left: 30, bottom: 34 }}>
               <CartesianGrid stroke="#444" strokeDasharray="0" vertical={false} horizontal={true} />
               <XAxis dataKey="date" hide axisLine={false} tickLine={false} />
               <YAxis 
@@ -209,13 +209,22 @@ export default function ReceiptHistory() {
                 axisLine={false} 
                 tickLine={false} 
                 domain={[0, (dataMax) => {
-                  const max = dotData.length ? Math.max(...dotData.map(d => d.count), 4) : 4;
+                  // Base maximum value - increase this to add more vertical space
+                  const baseMax = 34;
+                  // Get the actual maximum count from data, or use baseMax if no data
+                  const max = dotData.length ? Math.max(...dotData.map(d => d.count), baseMax) : baseMax;
+                  // Round up to nearest multiple of 4 for clean intervals
                   const niceMax = Math.ceil(max / 4) * 4;
                   return niceMax;
                 }]} 
                 ticks={(() => {
-                  const max = dotData.length ? Math.max(...dotData.map(d => d.count), 4) : 4;
+                  // Base maximum value - should match the one in domain calculation
+                  const baseMax = 34;
+                  // Get the actual maximum count from data, or use baseMax if no data
+                  const max = dotData.length ? Math.max(...dotData.map(d => d.count), baseMax) : baseMax;
+                  // Round up to nearest multiple of 4 for clean intervals
                   const niceMax = Math.ceil(max / 4) * 4;
+                  // Generate 5 evenly spaced ticks (0 to niceMax)
                   return Array.from({length: 5}, (_, i) => Math.round(i * (niceMax / 4)));
                 })()}
                 width={40}
@@ -320,7 +329,7 @@ export default function ReceiptHistory() {
           </div>
           <Link
             href="/dashboard/warehouse"
-            className="mt-4 w-full block text-center bg-[var(--accent-text)] text-black font-semibold py-1 rounded hover:bg-[var(--accent-text)]/90 transition-colors"
+            className="mt-4 w-full block text-center text-sm bg-[var(--accent-text)] text-black font-semibold py-1 rounded hover:bg-[var(--accent-text)]/90 transition-colors"
           >
             View full history
           </Link>
