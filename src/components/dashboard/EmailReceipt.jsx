@@ -119,12 +119,12 @@ function EmailReceipt({ onBrandClick = () => {} }) {
             {/* Filtered Brands Table/List (Professional, like screenshot) */}
             <div className="w-full mt-2 flex flex-col gap-2">
                 {/* Header Row */}
-                <div className="flex items-center px-6 py-5 border rounded-xl border-zinc-800 bg-[var(--secondary-text)]/60 text-[var(--secondary-text)] font-medium text-sm">
+                <div className="flex items-center justify-between px-6 py-5 border rounded-xl border-zinc-800 bg-[var(--secondary-text)]/60 text-[var(--secondary-text)] font-medium text-sm">
                     <div className="flex-1 text-left">Store</div>
-                    <div className="w-px flex justify-center items-center">
-                        <span className="text-zinc-400">|</span>
+                    <div className="min-w-[6rem] flex items-center gap-2">
+                        <div className="w-px h-6 bg-zinc-400 self-center" />
+                        <span>Action</span>
                     </div>
-                    <div className="w-32 flex items-center">Action</div>
                 </div>
                 {/* Brand Rows */}
                 {brandsLoading ? (
@@ -151,15 +151,11 @@ function EmailReceipt({ onBrandClick = () => {} }) {
                         {paginatedBrands.map((brand, idx) => (
                             <div
                                 key={brand.id || (brand.name + '-' + idx)}
-                                className="flex items-center px-6 py-4 border-zinc-500 bg-[var(--background-secondary)] rounded-xl group shadow-sm"
+                                className="flex items-center justify-between px-6 py-4 border-zinc-500 bg-[var(--background-secondary)] rounded-xl group shadow-sm"
                             >
-                                <div className="flex-1 min-w-0">
-                                    <span className="truncate text-[var(--primary-text)] text-sm font-medium">{brand.displayName || brand.name}</span>
-                                </div>
-                                <div className="w-px flex justify-center items-center">
-                                    <span className="text-zinc-700">|</span>
-                                </div>
-                                <div className="w-32 flex items-center">
+                                <div className="flex-1 min-w-0 truncate text-[var(--primary-text)] text-sm font-medium">{brand.displayName || brand.name}</div>
+                                <div className="min-w-[6rem] flex items-center gap-2">
+                                    <div className="w-px h-6 bg-zinc-700 self-center" />
                                     <button
                                         className="px-3 py-1.5 rounded-sm font-semibold text-sm bg-[var(--accent-text)] text-(--background) cursor-pointer hover:scale-95 transition-all"
                                         onClick={() => onBrandClick(brand)}

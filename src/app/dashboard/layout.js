@@ -40,8 +40,8 @@ export default function DashboardLayout({ children }) {
   // Determine active tab based on pathname
   const determineActiveTab = () => {
     if (pathname === "/dashboard") return "welcome"
-    if (pathname === "/dashboard/warehouse") return "warehouse"
-    if (pathname === "/dashboard/leaderboard") return "leaderboard"
+    if (pathname === "/dashboard/history") return "history"
+    if (pathname === "/dashboard/account") return "account"
     if (pathname.includes("/trending")) return "trending"
     if (pathname.includes("/receipts")) return "receipts"
     if (pathname.includes("/factories")) return "factories"
@@ -168,15 +168,15 @@ export default function DashboardLayout({ children }) {
       id: "history",
       label: "History",
       icon: Package,
-      href: "/dashboard/warehouse",
-      active: currentTab === "warehouse",
+      href: "/dashboard/history",
+      active: currentTab === "history",
     },
     {
       id: "account",
       label: "Account",
       icon: Trophy,
-      href: "/dashboard/leaderboard",
-      active: currentTab === "leaderboard",
+      href: "/dashboard/account",
+      active: currentTab === "account",
     },
   ]
 

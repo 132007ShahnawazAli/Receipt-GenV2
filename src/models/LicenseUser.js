@@ -70,6 +70,27 @@ const LicenseUserSchema = new mongoose.Schema({
       default: null,
     },
   },
+  // New fields for address and profile
+  fullName: {
+    type: String,
+    default: null,
+  },
+  street: {
+    type: String,
+    default: null,
+  },
+  city: {
+    type: String,
+    default: null,
+  },
+  zipCode: {
+    type: String,
+    default: null,
+  },
+  country: {
+    type: String,
+    default: null,
+  },
 })
 
 export default mongoose.models.LicenseUser || mongoose.model("LicenseUser", LicenseUserSchema)
