@@ -1,83 +1,59 @@
-"use client"
-
-import { useState } from "react"
-import { FileText, Clipboard, Receipt } from "lucide-react"
+import React from 'react';
 
 export default function ReceiptCategories() {
-  const [activeCategory, setActiveCategory] = useState(null)
-
-  // Define the categories with their respective brands
-  const categories = [
+  // Showcase-only data
+  const showcaseCategories = [
     {
-      id: "addons",
-      title: "Add-ons",
-      icon: <FileText className="w-5 h-5" />,
-      brands: [
-        { id: "off-white", name: "Off-White", logo: "ow.png" },
-        { id: "moncler", name: "Moncler", logo: "moncler.png" },
-        // { id: "offspring", name: "Offspring", logo: "offspring.png" },
-        { id: "snkrs", name: "SNKRS", logo: "snkrs.png" },
+      title: 'A4 Invoices',
+      receipts: [
+        'END. Clothing A4 Invoice',
+        'Farfetch A4 Invoice',
+        'Moncler A4 Invoice',
+        'Nike A4 Invoice',
+        'Stadium Goods A4 Invoice',
       ],
     },
     {
-      id: "invoices",
-      title: "A4 Invoices",
-      icon: <Clipboard className="w-5 h-5" />,
-      brands: [
-        { id: "apple", name: "Apple", logo: "apple.png" },
-        { id: "farfetch", name: "Farfetch", logo: "farfetch.png" },
-        { id: "nike", name: "Nike", logo: "nike.png" },
+      title: 'Thermal Receipts',
+      receipts: [
+        'Apple Thermal Receipt',
+        'Flannels Thermal',
+        'Popmart Thermal',
+        'Sunglass Hut Thermal',
+        'Sephora Thermal',
       ],
     },
-    {
-      id: "thermal",
-      title: "Thermal Receipts",
-      icon: <Receipt className="w-5 h-5" />,
-      brands: [{ id: "apple-thermal", name: "Apple", logo: "apple.png" }],
-    },
-  ]
-
-  const handleCategoryClick = (categoryId) => {
-    setActiveCategory(activeCategory === categoryId ? null : categoryId)
-  }
-
-  const handleBrandClick = (brand) => {
-    // This will be implemented later when you add functionality
-    console.log(`Selected brand: ${brand.name} from category: ${activeCategory}`)
-    // You can add your brand selection logic here
-  }
+  ];
 
   return (
-    <div className="mb-6">
-      {categories.map((category) => (
-        <div key={category.id} className="mb-6">
-          <div
-            className="relative flex justify-between items-center pb-6 cursor-pointer"
-            onClick={() => handleCategoryClick(category.id)}
-          >
-            <h2 className="tablet:text-4xl text-3xl font-semibold tracking-tight">{category.title}</h2>
-            <div className="flex items-center text-[var(--accent-text)]">{category.icon}</div>
-            <hr className="absolute bottom-0 left-0 right-0 text-zinc-800" />
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-3 mt-4">
-            {category.brands.map((brand) => (
+    <div className="flex flex-col gap-12">
+      {showcaseCategories.map((category, idx) => (
+        <div key={category.title}>
+          <h2 className="tablet:text-2xl text-xl font-semibold mb-4 tracking-tight">{category.title}</h2>
+          <div className="w-full flex flex-col gap-2">
+            {/* Header Row */}
+            <div className="flex items-center justify-between px-6 py-5 border rounded-xl border-zinc-800 bg-[var(--secondary-text)]/60 text-[var(--secondary-text)] font-medium text-sm">
+              <div className="flex-1 text-left">Store</div>
+              <div className="min-w-[6rem] flex items-center gap-4">
+                <div className="w-px h-6 bg-zinc-400 self-center" />
+                <span>Action</span>
+              </div>
+            </div>
+            {/* Showcase Rows */}
+            {category.receipts.map((receipt, i) => (
               <div
-                key={brand.id}
-                className="aspect-square bg-[var(--accent-text)] rounded-xl flex items-center justify-center p-3 cursor-pointer hover:scale-95 transition-transform duration-300"
-                onClick={() => handleBrandClick(brand)}
+                key={receipt}
+                className="flex items-center justify-between px-6 py-4 border-zinc-500 bg-[var(--background-secondary)] rounded-xl group shadow-sm border border-zinc-800"
               >
-                <div className="w-full h-full flex items-center justify-center">
-                  <img
-                    src={`/assets/brand-logos/${brand.logo}`}
-                    className="h-12 max-w-full object-contain"
-                    alt={brand.name}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.target.onerror = null
-                      e.target.src = "/placeholder.svg?height=32&width=32"
-                    }}
-                  />
+                <div className="flex-1 min-w-0 truncate text-[var(--primary-text)] text-sm font-medium">{receipt}</div>
+                <div className="min-w-[6rem] flex items-center gap-4">
+                  <div className="w-px h-8 bg-zinc-800 self-center" />
+                  <button
+                    className="px-3 py-1.5 rounded-sm font-semibold text-sm bg-[var(--accent-text)] text-(--background) cursor-not-allowed hover:scale-95 transition-all"
+                    disabled
+                  >
+                    Generate
+                  </button>
                 </div>
               </div>
             ))}
@@ -85,5 +61,5 @@ export default function ReceiptCategories() {
         </div>
       ))}
     </div>
-  )
+  );
 }

@@ -142,11 +142,11 @@ export default function AccountPage() {
       </div>
 
       {/* Account Form */}
-      <form onSubmit={handleSave} className="">
+      <form onSubmit={handleSave} className="bg-[#1A1A1A] rounded-xl p-6 border border-zinc-800">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Email */}
           <div className="flex flex-col">
-            <label htmlFor="email" className="text-[var(--secondary-text)] text-sm font-medium mb-2">
+            <label htmlFor="email" className="text-[var(--primary-text)] text-sm font-medium mb-2">
               Email
             </label>
             <input
@@ -163,7 +163,7 @@ export default function AccountPage() {
 
           {/* Username */}
           <div className="flex flex-col">
-            <label htmlFor="username" className="text-[var(--secondary-text)] text-sm font-medium mb-2">
+            <label htmlFor="username" className="text-[var(--primary-text)] text-sm font-medium mb-2">
               Username
             </label>
             <input
@@ -179,7 +179,7 @@ export default function AccountPage() {
 
           {/* Street */}
           <div className="flex flex-col">
-            <label htmlFor="street" className="text-[var(--secondary-text)] text-sm font-medium mb-2">
+            <label htmlFor="street" className="text-[var(--primary-text)] text-sm font-medium mb-2">
               Street
             </label>
             <input
@@ -195,7 +195,7 @@ export default function AccountPage() {
 
           {/* City */}
           <div className="flex flex-col">
-            <label htmlFor="city" className="text-[var(--secondary-text)] text-sm font-medium mb-2">
+            <label htmlFor="city" className="text-[var(--primary-text)] text-sm font-medium mb-2">
               City
             </label>
             <input
@@ -211,7 +211,7 @@ export default function AccountPage() {
 
           {/* ZIP Code */}
           <div className="flex flex-col">
-            <label htmlFor="zipCode" className="text-[var(--secondary-text)] text-sm font-medium mb-2">
+            <label htmlFor="zipCode" className="text-[var(--primary-text)] text-sm font-medium mb-2">
               ZIP Code
             </label>
             <input
@@ -227,7 +227,7 @@ export default function AccountPage() {
 
           {/* Country */}
           <div className="flex flex-col">
-            <label htmlFor="country" className="text-[var(--secondary-text)] text-sm font-medium mb-2">
+            <label htmlFor="country" className="text-[var(--primary-text)] text-sm font-medium mb-2">
               Country
             </label>
             <input

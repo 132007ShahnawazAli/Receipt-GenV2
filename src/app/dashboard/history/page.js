@@ -236,7 +236,7 @@ export default function HistoryPage() {
           sortedReceipts.map((receipt, idx) => (
             <div
               key={receipt.id || idx}
-              className="flex flex-col md:flex-row md:items-center justify-between bg-[var(--background-secondary)] border border-zinc-800 rounded-xl px-6 py-4 mb-2 shadow-sm"
+              className="flex flex-row items-center justify-between bg-[var(--background-secondary)] border border-zinc-800 rounded-xl px-6 py-4 mb-2 shadow-sm"
             >
               <div className="flex flex-col gap-1">
                 <span className="text-xs text-[var(--secondary-text)] ">

@@ -171,18 +171,12 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="flex h-screen bg-[var(--background)] text-[var(--primary-text)]">
       {/* Mobile menu backdrop */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-        ></div>
-      )}
+      {/* Remove mobile menu backdrop and sidebar for small screens */}
 
-      {/* Sidebar - fixed position */}
+      {/* Sidebar - only render for lg and up */}
       <div
-        className={`fixed inset-y-0 left-0 z-30 bg-[var(--background-secondary)] border-r border-zinc-800 transition-all duration-300 ease-in-out overflow-x-hidden lg:relative lg:translate-x-0 ${
-          sidebarCollapsed ? "w-20" : "w-64"
-        } ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        className="hidden lg:block fixed inset-y-0 left-0 z-30 bg-[var(--background-secondary)] border-r border-zinc-800 transition-all duration-300 ease-in-out overflow-x-hidden lg:relative lg:translate-x-0"
+        style={{ width: sidebarCollapsed ? '5rem' : '16rem' }}
       >
         <div className="flex h-full flex-col relative overflow-x-hidden">
           {/* Collapse/Expand Button - Styled like the screenshot */}
@@ -314,18 +308,7 @@ export default function DashboardLayout({ children }) {
 
       {/* Main content area - Fixed the scrolling issue */}
       <div className="relative flex-1 flex flex-col overflow-hidden w-0 min-w-0">
-        {/* Mobile header */}
-        <div className="lg:hidden flex items-center justify-between p-4 border-b border-zinc-800 bg-[var(--background-secondary)]">
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-md text-[var(--secondary-text)] hover:text-[var(--accent-text)] hover:bg-zinc-800 transition-colors duration-200"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-          <div className="text-lg font-semibold text-[var(--primary-text)]">Dashboard</div>
-          <div className="w-10"></div>
-        </div>
-
+        {/* Mobile header removed */}
         {/* Scrollable content - Fixed to ensure proper scrolling */}
         <main className="flex-1 overflow-y-auto overflow-x-hidden w-full h-full">{children}</main>
       </div>
