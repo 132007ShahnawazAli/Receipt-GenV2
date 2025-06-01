@@ -4,24 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
-import {
-  Home,
-  Package,
-  TrendingUp,
-  Receipt,
-  Factory,
-  Truck,
-  Users,
-  BookOpen,
-  Trophy,
-  Menu,
-  X,
-  RefreshCw,
-  ChevronLeft,
-  ChevronRight,
-  Hourglass,
-  LogOut,
-} from "lucide-react"
+import { Home, Package, Trophy, Menu, X, ChevronLeft, ChevronRight, Hourglass } from "lucide-react"
 import DashboardLoading from "@/components/dashboard/DashboardLoading"
 import OnboardingModal from "@/components/dashboard/OnboardingModal"
 import Image from "next/image"
@@ -103,8 +86,8 @@ export default function DashboardLayout({ children }) {
   useEffect(() => {
     if (status === "authenticated") {
       fetch("/api/user/stats")
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           setPlanInfo({
             plan: data.plan,
             daysLeft: data.daysLeft,
@@ -186,7 +169,7 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--background)] text-[var(--primary-text)]">
+    <div className="flex h-screen bg-[var(--background)] text-[var(--primary-text)]">
       {/* Mobile menu backdrop */}
       {mobileMenuOpen && (
         <div
@@ -197,44 +180,63 @@ export default function DashboardLayout({ children }) {
 
       {/* Sidebar - fixed position */}
       <div
-        className={`fixed inset-y-0 left-0 z-30 bg-(--background-secondary) ${sidebarCollapsed ? 'w-20' : 'w-56'} min-w-0 overflow-x-hidden transform border-r border-zinc-800 transition-all duration-300 ease-in-out lg:relative lg:translate-x-0`}
+        className={`fixed inset-y-0 left-0 z-30 bg-[var(--background-secondary)] border-r border-zinc-800 transition-all duration-300 ease-in-out overflow-x-hidden lg:relative lg:translate-x-0 ${
+          sidebarCollapsed ? "w-20" : "w-64"
+        } ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
-        <div className="flex h-full flex-col relative min-w-0 overflow-x-hidden">
-          {/* Collapse/Expand Button - Vertically Centered */}
+        <div className="flex h-full flex-col relative overflow-x-hidden">
+          {/* Collapse/Expand Button - Styled like the screenshot */}
           <button
-            className="absolute top-1/2 right-0 -translate-y-1/2 z-40 bg-(--background-secondary) border border-zinc-800 rounded-l-full pl-1 pr-2 py-1.5 flex items-center justify-center hover:bg-zinc-800 transition-colors"
-            style={{ transition: 'right 0.3s' }}
+            className={`absolute top-1/2 -translate-y-1/2 z-40 h-8 bg-zinc-800 flex items-center justify-center transition-all duration-200 border-l border-y border-zinc-800 cursor-pointer ${
+              sidebarCollapsed ? "right-0 w-8 rounded-l-full" : "right-0 w-8 rounded-l-full pl-1"
+            }`}
             onClick={() => setSidebarCollapsed((prev) => !prev)}
-            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {sidebarCollapsed ? (
-              <ChevronRight className="text-[var(--accent-text)]" size={20} />
+              <ChevronRight className="text-[var(--accent-text)] w-5 h-5" />
             ) : (
-              <ChevronLeft className="text-[var(--accent-text)]" size={20} />
+              <ChevronLeft className="text-[var(--accent-text)] w-5 h-5" />
             )}
           </button>
-          {/* Brand Logo and Divider */}
-          <div className={`flex flex-col min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'items-center px-2' : 'items-start pl-4'} pt-4 pb-2 transition-all duration-300`}>
-            <div className={`flex min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'justify-center' : 'justify-start'} w-full transition-all duration-300`}>
-              <Image src="/assets/Logo_1.png" alt="Logo" width={40} height={40} />
+
+          {/* Brand Logo and Header */}
+          <div
+            className={`flex flex-col pt-6 pb-4 transition-all duration-300 ${
+              sidebarCollapsed ? "px-2 items-center" : "px-4 items-start"
+            }`}
+          >
+            <div className={`flex mb-4 ${sidebarCollapsed ? "justify-center w-full" : "justify-start"}`}>
+              <Image
+                src="/assets/Logo_1.png"
+                alt="Logo"
+                width={sidebarCollapsed ? 32 : 40}
+                height={sidebarCollapsed ? 32 : 40}
+                className="transition-all duration-300"
+              />
             </div>
-            {/* Top divider */}
-            <div className="border-t border-zinc-800 mx-2 my-2 w-full"></div>
+            <div className="w-full h-px bg-zinc-800"></div>
           </div>
-          <div className={`flex-1 overflow-y-auto min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'px-2' : 'px-2'} flex flex-col transition-all duration-300`}>
-            <nav className="mt-2 flex flex-col gap-1">
+
+          {/* Navigation */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 pb-4">
+            <nav className="space-y-1">
               {navItems.map((item) => {
                 const NavItem = item.disabled ? (props) => <div {...props} /> : Link
-                const isActive = item.active;
+                const isActive = item.active
+
                 return (
-                  <div className={`relative group min-w-0 overflow-x-hidden ${sidebarCollapsed ? 'flex justify-center items-center' : 'flex items-center'}`} key={item.id}>
+                  <div key={item.id} className="relative">
                     <NavItem
                       href={item.disabled ? "#" : item.href}
                       className={`
-                        flex items-center min-w-0 overflow-x-hidden gap-2 px-4 py-2 rounded-lg transition-all duration-200
-                        text-sm font-medium tracking-tight
-                        ${isActive ? 'border-2 border-[var(--accent-text)] text-[var(--accent-text)] bg-(--accent-text)/10 rounded-lg' : 'text-(--secondary-text) hover:bg-zinc-800 hover:text-[var(--accent-text)]'}
-                        ${sidebarCollapsed ? 'w-12 h-12 justify-center items-center mx-2' : 'w-full mx-2'}
+                        group flex items-center w-full rounded-lg transition-all duration-200 relative
+                        ${sidebarCollapsed ? "px-0 py-3 justify-center" : "px-3 py-2.5"}
+                        ${
+                          isActive
+                            ? "bg-[var(--accent-text)]/10 text-[var(--accent-text)] border border-[var(--accent-text)]/20"
+                            : "text-[var(--secondary-text)] hover:bg-zinc-800/50 hover:text-[var(--accent-text)]"
+                        }
                       `}
                       onClick={(e) => {
                         if (item.disabled) {
@@ -242,65 +244,90 @@ export default function DashboardLayout({ children }) {
                         }
                       }}
                     >
-                      <div className={`flex items-center justify-center ${sidebarCollapsed ? 'w-full h-full' : ''}`}>
-                        <item.icon size={20} className={`${isActive ? 'text-[var(--accent-text)]' : 'text-(--secondary-text) group-hover:text-[var(--accent-text)]'} flex-shrink-0`} />
-                      </div>
-                      <span
-                        className={`transition-all duration-300
-                          ${sidebarCollapsed ? 'opacity-0 translate-x-4 pointer-events-none w-0' : 'opacity-100 translate-x-0 w-auto'}
-                          whitespace-nowrap overflow-hidden`
-                        }
-                        style={{ transitionProperty: 'opacity,transform,width' }}
+                      {/* Icon container with consistent sizing */}
+                      <div
+                        className={`flex items-center justify-center flex-shrink-0 ${
+                          sidebarCollapsed ? "w-5 h-5" : "w-5 h-5 mr-3"
+                        }`}
                       >
-                        {item.label}
-                      </span>
+                        <item.icon
+                          size={20}
+                          className={`transition-colors duration-200 ${
+                            isActive
+                              ? "text-[var(--accent-text)]"
+                              : "text-[var(--secondary-text)] group-hover:text-[var(--accent-text)]"
+                          }`}
+                        />
+                      </div>
+
+                      {/* Label with smooth transition - hidden in collapsed state */}
+                      {!sidebarCollapsed && <span className="font-medium text-sm whitespace-nowrap">{item.label}</span>}
+
+                      {/* Tooltip for collapsed state */}
+                      {sidebarCollapsed && (
+                        <div className="absolute left-full ml-2 px-2 py-1 bg-zinc-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                          {item.label}
+                        </div>
+                      )}
                     </NavItem>
                   </div>
                 )
               })}
             </nav>
-            <div className="flex-1"></div>
           </div>
-          {/* Divider above plan info */}
-          <div className="border-t border-zinc-800 mx-2 my-2"></div>
-          {/* Plan info row at bottom of sidebar - styled like navlinks */}
-          <div className={`flex items-center min-w-0 overflow-x-hidden gap-2 px-4 py-2 rounded-lg text-(--secondary-text) text-sm font-medium tracking-tight mb-2 ${sidebarCollapsed ? 'justify-center' : ''}`}>
-            {planInfo.plan === "lifetime" ? (
-              <>
-                <Trophy size={16} className="text-(--secondary-text) flex-shrink-0" />
-                <span className={`${sidebarCollapsed ? 'opacity-0 pointer-events-none w-0' : 'opacity-100 w-auto'} transition-all duration-300 whitespace-nowrap overflow-hidden`}>Lifetime Plan</span>
-              </>
-            ) : planInfo.plan === "monthly" ? (
-              <>
-                <Hourglass size={16} className="text-(--secondary-text) flex-shrink-0" />
-                <span className={`${sidebarCollapsed ? 'opacity-0 pointer-events-none w-0' : 'opacity-100 w-auto'} transition-all duration-300 whitespace-nowrap overflow-hidden`}>Monthly Plan</span>
-              </>
-            ) : (
-              <>
-                <Hourglass size={16} className="text-(--secondary-text) flex-shrink-0" />
-                <span className={`${sidebarCollapsed ? 'opacity-0 pointer-events-none w-0' : 'opacity-100 w-auto'} transition-all duration-300 whitespace-nowrap overflow-hidden`}>No Plan</span>
-              </>
-            )}
+
+          {/* Bottom section with plan info */}
+          <div className="px-3 pb-4">
+            <div className="w-full h-px bg-zinc-800 mb-4"></div>
+
+            <div
+              className={`flex items-center rounded-lg transition-all duration-300 ${
+                sidebarCollapsed ? "px-0 py-3 justify-center" : "px-3 py-2.5"
+              } text-[var(--secondary-text)]`}
+            >
+              <div
+                className={`flex items-center justify-center flex-shrink-0 ${
+                  sidebarCollapsed ? "w-5 h-5" : "w-5 h-5 mr-3"
+                }`}
+              >
+                {planInfo.plan === "lifetime" ? (
+                  <Trophy size={16} className="text-[var(--secondary-text)]" />
+                ) : (
+                  <Hourglass size={16} className="text-[var(--secondary-text)]" />
+                )}
+              </div>
+
+              {/* Plan text - only shown when not collapsed */}
+              {!sidebarCollapsed && (
+                <span className="text-sm font-medium whitespace-nowrap">
+                  {planInfo.plan === "lifetime"
+                    ? "Lifetime Plan"
+                    : planInfo.plan === "monthly"
+                      ? "Monthly Plan"
+                      : "No Plan"}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main content area - scrollable */}
-      <div className="relative flex-1 flex flex-col overflow-hidden " onWheel={(e) => e.stopPropagation()}>
-        {/* Mobile header with menu button */}
-        <div className="lg:hidden flex items-center justify-between p-4 border-b border-zinc-800">
+      {/* Main content area - Fixed the scrolling issue */}
+      <div className="relative flex-1 flex flex-col overflow-hidden w-0 min-w-0">
+        {/* Mobile header */}
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-zinc-800 bg-[var(--background-secondary)]">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-md text-gray-400 hover:text-white hover:bg-zinc-800"
+            className="p-2 rounded-md text-[var(--secondary-text)] hover:text-[var(--accent-text)] hover:bg-zinc-800 transition-colors duration-200"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          <div className="text-lg font-semibold">Dashboard</div>
-          <div className="w-10"></div> {/* Spacer for centering */}
+          <div className="text-lg font-semibold text-[var(--primary-text)]">Dashboard</div>
+          <div className="w-10"></div>
         </div>
 
-        {/* Scrollable content */}
-        <main className="flex-1 overflow-y-auto">{children}</main>
+        {/* Scrollable content - Fixed to ensure proper scrolling */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden w-full h-full">{children}</main>
       </div>
 
       {/* Onboarding Modal */}

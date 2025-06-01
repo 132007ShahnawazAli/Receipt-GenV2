@@ -131,7 +131,13 @@ export default function AccountPage() {
           <div className="flex justify-between items-center mb-2">
             <span className="text-md font-medium tracking-tight text-[var(--secondary-text)]">Days left</span>
           </div>
-          <div className="text-2xl font-medium text-[var(--primary-text)]">{stats.daysLeft}</div>
+          <div className="text-2xl font-medium text-[var(--primary-text)]">
+            {stats.daysLeft === "∞"
+              ? "∞"
+              : stats.daysLeft === null || stats.daysLeft === undefined
+                ? "No Plan"
+                : stats.daysLeft}
+          </div>
         </div>
       </div>
 

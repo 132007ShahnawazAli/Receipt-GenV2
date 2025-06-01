@@ -121,7 +121,7 @@ function EmailReceipt({ onBrandClick = () => {} }) {
                 {/* Header Row */}
                 <div className="flex items-center justify-between px-6 py-5 border rounded-xl border-zinc-800 bg-[var(--secondary-text)]/60 text-[var(--secondary-text)] font-medium text-sm">
                     <div className="flex-1 text-left">Store</div>
-                    <div className="min-w-[6rem] flex items-center gap-2">
+                    <div className="min-w-[6rem] flex items-center gap-4">
                         <div className="w-px h-6 bg-zinc-400 self-center" />
                         <span>Action</span>
                     </div>
@@ -148,23 +148,28 @@ function EmailReceipt({ onBrandClick = () => {} }) {
                     </div>
                 ) : Array.isArray(filteredBrands) && filteredBrands.length > 0 ? (
                     <div className="flex flex-col gap-2">
-                        {paginatedBrands.map((brand, idx) => (
-                            <div
-                                key={brand.id || (brand.name + '-' + idx)}
-                                className="flex items-center justify-between px-6 py-4 border-zinc-500 bg-[var(--background-secondary)] rounded-xl group shadow-sm"
-                            >
-                                <div className="flex-1 min-w-0 truncate text-[var(--primary-text)] text-sm font-medium">{brand.displayName || brand.name}</div>
-                                <div className="min-w-[6rem] flex items-center gap-2">
-                                    <div className="w-px h-6 bg-zinc-700 self-center" />
-                                    <button
-                                        className="px-3 py-1.5 rounded-sm font-semibold text-sm bg-[var(--accent-text)] text-(--background) cursor-pointer hover:scale-95 transition-all"
-                                        onClick={() => onBrandClick(brand)}
-                                    >
-                                        Generate
-                                    </button>
+                        {paginatedBrands.map((brand, idx) => {
+                            const displayName = brand.displayName || brand.name || '';
+                            // If the name already ends with 'receipt' (case-insensitive), don't add it again
+                            const showName = /receipt$/i.test(displayName.trim()) ? displayName : `${displayName} Receipt`;
+                            return (
+                                <div
+                                    key={brand.id || (brand.name + '-' + idx)}
+                                    className="flex items-center justify-between px-6 py-4 border-zinc-500 bg-[var(--background-secondary)] rounded-xl group shadow-sm"
+                                >
+                                    <div className="flex-1 min-w-0 truncate text-[var(--primary-text)] text-sm font-medium">{showName}</div>
+                                    <div className="min-w-[6rem] flex items-center gap-4">
+                                        <div className="w-px h-8 bg-zinc-800 self-center" />
+                                        <button
+                                            className="px-3 py-1.5 rounded-sm font-semibold text-sm bg-[var(--accent-text)] text-(--background) cursor-pointer hover:scale-95 transition-all"
+                                            onClick={() => onBrandClick(brand)}
+                                        >
+                                            Generate
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                         {/* Pagination UI (if needed) */}
                         {totalPages > 1 && (
                             <div className="flex mt-4 justify-center">

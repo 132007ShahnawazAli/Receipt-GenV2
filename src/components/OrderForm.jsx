@@ -255,67 +255,63 @@ export default function OrderForm({
   }
 
   return (
-    <div className="fixed inset-0 z-50" style={{ isolation: "isolate" }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ isolation: "isolate" }}>
       <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
-      <div className="absolute inset-0 flex items-center justify-center p-4">
-        <div className="bg-[var(--background)] text-[var(--primary-text)] rounded-lg w-full max-w-lg relative flex flex-col max-h-[90vh]">
-          <div className="flex-none p-6 flex justify-between items-center border-b border-[var(--secondary-text)]">
-            <h2 className="text-3xl font-semibold capitalize">
-              {isEditing ? "Update" : "New"} {brand.displayName || brand.name} Receipt
-            </h2>
-            <button
-              onClick={onClose}
-              className="cursor-pointer text-[var(--accent-text)] hover:text-[var(--accent-text)]/50"
-            >
-              <X size={24} />
-            </button>
-          </div>
-
-          <div
-            className="flex-1 overflow-y-auto custom-scrollbar"
-            onClick={(e) => e.stopPropagation()}
-            onWheel={(e) => e.stopPropagation()}
+      <div className="relative bg-[var(--background)] text-[var(--primary-text)] rounded-2xl w-full max-w-2xl p-0 shadow-xl flex flex-col" style={{ minWidth: 400, maxHeight: '90vh' }}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-8 py-6 border-b border-zinc-800 rounded-t-2xl bg-[var(--background-secondary)]">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            {(() => {
+              const displayName = brand.displayName || brand.name || '';
+              const showName = /receipt$/i.test(displayName.trim()) ? displayName : `${displayName} Receipt`;
+              return showName;
+            })()}
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-[var(--accent-text)] hover:text-[var(--accent-text)]/60 transition-colors p-1 rounded-full focus:outline-none cursor-pointer"
+            aria-label="Close"
           >
-            <form onSubmit={handleSubmit} className="p-6 space-y-5">
-              {error && (
-                <div className="p-2 bg-red-500/10 border border-red-500 text-red-500 rounded text-sm">{error}</div>
-              )}
+            <X size={28} />
+          </button>
+        </div>
 
-              <div className="flex flex-col gap-4">
-                {formFields.map((field) => (
-                  <div key={field.name} className="space-y-2">
-                    <label className="block text-sm font-medium">
-                      {field.label}
-                      {field.required && <span className="text-red-500 ml-1">*</span>}
-                    </label>
-                    <input
-                      type={field.type || 'text'}
-                      name={field.name}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder={field.placeholder}
-                      className={`w-full px-3 py-2 bg-[var(--background)] border ${
-                        formErrors[field.name] ? 'border-red-500' : 'border-[var(--accent-text)]/30'
-                      } rounded-md focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder:text-[var(--secondary-text)] placeholder:opacity-70`}
-                    />
-                    {formErrors[field.name] && (
-                      <p className="text-sm text-red-500">{formErrors[field.name]}</p>
-                    )}
-                  </div>
-                ))}
-
-                <div className="pt-4">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full py-3 px-4 bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 text-black font-bold rounded-md transition-colors disabled:opacity-70"
-                  >
-                    {isSubmitting ? 'Generating...' : 'Generate Receipt'}
-                  </button>
+        {/* Form */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar px-8 py-6" style={{ maxHeight: 'calc(90vh - 88px)' }} onClick={e => e.stopPropagation()} onWheel={e => e.stopPropagation()}>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="p-2 bg-red-500/10 border border-red-500 text-red-500 rounded text-sm mb-4">{error}</div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4">
+              {formFields.map((field, idx) => (
+                <div key={field.name} className="flex flex-col space-y-2">
+                  <label className="block text-sm font-medium mb-1">
+                    {field.label}
+                  </label>
+                  <input
+                    type={field.type || 'text'}
+                    name={field.name}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder={field.placeholder}
+                    className={`w-full px-5 py-2 bg-[var(--background-secondary)] border ${formErrors[field.name] ? 'border-red-500' : 'border-zinc-800'} rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder:text-[var(--secondary-text)] placeholder:opacity-70 text-sm`}
+                  />
+                  {formErrors[field.name] && (
+                    <p className="text-xs text-red-500 mt-1">{formErrors[field.name]}</p>
+                  )}
                 </div>
-              </div>
-            </form>
-          </div>
+              ))}
+            </div>
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-2 bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 text-black font-bold rounded-sm text-sm transition-colors disabled:opacity-70 shadow-md"
+              >
+                {isSubmitting ? 'Generating...' : 'Submit'}
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

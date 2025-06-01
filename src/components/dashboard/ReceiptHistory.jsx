@@ -328,7 +328,7 @@ export default function ReceiptHistory() {
             )}
           </div>
           <Link
-            href="/dashboard/warehouse"
+            href="/dashboard/history"
             className="mt-4 w-full block text-center text-sm bg-[var(--accent-text)] text-black font-semibold py-1 rounded hover:bg-[var(--accent-text)]/90 transition-colors"
           >
             View full history

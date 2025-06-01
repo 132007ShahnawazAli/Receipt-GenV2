@@ -11,7 +11,6 @@ import OrderForm from "@/components/OrderForm"
 import Link from "next/link"
 import { useAvailableBrands } from "@/components/dashboard-brands"
 import ReceiptHistory from "@/components/dashboard/ReceiptHistory"
-import OrderNumberGenerator from "@/components/dashboard/OrderNumberGenerator"
 import EmailReceipt from "@/components/dashboard/EmailReceipt"
 import ReceiptCategories from "@/components/dashboard/ReceiptCategories"
 import Modal from '@/components/Modal';
@@ -468,9 +467,6 @@ export default function Dashboard() {
             ))}
           </div>
         </Modal>
-
-        {/* Order Number Generator */}
-        <OrderNumberGenerator />
 
       </div>
 

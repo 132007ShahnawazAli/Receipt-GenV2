@@ -1,7 +1,6 @@
 import { DM_Sans } from "next/font/google"
 import "./globals.css"
 import { AuthProvider } from "@/components/AuthProvider"
-import { ScrollProvider } from "@/components/ScrollProvider"
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -42,11 +41,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${dmSans.variable} antialiased overflow-x-hidden bg-(--background) text-(--primary-text)`}>
-        <ScrollProvider>
-          <div className="w-screen h-fit">
-            <AuthProvider>{children}</AuthProvider>
-          </div>
-        </ScrollProvider>
+        <div className="w-screen h-fit">
+          <AuthProvider>{children}</AuthProvider>
+        </div>
       </body>
     </html>
   )
