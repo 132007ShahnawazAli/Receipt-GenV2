@@ -294,7 +294,7 @@ export default function ReceiptHistory() {
                         style={{
                           background: "#1a1a1a",
                           borderRadius: 8,
-                          padding: "12px 20px",
+                          padding: "6px 12px",
                           color: "#ffffff",
                           fontSize: 16,
                           fontWeight: 500,
@@ -335,9 +335,9 @@ export default function ReceiptHistory() {
                           }}
                         />
                         <span style={{ color: "#EDEDED" }}>Date: </span>
-                        <span style={{ color: "var(--accent-text)", fontWeight: 600 }}>{date}</span>
+                        <span style={{ color: "var(--accent-text)", fontWeight: 600, fontSize: 14 }}>{date}</span>
                         <span style={{ color: "#EDEDED" }}> Receipts: </span>
-                        <span style={{ color: "var(--accent-text)", fontWeight: 600 }}>{count}</span>
+                        <span style={{ color: "var(--accent-text)", fontWeight: 600, fontSize: 14 }}>{count}</span>
                       </div>
                     </div>
                   )
