@@ -4,9 +4,34 @@ import { useState, useEffect } from "react"
 import { LiaHistorySolid } from "react-icons/lia"
 import OrderForm from "@/components/OrderForm"
 import { useAvailableBrands } from "@/components/dashboard-brands"
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import Link from 'next/link';
-import { LineChart, Line } from 'recharts';
+import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts"
+import Link from "next/link"
+
+// Utility to generate 5 evenly spaced Y-axis ticks
+function getYAxisTicks(data, key = "count") {
+  if (!Array.isArray(data) || data.length === 0) return [0, 1, 2, 3, 4]
+  const maxY = Math.max(...data.map((d) => d[key] ?? 0))
+  const getNiceMax = (value) => {
+    if (value <= 4) return 4
+    const exponent = Math.floor(Math.log10(value))
+    const fraction = value / Math.pow(10, exponent)
+    let niceFraction
+    if (fraction <= 1) niceFraction = 1
+    else if (fraction <= 2) niceFraction = 2
+    else if (fraction <= 5) niceFraction = 5
+    else niceFraction = 10
+    return niceFraction * Math.pow(10, exponent)
+  }
+  const niceMax = getNiceMax(maxY)
+  const interval = niceMax / 4
+  return Array.from({ length: 5 }, (_, i) => Math.round(i * interval))
+}
+
+function cleanReceiptDescription(desc, brand, product) {
+  let base = desc || product || brand || "Receipt";
+  // Remove duplicate 'Receipt' at the end
+  return base.replace(/(Receipt)(\s+Receipt)+$/i, "Receipt");
+}
 
 export default function ReceiptHistory() {
   const [receipts, setReceipts] = useState([])
@@ -31,7 +56,7 @@ export default function ReceiptHistory() {
 
       const data = await response.json()
       console.log("Raw API response:", data)
-      
+
       // Ensure we have valid data
       if (!Array.isArray(data)) {
         console.error("API did not return an array:", data)
@@ -50,22 +75,22 @@ export default function ReceiptHistory() {
 
   // Format date to "May 26, 2025" format
   const formatDate = (dateString) => {
-    if (!dateString) return 'No date'
-    
+    if (!dateString) return "No date"
+
     try {
       const date = new Date(dateString)
       if (isNaN(date.getTime())) {
         console.log("Invalid date string:", dateString)
-        return 'Invalid date'
+        return "Invalid date"
       }
-      return date.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       })
     } catch (error) {
       console.error("Error formatting date:", error)
-      return 'Invalid date'
+      return "Invalid date"
     }
   }
 
@@ -76,16 +101,16 @@ export default function ReceiptHistory() {
     if (!date) return acc
 
     const formattedDate = formatDate(date)
-    if (formattedDate === 'Invalid date') return acc
+    if (formattedDate === "Invalid date") return acc
 
     acc[formattedDate] = (acc[formattedDate] || 0) + 1
     return acc
   }, {})
 
-  const dotData = Object.entries(chartData).map(([date, count]) => ({ 
-    date, 
+  const dotData = Object.entries(chartData).map(([date, count]) => ({
+    date,
     count,
-    rawDate: new Date(date)
+    rawDate: new Date(date),
   }))
 
   // Sort dotData by date ascending
@@ -93,7 +118,7 @@ export default function ReceiptHistory() {
 
   // Show only the 5 most recent receipts in the right box
   const recentReceipts = [...receipts]
-    .filter(r => r.orderDate || r.createdAt)
+    .filter((r) => r.orderDate || r.createdAt)
     .sort((a, b) => {
       const dateA = new Date(a.orderDate || a.createdAt)
       const dateB = new Date(b.orderDate || b.createdAt)
@@ -171,12 +196,12 @@ export default function ReceiptHistory() {
           <h2 className="tablet:text-3xl text-2xl font-normal tracking-tight">History</h2>
           <LiaHistorySolid className="w-6 h-6 text-(--accent-text)" />
         </div>
-        <div className="text-center text-[var(--secondary-text)] py-8">
-          No receipt history found.
-        </div>
+        <div className="text-center text-[var(--secondary-text)] py-8">No receipt history found.</div>
       </div>
     )
   }
+
+  const yAxisTicks = getYAxisTicks(dotData, "count")
 
   return (
     <div className="mb-6 gap-6 flex flex-col w-full">
@@ -200,109 +225,119 @@ export default function ReceiptHistory() {
         <div className="md:col-span-2 col-span-1 bg-[var(--background-secondary)] border border-zinc-800 rounded-2xl min-h-[340px] flex items-center justify-center p-4">
           {/* Professional smooth line chart with glowing points and custom tooltip */}
           <ResponsiveContainer width="100%" height={340}>
-            <LineChart data={dotData} margin={{ top: 34, right: 30, left: 30, bottom: 34 }}>
+            <AreaChart data={dotData} margin={{ top: 34, right: 30, left: 30, bottom: 34 }}>
+              <defs>
+                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--accent-text)" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="var(--accent-text)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
               <CartesianGrid stroke="#444" strokeDasharray="0" vertical={false} horizontal={true} />
               <XAxis dataKey="date" hide axisLine={false} tickLine={false} />
-              <YAxis 
+              <YAxis
                 dataKey="count"
-                tick={{ fill: '#888', fontSize: 15 }} 
-                axisLine={false} 
-                tickLine={false} 
-                domain={[0, (dataMax) => {
-                  // Base maximum value - increase this to add more vertical space
-                  const baseMax = 34;
-                  // Get the actual maximum count from data, or use baseMax if no data
-                  const max = dotData.length ? Math.max(...dotData.map(d => d.count), baseMax) : baseMax;
-                  // Round up to nearest multiple of 4 for clean intervals
-                  const niceMax = Math.ceil(max / 4) * 4;
-                  return niceMax;
-                }]} 
-                ticks={(() => {
-                  // Base maximum value - should match the one in domain calculation
-                  const baseMax = 34;
-                  // Get the actual maximum count from data, or use baseMax if no data
-                  const max = dotData.length ? Math.max(...dotData.map(d => d.count), baseMax) : baseMax;
-                  // Round up to nearest multiple of 4 for clean intervals
-                  const niceMax = Math.ceil(max / 4) * 4;
-                  // Generate 5 evenly spaced ticks (0 to niceMax)
-                  return Array.from({length: 5}, (_, i) => Math.round(i * (niceMax / 4)));
-                })()}
+                tick={{ fill: "#888", fontSize: 15 }}
+                axisLine={false}
+                tickLine={false}
+                domain={[0, yAxisTicks[4]]}
+                ticks={yAxisTicks}
                 width={40}
               />
-              <Line
+              <Area
                 type="monotone"
                 dataKey="count"
                 stroke="var(--accent-text)"
                 strokeWidth={3}
+                fill="url(#areaGradient)"
                 dot={({ cx, cy }) => (
-                  <circle cx={cx} cy={cy} r={6} fill="var(--accent-text)" />
+                  <g>
+                    <circle cx={cx} cy={cy} r={6} fill="var(--accent-text)" />
+                  </g>
                 )}
                 activeDot={({ cx, cy }) => (
-                  <circle cx={cx} cy={cy} r={7} fill="var(--accent-text)" />
+                  <g>
+                    {/* Outer glow effect */}
+                    <circle cx={cx} cy={cy} r={12} fill="var(--accent-text)" fillOpacity={0.8} />
+                    {/* Main dot */}
+                    <circle cx={cx} cy={cy} r={7} fill="var(--accent-text)" />
+                  </g>
                 )}
                 isAnimationActive={true}
               />
               <Tooltip
                 cursor={false}
-                content={({ active, payload }) => {
-                  if (!active || !payload || !payload.length) return null;
-                  const date = payload[0].payload?.date;
-                  const count = payload[0].value;
+                position={{ x: undefined, y: undefined }}
+                content={({ active, payload, coordinate }) => {
+                  if (!active || !payload || !payload.length) return null
+                  const date = payload[0].payload?.date
+                  const count = payload[0].value
+
                   return (
-                    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none' }}>
-                      <div style={{
-                        position: 'relative',
-                        background: '#181818',
-                        borderRadius: 8,
-                        padding: '10px 22px',
-                        color: 'var(--primary-text)',
-                        minWidth: 240,
-                        fontSize: 16,
-                        fontWeight: 500,
-                        boxShadow: '0 2px 12px 0 rgba(0,0,0,0.18)',
-                        textAlign: 'center',
-                        border: '1px solid #222',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: 8,
-                        marginTop: 16,
-                      }}>
-                        {/* Pointer triangle on top */}
-                        <div style={{
-                          position: 'absolute',
-                          top: -14,
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          width: 0,
-                          height: 0,
-                          borderLeft: '10px solid transparent',
-                          borderRight: '10px solid transparent',
-                          borderBottom: '14px solid #181818',
-                          zIndex: 1,
-                        }} />
-                        <div style={{
-                          position: 'absolute',
-                          top: -16,
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          width: 0,
-                          height: 0,
-                          borderLeft: '11px solid transparent',
-                          borderRight: '11px solid transparent',
-                          borderBottom: '16px solid #222',
-                          zIndex: 0,
-                        }} />
-                        <span style={{ color: 'var(--secondary-text)', fontWeight: 400 }}>Date:</span>
-                        <span style={{ color: 'var(--accent-text)', fontWeight: 700, margin: '0 6px 0 2px' }}>{date}</span>
-                        <span style={{ color: 'var(--secondary-text)', fontWeight: 400 }}>Receipts:</span>
-                        <span style={{ color: 'var(--accent-text)', fontWeight: 700, marginLeft: 2 }}>{count}</span>
+                    <div
+                      className="custom-tooltip"
+                      style={{
+                        position: "absolute",
+                        left: coordinate?.x,
+                        top: coordinate?.y - 70,
+                        transform: "translateX(-50%)",
+                        pointerEvents: "none",
+                        zIndex: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          background: "#1a1a1a",
+                          borderRadius: 8,
+                          padding: "12px 20px",
+                          color: "#ffffff",
+                          fontSize: 16,
+                          fontWeight: 500,
+                          boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+                          border: "1px solid #333",
+                          position: "relative",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {/* Triangle pointer at bottom */}
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: -8,
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "8px solid transparent",
+                            borderRight: "8px solid transparent",
+                            borderTop: "8px solid #1a1a1a",
+                            zIndex: 1,
+                          }}
+                        />
+                        {/* Border triangle */}
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: -9,
+                            left: "50%",
+                            transform: "translateX(-50%)",
+                            width: 0,
+                            height: 0,
+                            borderLeft: "9px solid transparent",
+                            borderRight: "9px solid transparent",
+                            borderTop: "9px solid #333",
+                            zIndex: 0,
+                          }}
+                        />
+                        <span style={{ color: "#ffffff" }}>Date: </span>
+                        <span style={{ color: "var(--accent-text)", fontWeight: 600 }}>{date}</span>
+                        <span style={{ color: "#ffffff" }}> Receipts: </span>
+                        <span style={{ color: "var(--accent-text)", fontWeight: 600 }}>{count}</span>
                       </div>
                     </div>
-                  );
+                  )
                 }}
               />
-            </LineChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
         {/* History Box */}
@@ -321,7 +356,7 @@ export default function ReceiptHistory() {
                     {formatDate(receipt.orderDate || receipt.createdAt)}
                   </span>
                   <span className="text-base font-semibold text-[var(--primary-text)]">
-                    {receipt.description || receipt.productName || 'No description'}
+                    {cleanReceiptDescription(receipt.description, receipt.brandName, receipt.productName)}
                   </span>
                 </button>
               ))

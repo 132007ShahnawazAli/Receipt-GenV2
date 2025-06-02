@@ -59,7 +59,11 @@ export async function GET(request) {
         orderDate: receipt.orderDate ? new Date(receipt.orderDate).toISOString() : null,
         createdAt: receipt.createdAt ? new Date(receipt.createdAt).toISOString() : null,
         updatedAt: receipt.updatedAt ? new Date(receipt.updatedAt).toISOString() : null,
-        description: receipt.productName || `${receipt.brandName} Receipt`,
+        description: (
+          receipt.productName
+            ? receipt.productName.trim().replace(/\s+Receipt$/i, "")
+            : receipt.brandName
+        ) + " Receipt",
         brandName: receipt.brandName,
         email: receipt.email,
         productName: receipt.productName,
