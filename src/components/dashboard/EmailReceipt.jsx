@@ -85,7 +85,7 @@ function EmailReceipt({ onBrandClick = () => {} }) {
             <div className="flex flex-wrap gap-6 justify-between">
                 <div className="p-5 rounded-xl bg-(--background-secondary) border border-zinc-800 flex-1 min-w-[250px]">
                     <div className="flex justify-between items-center mb-6">
-                        <span className="text-2xl font-medium text-[var(--accent-text)]">1.</span>
+                        <span className="text-2xl font-semibold text-[var(--accent-text)]">1.</span>
                     </div>
                     <h3 className="text-md font-medium tracking-tight text-(--primary-text) mb-2">Choose your receipt</h3>
                     <p className="text-sm font-medium tracking-tight text-(--secondary-text)">Select a store to begin.</p>
@@ -93,7 +93,7 @@ function EmailReceipt({ onBrandClick = () => {} }) {
 
                 <div className="p-5 rounded-xl bg-(--background-secondary) border border-zinc-800 flex-1 min-w-[250px]">
                     <div className="flex justify-between items-center mb-6">
-                        <span className="text-2xl font-medium text-[var(--accent-text)]">2.</span>
+                        <span className="text-2xl font-semibold text-[var(--accent-text)]">2.</span>
                     </div>
                     <h3 className="text-md font-medium tracking-tight text-(--primary-text) mb-2">Fill in the details</h3>
                     <p className="text-sm font-medium tracking-tight text-(--secondary-text)">Enter accurate info in the form.</p>
@@ -101,7 +101,7 @@ function EmailReceipt({ onBrandClick = () => {} }) {
 
                 <div className="p-5 rounded-xl bg-(--background-secondary) border border-zinc-800 flex-1 min-w-[250px]">
                     <div className="flex justify-between items-center mb-6">
-                        <span className="text-2xl font-medium text-[var(--accent-text)]">3.</span>
+                        <span className="text-2xl font-semibold text-[var(--accent-text)]">3.</span>
                     </div>
                     <h3 className="text-md font-medium tracking-tight text-(--primary-text) mb-2">Submit your receipt</h3>
                     <p className="text-sm font-medium tracking-tight text-(--secondary-text)">Click the submit button once ready.</p>
@@ -109,7 +109,7 @@ function EmailReceipt({ onBrandClick = () => {} }) {
 
                 <div className="p-5 rounded-xl bg-(--background-secondary) border border-zinc-800 flex-1 min-w-[250px]">
                     <div className="flex justify-between items-center mb-6">
-                        <span className="text-2xl font-medium text-[var(--accent-text)]">4.</span>
+                        <span className="text-2xl font-semibold text-[var(--accent-text)]">4.</span>
                     </div>
                     <h3 className="text-md font-medium tracking-tight text-(--primary-text) mb-2">Wait a few seconds</h3>
                     <p className="text-sm font-medium tracking-tight text-(--secondary-text)">We&apos;ll generate your receipt instantly.</p>
@@ -119,7 +119,7 @@ function EmailReceipt({ onBrandClick = () => {} }) {
             {/* Filtered Brands Table/List (Professional, like screenshot) */}
             <div className="w-full mt-2 flex flex-col gap-2">
                 {/* Header Row */}
-                <div className="flex items-center justify-between px-6 py-5 border rounded-xl border-zinc-800 bg-[var(--secondary-text)]/60 text-[var(--secondary-text)] font-medium text-sm">
+                <div className="flex items-center justify-between px-6 py-5 border rounded-xl border-zinc-800 bg-[#535353] text-[var(--secondary-text)] font-medium text-sm">
                     <div className="flex-1 text-left">Store</div>
                     <div className="min-w-[6rem] flex items-center gap-4">
                         <div className="w-px h-6 bg-zinc-400 self-center" />
@@ -155,7 +155,7 @@ function EmailReceipt({ onBrandClick = () => {} }) {
                             return (
                                 <div
                                     key={brand.id || (brand.name + '-' + idx)}
-                                    className="flex items-center justify-between px-6 py-4 border-zinc-500 bg-[var(--background-secondary)] rounded-xl group shadow-sm border border-zinc-800"
+                                    className="flex items-center justify-between px-6 py-4 bg-[var(--background-secondary)] rounded-xl group shadow-sm border border-zinc-800"
                                 >
                                     <div className="flex-1 min-w-0 truncate text-[var(--primary-text)] text-sm font-medium">{showName}</div>
                                     <div className="min-w-[6rem] flex items-center gap-4">

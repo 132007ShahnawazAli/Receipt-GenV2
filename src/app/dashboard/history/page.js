@@ -266,9 +266,9 @@ export default function HistoryPage() {
                             zIndex: 0,
                           }}
                         />
-                        <span style={{ color: "#ffffff" }}>Date: </span>
+                        <span style={{ color: "#EDEDED" }}>Date: </span>
                         <span style={{ color: "var(--accent-text)", fontWeight: 600 }}>{date}</span>
-                        <span style={{ color: "#ffffff" }}> Receipts: </span>
+                        <span style={{ color: "#EDEDED" }}> Receipts: </span>
                         <span style={{ color: "var(--accent-text)", fontWeight: 600 }}>{count}</span>
                       </div>
                     </div>

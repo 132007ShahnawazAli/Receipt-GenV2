@@ -224,8 +224,14 @@ export default function ReceiptHistory() {
         {/* Dot Chart */}
         <div className="md:col-span-2 col-span-1 bg-[var(--background-secondary)] border border-zinc-800 rounded-2xl min-h-[340px] flex items-center justify-center p-4">
           {/* Professional smooth line chart with glowing points and custom tooltip */}
-          <ResponsiveContainer width="100%" height={340}>
-            <AreaChart data={dotData} margin={{ top: 34, right: 30, left: 30, bottom: 34 }}>
+          {/*
+            To increase the vertical gap between Y-axis grid lines:
+            - Increase the height below (default: 340)
+            - Increase the top/bottom margin below (default: 34)
+            Example: height={420}, margin={{ top: 60, bottom: 60, left: 30, right: 30 }}
+          */}
+          <ResponsiveContainer width="100%" height={380}> {/* Chart height controls vertical spacing */}
+            <AreaChart data={dotData} margin={{ top: 30, right: 30, left: 30, bottom: 30 }}> {/* Margins control padding inside chart */}
               <defs>
                 <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--accent-text)" stopOpacity={0.8} />
@@ -257,7 +263,7 @@ export default function ReceiptHistory() {
                 activeDot={({ cx, cy }) => (
                   <g>
                     {/* Outer glow effect */}
-                    <circle cx={cx} cy={cy} r={12} fill="var(--accent-text)" fillOpacity={0.8} />
+                    <circle cx={cx} cy={cy} r={10} fill="var(--accent-text)" fillOpacity={0.5} filter="blur(1px)" />
                     {/* Main dot */}
                     <circle cx={cx} cy={cy} r={7} fill="var(--accent-text)" />
                   </g>
@@ -328,9 +334,9 @@ export default function ReceiptHistory() {
                             zIndex: 0,
                           }}
                         />
-                        <span style={{ color: "#ffffff" }}>Date: </span>
+                        <span style={{ color: "#EDEDED" }}>Date: </span>
                         <span style={{ color: "var(--accent-text)", fontWeight: 600 }}>{date}</span>
-                        <span style={{ color: "#ffffff" }}> Receipts: </span>
+                        <span style={{ color: "#EDEDED" }}> Receipts: </span>
                         <span style={{ color: "var(--accent-text)", fontWeight: 600 }}>{count}</span>
                       </div>
                     </div>

@@ -4,9 +4,10 @@ import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
-import { Home, Package, Trophy, Menu, X, ChevronLeft, ChevronRight, Hourglass } from "lucide-react"
+import { Home, Printer, Trophy, Crown, Menu, X, ChevronLeft, ChevronRight, Hourglass } from "lucide-react"
 import DashboardLoading from "@/components/dashboard/DashboardLoading"
 import OnboardingModal from "@/components/dashboard/OnboardingModal"
+
 import Image from "next/image"
 
 export default function DashboardLayout({ children }) {
@@ -25,12 +26,6 @@ export default function DashboardLayout({ children }) {
     if (pathname === "/dashboard") return "welcome"
     if (pathname === "/dashboard/history") return "history"
     if (pathname === "/dashboard/account") return "account"
-    if (pathname.includes("/trending")) return "trending"
-    if (pathname.includes("/receipts")) return "receipts"
-    if (pathname.includes("/factories")) return "factories"
-    if (pathname.includes("/suppliers")) return "suppliers"
-    if (pathname.includes("/middlemen")) return "middlemen"
-    if (pathname.includes("/guides")) return "guides"
     return "welcome"
   }
 
@@ -150,14 +145,14 @@ export default function DashboardLayout({ children }) {
     {
       id: "history",
       label: "History",
-      icon: Package,
+      icon: Printer,
       href: "/dashboard/history",
       active: currentTab === "history",
     },
     {
       id: "account",
       label: "Account",
-      icon: Trophy,
+      icon: Crown,
       href: "/dashboard/account",
       active: currentTab === "account",
     },
