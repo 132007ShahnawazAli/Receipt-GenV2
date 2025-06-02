@@ -70,10 +70,10 @@ export default function HistoryPage() {
     try {
       const { signOut } = await import("next-auth/react")
       await signOut({ redirect: false })
-      router.push("/dashboard-login")
+      router.push("/login")
     } catch (error) {
       // fallback
-      router.push("/dashboard-login")
+      router.push("/login")
     }
   }
 

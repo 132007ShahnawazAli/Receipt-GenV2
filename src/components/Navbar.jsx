@@ -84,7 +84,7 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <Link href="/dashboard-login" className="cursor-pointer">
+              <Link href="/login" className="cursor-pointer">
                 Dashboard Access
               </Link>
             )}
@@ -150,7 +150,7 @@ export default function Navbar() {
               </button>
             </>
           ) : (
-            <Link href="/dashboard-login" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
+            <Link href="/login" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
               Dashboard Access
             </Link>
           )}

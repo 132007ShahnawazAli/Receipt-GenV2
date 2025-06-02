@@ -59,7 +59,7 @@ export default function DashboardLayout({ children }) {
   // Check authentication and handle loading
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.replace("/dashboard-login")
+      router.replace("/login")
       return
     }
 
@@ -96,7 +96,7 @@ export default function DashboardLayout({ children }) {
   const handleSignOut = async () => {
     try {
       await signOut({ redirect: false })
-      router.push("/dashboard-login")
+      router.push("/login")
     } catch (error) {
       console.error("Error signing out:", error)
     }

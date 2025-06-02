@@ -17,15 +17,15 @@ export async function middleware(request) {
   }
 
   // Check if the path is protected dashboard routes
-  if (pathname.startsWith("/dashboard") && pathname !== "/dashboard-login") {
+  if (pathname.startsWith("/dashboard") && pathname !== "/login") {
     // Redirect to license login if not authenticated or if not a license user
     if (!token || !token.isLicenseUser) {
-      return NextResponse.redirect(new URL("/dashboard-login", request.url))
+      return NextResponse.redirect(new URL("/login", request.url))
     }
   }
 
-  // Redirect authenticated license users away from dashboard-login page
-  if (pathname === "/dashboard-login" && token?.isLicenseUser) {
+  // Redirect authenticated license users away from login page
+  if (pathname === "/login" && token?.isLicenseUser) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
@@ -39,5 +39,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/dashboard-login", "/api/generate-receipt/:path*", "/login"],
+  matcher: ["/dashboard/:path*", "/login", "/api/generate-receipt/:path*", "/login"],
 }

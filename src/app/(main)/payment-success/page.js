@@ -86,7 +86,7 @@ export default function PaymentSuccessPage() {
         <AnimatedText delay={0.5}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/dashboard-login"
+              href="/login"
               className="flex items-center justify-center gap-2 bg-[var(--accent-text)] text-black py-3 px-6 rounded-md hover:bg-[var(--accent-text)]/80 transition-colors"
             >
               Access Dashboard <ArrowRight className="w-4 h-4" />

@@ -87,9 +87,9 @@ export default function AccountPage() {
     try {
       const { signOut } = await import("next-auth/react");
       await signOut({ redirect: false });
-      router.push("/dashboard-login");
+      router.push("/login");
     } catch {
-      router.push("/dashboard-login");
+      router.push("/login");
     }
   };
 

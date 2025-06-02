@@ -57,7 +57,7 @@ export function generateLicenseKeyEmail(data) {
             </div>
             
             <div style="text-align: center; margin-top: 35px;">
-              <a href="${appUrl}/dashboard-login" style="display: inline-block; background-color: #a2bef7; color: #121212; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px; transition: all 0.3s ease;">Access Dashboard</a>
+              <a href="${appUrl}/login" style="display: inline-block; background-color: #a2bef7; color: #121212; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px; transition: all 0.3s ease;">Access Dashboard</a>
             </div>
             
             <p style="color: #EDEDED; margin-top: 35px; line-height: 1.6; font-size: 15px;">If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
