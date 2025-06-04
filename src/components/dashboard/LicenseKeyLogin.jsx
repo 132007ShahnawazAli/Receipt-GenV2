@@ -43,7 +43,7 @@ export default function LicenseKeyLogin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--background)] relative">
-      <div className="relative w-full max-w-[28%] bg-[#1A1A1A] py-8 px-2 sm:px-10 shadow-[0px_0px_15px_-4px_rgba(0,_0,_0,_0.8)] rounded-2xl border border-[var(--accent-text)]/10 flex flex-col items-center gap-4">
+      <div className="relative w-full md:max-w-[28%] max-w-[90%] bg-[#1A1A1A] py-8 px-2 sm:px-10 shadow-[0px_0px_15px_-4px_rgba(0,_0,_0,_0.8)] rounded-2xl border border-[var(--accent-text)]/10 flex flex-col items-center gap-4">
         {/* Help icon positioned at the top-right corner of the card */}
         <div className="absolute -top-3 -right-3 z-10">
           <div className="w-6 h-6 flex items-center justify-center rounded-full bg-[var(--accent-text)] shadow-md">

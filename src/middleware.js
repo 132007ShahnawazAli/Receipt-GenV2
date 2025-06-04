@@ -16,6 +16,15 @@ export async function middleware(request) {
     // Continue without token on error
   }
 
+  // Check for admin routes
+  if (pathname.startsWith("/admin") && pathname !== "/admin") {
+    // Check for admin authentication cookie
+    const adminToken = request.cookies.get("admin_token")
+    if (!adminToken?.value) {
+      return NextResponse.redirect(new URL("/admin", request.url))
+    }
+  }
+
   // Check if the path is protected dashboard routes
   if (pathname.startsWith("/dashboard") && pathname !== "/login") {
     // Redirect to license login if not authenticated or if not a license user
@@ -39,5 +48,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/api/generate-receipt/:path*", "/login"],
+  matcher: ["/admin/:path*", "/dashboard/:path*", "/login", "/api/generate-receipt/:path*"],
 }
