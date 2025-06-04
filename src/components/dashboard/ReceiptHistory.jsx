@@ -196,33 +196,12 @@ export default function ReceiptHistory() {
 
   return (
     <div className="mb-6 gap-6 flex flex-col w-full">
-      {/* Section Header */}
-      {/* Error Message */}
-      {error && (
-        <div className="p-4 bg-red-500/10 border border-red-500 text-red-500 rounded-xl mb-4">
-          <p>Error loading receipt history: {error}</p>
-          <button
-            onClick={fetchReceipts}
-            className="mt-2 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      )}
-
       {/* Chart + History Box Layout */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
         {/* Dot Chart */}
         <div className="md:col-span-2 col-span-1 bg-[var(--background-secondary)] border border-zinc-800 rounded-2xl min-h-[340px] flex items-center justify-center p-4">
-          {/* Professional smooth line chart with glowing points and custom tooltip */}
-          {/*
-            To increase the vertical gap between Y-axis grid lines:
-            - Increase the height below (default: 340)
-            - Increase the top/bottom margin below (default: 34)
-            Example: height={420}, margin={{ top: 60, bottom: 60, left: 30, right: 30 }}
-          */}
-          <ResponsiveContainer width="100%" height={380}> {/* Chart height controls vertical spacing */}
-            <AreaChart data={dotData.length ? dotData : [{ date: formatDate(new Date()), count: 0, rawDate: new Date() }]} margin={{ top: 30, right: 30, left: 30, bottom: 30 }}> {/* Margins control padding inside chart */}
+          <ResponsiveContainer width="100%" height={380}>
+            <AreaChart data={dotData.length ? dotData : [{ date: formatDate(new Date()), count: 0, rawDate: new Date() }]} margin={{ top: 30, right: 30, left: 30, bottom: 30 }}>
               <defs>
                 <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--accent-text)" stopOpacity={0.8} />

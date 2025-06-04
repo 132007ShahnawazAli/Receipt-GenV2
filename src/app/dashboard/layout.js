@@ -293,7 +293,9 @@ export default function DashboardLayout({ children }) {
                     ? "Lifetime Plan"
                     : planInfo.plan === "monthly"
                       ? "Monthly Plan"
-                      : "No Plan"}
+                      : planInfo.plan === "giveaway"
+                        ? `${planInfo.daysLeft} Days Plan`
+                        : "No Plan"}
                 </span>
               )}
             </div>
