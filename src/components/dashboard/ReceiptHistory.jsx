@@ -95,7 +95,7 @@ export default function ReceiptHistory() {
   }
 
   // Prepare data for dot chart (group by date, count receipts per day)
-  const chartData = receipts.reduce((acc, r) => {
+  const chartData = receipts.length > 0 ? receipts.reduce((acc, r) => {
     // Use orderDate if available, otherwise fall back to createdAt
     const date = r.orderDate || r.createdAt
     if (!date) return acc
@@ -105,7 +105,10 @@ export default function ReceiptHistory() {
 
     acc[formattedDate] = (acc[formattedDate] || 0) + 1
     return acc
-  }, {})
+  }, {}) : {
+    // If no receipts, show empty chart with current date
+    [formatDate(new Date())]: 0
+  }
 
   const dotData = Object.entries(chartData).map(([date, count]) => ({
     date,
@@ -189,18 +192,6 @@ export default function ReceiptHistory() {
     )
   }
 
-  if (receipts.length === 0) {
-    return (
-      <div className="px-6 mb-6 gap-6 flex flex-col">
-        <div className="relative flex justify-between items-center ">
-          <h2 className="tablet:text-3xl text-2xl font-normal tracking-tight">History</h2>
-          <LiaHistorySolid className="w-6 h-6 text-(--accent-text)" />
-        </div>
-        <div className="text-center text-[var(--secondary-text)] py-8">No receipt history found.</div>
-      </div>
-    )
-  }
-
   const yAxisTicks = getYAxisTicks(dotData, "count")
 
   return (
@@ -231,7 +222,7 @@ export default function ReceiptHistory() {
             Example: height={420}, margin={{ top: 60, bottom: 60, left: 30, right: 30 }}
           */}
           <ResponsiveContainer width="100%" height={380}> {/* Chart height controls vertical spacing */}
-            <AreaChart data={dotData} margin={{ top: 30, right: 30, left: 30, bottom: 30 }}> {/* Margins control padding inside chart */}
+            <AreaChart data={dotData.length ? dotData : [{ date: formatDate(new Date()), count: 0, rawDate: new Date() }]} margin={{ top: 30, right: 30, left: 30, bottom: 30 }}> {/* Margins control padding inside chart */}
               <defs>
                 <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="var(--accent-text)" stopOpacity={0.8} />
@@ -350,7 +341,10 @@ export default function ReceiptHistory() {
         <div className="md:col-span-1 col-span-1 w-full bg-[var(--background-secondary)] border border-zinc-800 rounded-2xl p-4 flex flex-col justify-between min-h-[220px]">
           <div className="flex flex-col gap-2 flex-1">
             {recentReceipts.length === 0 ? (
-              <div className="text-center text-[var(--secondary-text)] py-8">No receipt history found.</div>
+              <div className="text-center text-[var(--secondary-text)] py-8 flex flex-col items-center gap-3">
+                <span className="text-base">No receipt history found</span>
+                <span className="text-sm opacity-75 px-4">Generate your first receipt to start building your history</span>
+              </div>
             ) : (
               recentReceipts.map((receipt, idx) => (
                 <button

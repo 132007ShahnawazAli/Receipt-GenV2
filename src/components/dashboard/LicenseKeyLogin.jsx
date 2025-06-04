@@ -8,8 +8,11 @@ import { BsQuestionLg } from "react-icons/bs"
 
 export default function LicenseKeyLogin() {
   const [licenseKey, setLicenseKey] = useState("")
+  const [email, setEmail] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [showEmailForm, setShowEmailForm] = useState(false)
+  const [giveawayKeyData, setGiveawayKeyData] = useState(null)
   const router = useRouter()
 
   const handleSubmit = async (e) => {
@@ -23,7 +26,20 @@ export default function LicenseKeyLogin() {
         body: JSON.stringify({ licenseKey }),
       })
       const validateData = await validateResponse.json()
-      if (!validateResponse.ok) throw new Error(validateData.message || "Invalid license key")
+      
+      if (!validateResponse.ok) {
+        throw new Error(validateData.message || "Invalid license key")
+      }
+
+      // Handle unredeemed giveaway key
+      if (validateData.isGiveawayKey) {
+        setGiveawayKeyData(validateData)
+        setShowEmailForm(true)
+        setLoading(false)
+        return
+      }
+
+      // Regular license key login
       const result = await signIn("license-key", {
         redirect: false,
         licenseKey,
@@ -41,6 +57,43 @@ export default function LicenseKeyLogin() {
     }
   }
 
+  const handleGiveawayRedeem = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+    try {
+      const redeemResponse = await fetch("/api/redeem-giveaway", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          licenseKey: giveawayKeyData.licenseKey,
+          email
+        }),
+      })
+      const redeemData = await redeemResponse.json()
+
+      if (!redeemResponse.ok) {
+        throw new Error(redeemData.message || "Failed to redeem giveaway key")
+      }
+
+      // After successful redemption, log in with the license key
+      const result = await signIn("license-key", {
+        redirect: false,
+        licenseKey,
+        callbackUrl: "/dashboard",
+      })
+      if (result?.error) throw new Error(result.error)
+      if (result?.ok) {
+        router.push("/dashboard")
+        router.refresh()
+      }
+    } catch (error) {
+      setError(error.message || "Failed to redeem giveaway key")
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--background)] relative">
       <div className="relative w-full md:max-w-[28%] max-w-[90%] bg-[#1A1A1A] py-8 px-2 sm:px-10 shadow-[0px_0px_15px_-4px_rgba(0,_0,_0,_0.8)] rounded-2xl border border-[var(--accent-text)]/10 flex flex-col items-center gap-4">
@@ -50,33 +103,59 @@ export default function LicenseKeyLogin() {
             <BsQuestionLg size={14} className="text-[var(--background)]" />
           </div>
         </div>
-        <h2 className="font-medium text-[var(--primary-text)] text-3xl tracking-tight mb-2 w-full text-left">Log in</h2>
+        <h2 className="font-medium text-[var(--primary-text)] text-3xl tracking-tight mb-2 w-full text-left">
+          {showEmailForm ? "Redeem Giveaway" : "Log in"}
+        </h2>
         {error && (
           <div className="mb-4 p-2 bg-red-500/10 border border-red-500 text-red-500 rounded text-sm w-full">
             {error}
           </div>
         )}
-        <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
-          <div>
-            <input
-              id="licenseKey"
-              name="licenseKey"
-              type="text"
-              required
-              value={licenseKey}
-              onChange={(e) => setLicenseKey(e.target.value)}
-              className="block w-full bg-[#1E1E1E] px-6 py-2 border border-zinc-800 rounded-lg text-base text-[var(--primary-text)] placeholder-[var(--secondary-text)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] transition"
-              placeholder="License Key (e.g. 1234-ABCD)"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-2 bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 text-black font-medium rounded-md text-sm transition-colors disabled:opacity-70 shadow-md"
-          >
-            {loading ? "Verifying..." : "Log in"}
-          </button>
-        </form>
+        {!showEmailForm ? (
+          <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
+            <div>
+              <input
+                id="licenseKey"
+                name="licenseKey"
+                type="text"
+                required
+                value={licenseKey}
+                onChange={(e) => setLicenseKey(e.target.value)}
+                className="block w-full bg-[#1E1E1E] px-6 py-2 border border-zinc-800 rounded-lg text-base text-[var(--primary-text)] placeholder-[var(--secondary-text)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] transition"
+                placeholder="License Key (e.g. 1234-ABCD)"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 text-black font-medium rounded-md text-sm transition-colors disabled:opacity-70 shadow-md"
+            >
+              {loading ? "Verifying..." : "Log in"}
+            </button>
+          </form>
+        ) : (
+          <form className="w-full flex flex-col gap-4" onSubmit={handleGiveawayRedeem}>
+            <div>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="block w-full bg-[#1E1E1E] px-6 py-2 border border-zinc-800 rounded-lg text-base text-[var(--primary-text)] placeholder-[var(--secondary-text)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-text)] focus:border-[var(--accent-text)] transition"
+                placeholder="Enter your email"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2 bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 text-black font-medium rounded-md text-sm transition-colors disabled:opacity-70 shadow-md"
+            >
+              {loading ? "Redeeming..." : "Redeem Giveaway"}
+            </button>
+          </form>
+        )}
         <div className="flex flex-col gap-4 w-full">
           <Link
             href="/"

@@ -12,7 +12,7 @@ const LicenseUserSchema = new mongoose.Schema({
   },
   plan: {
     type: String,
-    enum: ["monthly", "lifetime"],
+    enum: ["monthly", "lifetime", "giveaway"],
     required: true,
   },
   purchasedAt: {

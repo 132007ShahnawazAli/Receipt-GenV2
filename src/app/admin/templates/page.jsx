@@ -24,13 +24,22 @@ const TemplatesPage = () => {
 
   const fetchTemplates = async () => {
     try {
-      const response = await fetch('/api/templates');
-      if (!response.ok) throw new Error('Failed to fetch templates');
+      console.log('Fetching templates from admin API...');
+      const response = await fetch('/api/admin/templates');
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error response:', errorData);
+        throw new Error(errorData.error || 'Failed to fetch templates');
+      }
+      
       const data = await response.json();
+      console.log('Fetched templates:', data);
       setTemplates(data);
     } catch (error) {
       console.error('Error fetching templates:', error);
-      toast.error('Failed to load templates');
+      toast.error('Failed to load templates: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -43,7 +52,7 @@ const TemplatesPage = () => {
 
     setDeletingId(id);
     try {
-      const response = await fetch(`/api/templates/${id}`, {
+      const response = await fetch(`/api/admin/templates?id=${id}`, {
         method: 'DELETE',
       });
 
@@ -64,7 +73,7 @@ const TemplatesPage = () => {
 
   const duplicateTemplate = async (template) => {
     try {
-      const response = await fetch('/api/templates', {
+      const response = await fetch('/api/admin/templates', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

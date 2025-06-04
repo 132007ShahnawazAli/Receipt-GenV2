@@ -20,7 +20,7 @@ export async function middleware(request) {
   if (pathname.startsWith("/admin") && pathname !== "/admin") {
     // Check for admin authentication cookie
     const adminToken = request.cookies.get("admin_token")
-    if (!adminToken?.value) {
+    if (!adminToken || adminToken.value !== "true") {
       return NextResponse.redirect(new URL("/admin", request.url))
     }
   }
@@ -42,6 +42,16 @@ export async function middleware(request) {
   // Redirect authenticated users away from login page
   if (pathname === "/login" && token && !pathname.startsWith("/dashboard")) {
     return NextResponse.redirect(new URL("/", request.url))
+  }
+
+  // If it's the admin login page and they're already logged in
+  if (pathname === "/admin") {
+    const adminToken = request.cookies.get("admin_token")
+    
+    // If they're already logged in, redirect to admin templates
+    if (adminToken?.value === "true") {
+      return NextResponse.redirect(new URL("/admin/templates", request.url))
+    }
   }
 
   return NextResponse.next()
