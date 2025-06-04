@@ -194,33 +194,32 @@ const TemplatesPage = () => {
                 {/* Template Preview Card */}
                 <div className="mx-5 mb-4 h-32 bg-white rounded-lg border border-zinc-800/50 flex items-center justify-center overflow-hidden cursor-pointer group/preview" onClick={() => handlePreview(template)}>
                   <div className="relative w-full h-full">
-                    {/* Display the actual logo image */}
+                    {/* Display the actual logo image with fallback to brand name */}
                     {template.logo ? (
-                      <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="absolute inset-0 flex items-center justify-center bg-(--primary-text)">
                         <img 
                           src={template.logo} 
-                          alt={`${template.name} logo`}
-                          className="max-h-full max-w-full object-contain p-2"
+                          alt={template.name}
+                          className="max-w-[80%] max-h-[80%] object-contain"
                           onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = 'https://via.placeholder.com/150?text=Logo';
-                            console.log('Using direct logo URL:', template.logo);
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'block';
                           }}
                         />
+                        <div 
+                          className="hidden text-2xl font-bold text-gray-800 text-center px-4"
+                          style={{ wordBreak: 'break-word' }}
+                        >
+                          {template.name}
+                        </div>
                       </div>
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
+                        <div className="text-2xl font-bold text-gray-800 text-center px-4" style={{ wordBreak: 'break-word' }}>
+                          {template.name}
+                        </div>
                       </div>
                     )}
-                    
-                    {/* Preview Overlay */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover/preview:opacity-100 transition-opacity bg-black/60 backdrop-blur-sm">
-                      <Eye className="w-6 h-6 text-white" />
-                      <span className="mt-2 text-sm font-medium text-white">Preview Template</span>
-                    </div>
                   </div>
                 </div>
                 

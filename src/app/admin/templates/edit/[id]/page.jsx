@@ -442,7 +442,7 @@ const EditTemplatePage = () => {
               <div className="px-6 py-5 space-y-6">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-[var(--primary-text)] mb-1 flex items-center">
+                    <label htmlFor="name" className=" text-sm font-medium text-[var(--primary-text)] mb-1 flex items-center">
                       <span>Template Name</span>
                       <span className="ml-1 text-[var(--accent-text)]">*</span>
                     </label>
@@ -465,7 +465,7 @@ const EditTemplatePage = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="slug" className="block text-sm font-medium text-[var(--primary-text)] mb-1 flex items-center">
+                    <label htmlFor="slug" className=" text-sm font-medium text-[var(--primary-text)] mb-1 flex items-center">
                       <span>URL Slug</span>
                       <span className="ml-1 text-[var(--accent-text)]">*</span>
                       <span className="ml-2 text-xs text-[var(--secondary-text)] bg-zinc-800 px-1.5 py-0.5 rounded">URL Friendly</span>
@@ -493,7 +493,7 @@ const EditTemplatePage = () => {
                 </div>
 
                 <div className="mt-4">
-                  <label htmlFor="logo" className="block text-sm font-medium text-[var(--primary-text)] mb-1 flex items-center">
+                  <label htmlFor="logo" className=" text-sm font-medium text-[var(--primary-text)] mb-1 flex items-center">
                     <span>Logo URL</span>
                     <span className="ml-1 text-[var(--accent-text)]">*</span>
                   </label>
@@ -529,7 +529,7 @@ const EditTemplatePage = () => {
                 </div>
 
                 <div className="mt-4">
-                  <label htmlFor="subject" className="block text-sm font-medium text-[var(--primary-text)] mb-1 flex items-center">
+                  <label htmlFor="subject" className=" text-sm font-medium text-[var(--primary-text)] mb-1 flex items-center">
                     <span>Email Subject</span>
                     <span className="ml-1 text-[var(--accent-text)]">*</span>
                   </label>
@@ -847,7 +847,7 @@ const EditTemplatePage = () => {
                     {activeTab === 'editor' ? (
                       <div>
                         <div className="flex justify-between items-center mb-3">
-                          <label className="block text-sm font-medium text-[var(--primary-text)] flex items-center">
+                          <label className="text-sm font-medium text-[var(--primary-text)] flex items-center">
                             <span>HTML Template</span>
                             <span className="ml-1 text-[var(--accent-text)]">*</span>
                           </label>

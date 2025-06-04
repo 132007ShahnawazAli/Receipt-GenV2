@@ -91,11 +91,11 @@ export default function LicenseKeyLogin() {
             Buy
           </Link>
           <Link
-            href="https://t.me/resellora"
+            href="https://discord.gg/resellora"
             target="_blank"
             className="w-full py-2 rounded-md border border-[var(--primary-text)]/10 text-base text-[var(--primary-text)] text-center hover:border-[var(--accent-text)] transition-all"
           >
-            Our Telegram
+            Our Discord
           </Link>
         </div>
       </div>

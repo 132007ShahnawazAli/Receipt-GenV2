@@ -5,6 +5,7 @@ import { X } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { getTemplateByBrandId } from "@/lib/templates"
 import { toast } from "react-hot-toast"
+import { Spinner } from "./ui/Spinner"
 
 export default function OrderForm({
   brand,
@@ -255,64 +256,70 @@ export default function OrderForm({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ isolation: "isolate" }}>
-      <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
-      <div className="relative bg-[var(--background)] text-[var(--primary-text)] rounded-2xl w-full max-w-2xl p-0 shadow-xl flex flex-col" style={{ minWidth: 400, maxHeight: '90vh' }}>
-        {/* Header */}
-        <div className="flex items-center justify-between px-8 py-6 border-b border-zinc-800 rounded-t-2xl bg-[var(--background-secondary)]">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            {(() => {
-              const displayName = brand.displayName || brand.name || '';
-              const showName = /receipt$/i.test(displayName.trim()) ? displayName : `${displayName} Receipt`;
-              return showName;
-            })()}
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-[var(--accent-text)] hover:text-[var(--accent-text)]/60 transition-colors p-1 rounded-full focus:outline-none cursor-pointer"
-            aria-label="Close"
-          >
-            <X size={28} />
-          </button>
-        </div>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+        >
+          <X className="h-5 w-5" />
+        </button>
 
-        {/* Form */}
-        <div className="flex-1 overflow-y-auto custom-scrollbar px-8 py-6" style={{ maxHeight: 'calc(90vh - 88px)' }} onClick={e => e.stopPropagation()} onWheel={e => e.stopPropagation()}>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="p-2 bg-red-500/10 border border-red-500 text-red-500 rounded text-sm mb-4">{error}</div>
-            )}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4">
-              {formFields.map((field, idx) => (
-                <div key={field.name} className="flex flex-col space-y-2">
-                  <label className="block text-sm font-medium mb-1">
-                    {field.label}
-                  </label>
-                  <input
-                    type={field.type || 'text'}
-                    name={field.name}
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder={field.placeholder}
-                    className={`w-full px-5 py-2 bg-[var(--background-secondary)] border ${formErrors[field.name] ? 'border-red-500' : 'border-zinc-800'} rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)]/50 placeholder:text-[var(--secondary-text)] placeholder:opacity-70 text-sm`}
-                  />
-                  {formErrors[field.name] && (
-                    <p className="text-xs text-red-500 mt-1">{formErrors[field.name]}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="pt-2">
+        {!isTemplateLoaded ? (
+          <div className="min-h-[200px] flex items-center justify-center">
+            <Spinner className="h-8 w-8" />
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 py-8">{error}</div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <h2 className="text-xl font-semibold mb-4">
+              {isEditing ? "Edit Receipt" : "Generate Receipt"}
+            </h2>
+            
+            {/* Form fields */}
+            {formFields.map((field) => (
+              <div key={field.name} className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">
+                  {field.label}
+                  {field.required && <span className="text-red-500">*</span>}
+                </label>
+                <input
+                  type={field.type || "text"}
+                  name={field.name}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder={field.placeholder}
+                  className={`w-full px-3 py-2 border rounded-md ${
+                    formErrors[field.name]
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } focus:outline-none focus:ring-2 focus:ring-primary/50`}
+                />
+                {formErrors[field.name] && (
+                  <p className="text-red-500 text-sm">{formErrors[field.name]}</p>
+                )}
+              </div>
+            ))}
+
+            <div className="flex justify-end pt-4">
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-2 bg-[var(--accent-text)] hover:bg-[var(--accent-text)]/80 text-black font-bold rounded-sm text-sm transition-colors disabled:opacity-70 shadow-md"
+                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
-                {isSubmitting ? 'Generating...' : 'Submit'}
+                {isSubmitting ? (
+                  <>
+                    <Spinner className="h-4 w-4" />
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <span>{isEditing ? "Update Receipt" : "Generate Receipt"}</span>
+                )}
               </button>
             </div>
           </form>
-        </div>
+        )}
       </div>
     </div>
   )

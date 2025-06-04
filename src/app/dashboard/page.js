@@ -42,6 +42,7 @@ export default function Dashboard() {
   const [overlayOpacity, setOverlayOpacity] = useState(1)
   const [showSuccessNotification, setShowSuccessNotification] = useState(false)
   const [showLogoAnimation, setShowLogoAnimation] = useState(false)
+  const [logoAnimationComplete, setLogoAnimationComplete] = useState(false)
   const loadingAnimationRef = useRef(null)
   const [allDataLoaded, setAllDataLoaded] = useState(false)
   const [showNotice, setShowNotice] = useState(true);
@@ -202,6 +203,10 @@ export default function Dashboard() {
     // If authenticated and we haven't tried to fetch data yet
     if (status === "authenticated" && !dataFetchAttempted) {
       setDataFetchAttempted(true)
+      setIsLoading(true)
+      setShowLoadingOverlay(true)
+      setShowLogoAnimation(false)
+      setLogoAnimationComplete(false)
 
       // Check if user has active subscription from session
       if (session?.user?.hasActiveSubscription) {
@@ -214,51 +219,43 @@ export default function Dashboard() {
         // Add any other API calls here that need to complete before showing dashboard
       ]).then(() => {
         setAllDataLoaded(true)
-        // Show logo animation after data is loaded
+        // Start logo animation immediately after data is loaded
         setShowLogoAnimation(true)
+        
+        // Set a timeout for logo animation duration (adjust time as needed)
+        setTimeout(() => {
+          setLogoAnimationComplete(true)
+        }, 2000) // Adjust this value based on your logo animation duration
       }).catch((error) => {
         console.error("Error loading dashboard data:", error)
         toast.error("Failed to load some dashboard data")
+        setIsLoading(false)
       })
     }
   }, [status, session, dataFetchAttempted, router])
 
   // Handle loading overlay and animations
   useEffect(() => {
-    // Reset loading state
-    setShowLoadingOverlay(true)
-    setOverlayOpacity(1)
-    setShowLogoAnimation(false)
+    if (!allDataLoaded || !showLogoAnimation) return
 
-    // Only start fade out when all data is loaded and logo animation is shown
-    if (allDataLoaded && !brandsLoading) {
-      // Show logo animation first
-      setShowLogoAnimation(true)
+    if (logoAnimationComplete) {
+      // Start fading out the overlay
+      const fadeInterval = setInterval(() => {
+        setOverlayOpacity((prevOpacity) => {
+          const newOpacity = prevOpacity - 0.05
+          if (newOpacity <= 0) {
+            clearInterval(fadeInterval)
+            setShowLoadingOverlay(false)
+            setIsLoading(false)
+            return 0
+          }
+          return newOpacity
+        })
+      }, 20) // Smooth fade out
 
-      // After logo animation completes, start fading out
-      const timer = setTimeout(() => {
-        const fadeOutAnimation = () => {
-          setOverlayOpacity((prevOpacity) => {
-            const newOpacity = prevOpacity - 0.05
-            if (newOpacity <= 0) {
-              // When fully transparent, remove the overlay
-              setShowLoadingOverlay(false)
-              return 0
-            }
-            return newOpacity
-          })
-        }
-
-        // Create a smooth fade-out effect
-        const fadeInterval = setInterval(fadeOutAnimation, 30)
-
-        // Clean up the interval when component unmounts
-        return () => clearInterval(fadeInterval)
-      }, 1200) // Wait for logo animation to complete
-
-      return () => clearTimeout(timer)
+      return () => clearInterval(fadeInterval)
     }
-  }, [allDataLoaded, brandsLoading])
+  }, [allDataLoaded, showLogoAnimation, logoAnimationComplete])
 
   const fetchUserStats = async () => {
     try {

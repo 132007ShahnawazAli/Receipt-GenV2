@@ -9,21 +9,23 @@
   --primary-button-text-color: #0000;
 }
 
-@keyframes logoGrow {
+@keyframes logo-grow {
   0% {
-    transform: scale(0);
+    transform: scale(0.2);
     opacity: 0;
-    rotate: 180deg;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
   }
   100% {
     transform: scale(1);
     opacity: 1;
-    rotate: 0deg;
   }
 }
 
 .animate-logo-grow {
-  animation: logoGrow 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: logo-grow 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 /* Add fade-out animation for the loading screen */
@@ -100,4 +102,23 @@ body {
   border-radius: 50%;
   filter: blur(8px);
   z-index: -1;
+}
+
+/* Loading Overlay Transition */
+.loading-overlay-enter {
+  opacity: 0;
+}
+
+.loading-overlay-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.loading-overlay-exit {
+  opacity: 1;
+}
+
+.loading-overlay-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
 }
