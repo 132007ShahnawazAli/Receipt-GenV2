@@ -8,7 +8,6 @@ const LicenseUserSchema = new mongoose.Schema({
   licenseKey: {
     type: String,
     required: true,
-    unique: true,
   },
   plan: {
     type: String,
@@ -92,5 +91,8 @@ const LicenseUserSchema = new mongoose.Schema({
     default: null,
   },
 })
+
+// Add a compound index to ensure licenseKey uniqueness
+LicenseUserSchema.index({ licenseKey: 1 }, { unique: true })
 
 export default mongoose.models.LicenseUser || mongoose.model("LicenseUser", LicenseUserSchema)

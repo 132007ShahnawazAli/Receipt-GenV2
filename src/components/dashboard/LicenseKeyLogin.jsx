@@ -32,14 +32,14 @@ export default function LicenseKeyLogin() {
       }
 
       // Handle unredeemed giveaway key
-      if (validateData.isGiveawayKey) {
+      if (validateData.isGiveawayKey && !validateData.isRedeemed) {
         setGiveawayKeyData(validateData)
         setShowEmailForm(true)
         setLoading(false)
         return
       }
 
-      // Regular license key login
+      // Regular license key login - now handles any type of valid key
       const result = await signIn("license-key", {
         redirect: false,
         licenseKey,

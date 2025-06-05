@@ -42,31 +42,28 @@ export async function POST(request) {
       )
     }
 
-    // Check if user already has a license
-    let licenseUser = await LicenseUser.findOne({ email })
+    // Check if this specific license key is already in use
+    const existingLicense = await LicenseUser.findOne({ licenseKey })
+    if (existingLicense) {
+      return NextResponse.json(
+        { message: "This license key is already in use" },
+        { status: 400 }
+      )
+    }
 
     // Calculate expiration date based on giveaway key's expiration days
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + giveawayKey.expirationDays)
 
-    if (licenseUser) {
-      // Update existing user's license
-      licenseUser.licenseKey = licenseKey
-      licenseUser.plan = "giveaway"
-      licenseUser.expiresAt = expiresAt
-      licenseUser.purchasedAt = new Date()
-      licenseUser.isActive = true
-      await licenseUser.save()
-    } else {
-      // Create new license user
-      licenseUser = new LicenseUser({
-        email,
-        licenseKey,
-        plan: "giveaway",
-        expiresAt,
-      })
-      await licenseUser.save()
-    }
+    // Create new license user entry (always create new, never update existing)
+    const newLicenseUser = new LicenseUser({
+      email,
+      licenseKey,
+      plan: "giveaway",
+      expiresAt,
+      isActive: true
+    })
+    await newLicenseUser.save()
 
     // Mark giveaway key as redeemed
     giveawayKey.isRedeemed = true
