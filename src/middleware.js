@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server"
 import { getToken } from "next-auth/jwt"
 
+export const config = {
+  matcher: ["/admin/:path*", "/dashboard/:path*", "/login", "/api/generate-receipt/:path*"],
+}
+
 export async function middleware(request) {
   const { pathname } = request.nextUrl
 
@@ -13,50 +17,43 @@ export async function middleware(request) {
     })
   } catch (error) {
     console.error("Error getting token in middleware:", error)
-    // Continue without token on error
+    return handleAuthError(request)
   }
 
-  // Check for admin routes
+  // Handle protected routes
+  if (pathname.startsWith("/dashboard")) {
+    if (!token?.isLicenseUser) {
+      return handleAuthError(request)
+    }
+
+    // Check license expiration from token
+    if (token.expiresAt && new Date(token.expiresAt) < new Date()) {
+      return handleAuthError(request)
+    }
+  }
+
+  // Handle admin routes
   if (pathname.startsWith("/admin") && pathname !== "/admin") {
-    // Check for admin authentication cookie
     const adminToken = request.cookies.get("admin_token")
-    if (!adminToken || adminToken.value !== "true") {
+    if (!adminToken?.value === "true") {
       return NextResponse.redirect(new URL("/admin", request.url))
     }
   }
 
-  // Check if the path is protected dashboard routes
-  if (pathname.startsWith("/dashboard") && pathname !== "/login") {
-    // Redirect to license login if not authenticated or if not a license user
-    if (!token || !token.isLicenseUser) {
-      return NextResponse.redirect(new URL("/login", request.url))
-    }
-  }
-
-  // Redirect authenticated license users away from login page
-  if (pathname === "/login" && token?.isLicenseUser) {
-    return NextResponse.redirect(new URL("/dashboard", request.url))
-  }
-
-  // Handle regular site authentication redirects
-  // Redirect authenticated users away from login page
-  if (pathname === "/login" && token && !pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/", request.url))
-  }
-
-  // If it's the admin login page and they're already logged in
-  if (pathname === "/admin") {
-    const adminToken = request.cookies.get("admin_token")
-    
-    // If they're already logged in, redirect to admin templates
-    if (adminToken?.value === "true") {
-      return NextResponse.redirect(new URL("/admin/templates", request.url))
+  // Handle login redirects
+  if (pathname === "/login") {
+    if (token?.isLicenseUser) {
+      return NextResponse.redirect(new URL("/dashboard", request.url))
     }
   }
 
   return NextResponse.next()
 }
 
-export const config = {
-  matcher: ["/admin/:path*", "/dashboard/:path*", "/login", "/api/generate-receipt/:path*"],
+function handleAuthError(request) {
+  const response = NextResponse.redirect(new URL("/login", request.url))
+  // Clear auth cookies
+  response.cookies.delete("next-auth.session-token")
+  response.cookies.delete("__Secure-next-auth.session-token")
+  return response
 }
