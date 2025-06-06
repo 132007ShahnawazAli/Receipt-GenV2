@@ -1,5 +1,6 @@
 import { connectToDatabase } from "@/lib/utils"
 import LicenseUser from "@/models/LicenseUser"
+import GiveawayLicenseKey from "@/models/GiveawayLicenseKey"
 
 export const authOptions = {
   providers: [
@@ -28,9 +29,34 @@ export const authOptions = {
           throw new Error("This license key has been deactivated")
         }
 
-        // Check if license is expired (for monthly plans)
-        if (licenseUser.plan === "monthly" && licenseUser.expiresAt && new Date(licenseUser.expiresAt) < new Date()) {
-          throw new Error("This license key has expired")
+        let expiresAt = null
+
+        // Check expiration based on license type
+        switch (licenseUser.plan) {
+          case "monthly":
+            expiresAt = licenseUser.expiresAt
+            if (expiresAt && new Date(expiresAt) < new Date()) {
+              throw new Error("This monthly license key has expired")
+            }
+            break
+          
+          case "giveaway":
+            const giveawayKey = await GiveawayLicenseKey.findOne({ licenseKey: credentials.licenseKey })
+            if (!giveawayKey) {
+              throw new Error("Invalid giveaway license key")
+            }
+            expiresAt = giveawayKey.expiresAt
+            if (new Date(expiresAt) < new Date()) {
+              throw new Error("This giveaway license key has expired")
+            }
+            break
+          
+          case "lifetime":
+            // No expiration for lifetime
+            break
+          
+          default:
+            throw new Error("Invalid license type")
         }
 
         // Update last login time
@@ -47,7 +73,8 @@ export const authOptions = {
           plan: licenseUser.plan,
           discordUsername: licenseUser.discordUsername,
           hasActiveSubscription: true,
-          isLicenseUser: true, // Flag to identify license users
+          isLicenseUser: true,
+          expiresAt: expiresAt ? expiresAt.toISOString() : null
         }
       },
     },
@@ -69,11 +96,11 @@ export const authOptions = {
         token.isLicenseUser = user.isLicenseUser
         token.licenseKey = user.licenseKey
         token.plan = user.plan
+        token.expiresAt = user.expiresAt
       }
 
       // Handle session updates
       if (trigger === "update" && session) {
-        // Update the token with the new session data
         Object.keys(session).forEach((key) => {
           if (key !== "iat" && key !== "exp" && key !== "jti") {
             token[key] = session[key]
@@ -97,6 +124,7 @@ export const authOptions = {
           isLicenseUser: token.isLicenseUser,
           licenseKey: token.licenseKey,
           plan: token.plan,
+          expiresAt: token.expiresAt
         }
       }
       return session

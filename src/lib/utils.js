@@ -46,3 +46,48 @@ export async function connectToDatabase() {
     throw error
   }
 }
+
+// Check if license key is valid and not expired
+export async function isLicenseKeyValid(licenseKey) {
+  try {
+    await connectToDatabase()
+    const LicenseUser = mongoose.models.LicenseUser || mongoose.model('LicenseUser', require('@/models/LicenseUser').schema)
+    const GiveawayLicenseKey = mongoose.models.GiveawayLicenseKey || mongoose.model('GiveawayLicenseKey', require('@/models/GiveawayLicenseKey').schema)
+    
+    const licenseUser = await LicenseUser.findOne({ licenseKey })
+    
+    if (!licenseUser || !licenseUser.isActive) {
+      return false
+    }
+
+    // Handle different license types
+    switch (licenseUser.plan) {
+      case "monthly":
+        return licenseUser.expiresAt && new Date(licenseUser.expiresAt) > new Date()
+      
+      case "giveaway":
+        // For giveaway keys, check both LicenseUser and GiveawayLicenseKey
+        const giveawayKey = await GiveawayLicenseKey.findOne({ licenseKey })
+        if (!giveawayKey) {
+          return false
+        }
+        return giveawayKey.expiresAt && new Date(giveawayKey.expiresAt) > new Date()
+      
+      case "lifetime":
+        return true
+      
+      default:
+        return false
+    }
+  } catch (error) {
+    console.error("Error checking license validity:", error)
+    return false
+  }
+}
+
+// Helper function to calculate expiration date for giveaway keys
+export function calculateGiveawayExpiration(days) {
+  const expirationDate = new Date()
+  expirationDate.setDate(expirationDate.getDate() + days)
+  return expirationDate
+}

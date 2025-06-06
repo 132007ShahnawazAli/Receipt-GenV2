@@ -1,15 +1,23 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-// In a real application, this should be stored securely in environment variables
-const ADMIN_PASSWORD = 'admin123'; // Change this to a secure password
-
 export async function POST(request) {
   try {
     const body = await request.json();
     const { password } = body;
 
-    if (password !== ADMIN_PASSWORD) {
+    // Get admin password from environment variable
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    
+    if (!adminPassword) {
+      console.error('ADMIN_PASSWORD environment variable is not set');
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
+    }
+
+    if (password !== adminPassword) {
       return NextResponse.json(
         { error: 'Invalid password' },
         { status: 401 }
@@ -22,11 +30,11 @@ export async function POST(request) {
     // Create the response first
     const response = NextResponse.json({ success: true });
     
-    // Set the cookie in the response
+    // Set the cookie in the response with consistent security settings
     response.cookies.set('admin_token', 'true', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: true, // Always use secure cookies
+      sameSite: 'lax', // Changed to 'lax' to work better across environments
       maxAge: 60 * 60 * 24, // 24 hours
       path: '/',
     });
