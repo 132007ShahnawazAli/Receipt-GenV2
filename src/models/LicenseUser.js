@@ -1,5 +1,10 @@
 import mongoose from "mongoose"
 
+// Drop existing model to apply changes
+if (mongoose.models.LicenseUser) {
+  delete mongoose.models.LicenseUser;
+}
+
 const LicenseUserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -92,7 +97,27 @@ const LicenseUserSchema = new mongoose.Schema({
   },
 })
 
+// Pre-validate middleware to handle lifetime licenses
+LicenseUserSchema.pre('validate', function(next) {
+  if (this.plan === 'lifetime') {
+    this.expiresAt = null;
+  }
+  next();
+});
+
+// Method to check if the license is expired
+LicenseUserSchema.methods.isExpired = function() {
+  if (this.plan === 'lifetime') return false;
+  if (!this.expiresAt) return false;
+  return new Date() > new Date(this.expiresAt);
+};
+
+// Method to check if the license is valid
+LicenseUserSchema.methods.isValid = function() {
+  return this.isActive && !this.isExpired();
+};
+
 // Add a compound index to ensure licenseKey uniqueness
 LicenseUserSchema.index({ licenseKey: 1 }, { unique: true })
 
-export default mongoose.models.LicenseUser || mongoose.model("LicenseUser", LicenseUserSchema)
+export default mongoose.model("LicenseUser", LicenseUserSchema)

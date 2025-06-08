@@ -23,7 +23,7 @@ const GiveawayLicenseKeySchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    default: () => new Date().toISOString(),
+    default: Date.now,
   },
   redeemedAt: {
     type: Date,
@@ -62,46 +62,59 @@ const GiveawayLicenseKeySchema = new mongoose.Schema({
   }
 })
 
-// Pre-save middleware to validate and handle expiration calculation
+// Pre-validate middleware to ensure proper values
 GiveawayLicenseKeySchema.pre('validate', function(next) {
-  // Validate durationInDays based on isLifetime
-  if (this.isLifetime && this.durationInDays !== -1) {
+  // For lifetime keys
+  if (this.isLifetime) {
     this.durationInDays = -1;
-  } else if (!this.isLifetime && this.durationInDays <= 0) {
+    this.expiresAt = null;
+  } 
+  // For timed keys
+  else if (this.durationInDays <= 0) {
     const err = new Error('Duration must be positive for non-lifetime keys');
     return next(err);
   }
   next();
 });
 
-GiveawayLicenseKeySchema.pre('save', function(next) {
-  // Only calculate expiration if the key is being redeemed for the first time
-  if (this.isModified('isRedeemed') && this.isRedeemed && !this.redeemedAt) {
-    const now = new Date()
-    this.redeemedAt = now
-    
-    // Don't set expiration date for lifetime keys
-    if (!this.isLifetime) {
-      // Calculate expiration date in UTC
-      const expirationDate = new Date(now)
-      expirationDate.setUTCDate(expirationDate.getUTCDate() + this.durationInDays)
-      this.expiresAt = expirationDate
-    }
-  }
-  next()
-})
+// Virtual for remaining days
+GiveawayLicenseKeySchema.virtual('remainingDays').get(function() {
+  if (this.isLifetime) return Infinity;
+  if (!this.isRedeemed) return this.durationInDays;
+  if (!this.expiresAt) return 0;
+
+  const now = new Date();
+  const expiresAt = new Date(this.expiresAt);
+  const diffTime = expiresAt - now;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return Math.max(0, diffDays);
+});
+
+// Virtual for status text
+GiveawayLicenseKeySchema.virtual('statusText').get(function() {
+  if (!this.isRedeemed) return `Valid for ${this.durationInDays} days when redeemed`;
+  if (this.isLifetime) return 'Lifetime License';
+  if (this.isExpired()) return 'Expired';
+  return `Expires in ${this.remainingDays} days`;
+});
 
 // Method to check if the key is expired
 GiveawayLicenseKeySchema.methods.isExpired = function() {
-  if (this.isLifetime || !this.isRedeemed || !this.expiresAt) {
-    return false
-  }
-  return new Date() > new Date(this.expiresAt)
+  if (this.isLifetime) return false;
+  if (!this.isRedeemed) return false;
+  if (!this.expiresAt) return false;
+  return new Date() > new Date(this.expiresAt);
 }
 
 // Method to check if the key is valid for use
 GiveawayLicenseKeySchema.methods.isValid = function() {
-  return this.isRedeemed && (this.isLifetime || !this.isExpired())
+  if (!this.isRedeemed) return true;
+  if (this.isLifetime) return true;
+  return !this.isExpired();
 }
+
+// Ensure virtuals are included in JSON
+GiveawayLicenseKeySchema.set('toJSON', { virtuals: true });
+GiveawayLicenseKeySchema.set('toObject', { virtuals: true });
 
 export default mongoose.model("GiveawayLicenseKey", GiveawayLicenseKeySchema) 

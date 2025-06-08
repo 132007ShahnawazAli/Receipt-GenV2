@@ -116,9 +116,33 @@ export async function GET(request) {
       .sort({ createdAt: -1 })
       .limit(100)
 
+    // Transform the keys to include computed properties
+    const transformedKeys = keys.map(key => {
+      const keyObj = key.toObject({ virtuals: true });
+      const now = new Date();
+      
+      // Add isExpired status
+      keyObj.isExpired = key.isLifetime ? false : 
+        (key.isRedeemed && key.expiresAt ? new Date() > new Date(key.expiresAt) : false);
+
+      // Calculate remaining days
+      if (key.isLifetime) {
+        keyObj.remainingDays = Infinity;
+      } else if (!key.isRedeemed) {
+        keyObj.remainingDays = key.durationInDays;
+      } else if (key.expiresAt) {
+        const diffTime = new Date(key.expiresAt) - now;
+        keyObj.remainingDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+      } else {
+        keyObj.remainingDays = 0;
+      }
+
+      return keyObj;
+    });
+
     return NextResponse.json({
       success: true,
-      keys
+      keys: transformedKeys
     })
   } catch (error) {
     console.error("Error fetching giveaway keys:", error)

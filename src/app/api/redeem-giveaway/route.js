@@ -34,14 +34,6 @@ export async function POST(request) {
       )
     }
 
-    // Check if key is expired
-    if (new Date() > new Date(giveawayKey.expiresAt)) {
-      return NextResponse.json(
-        { message: "This giveaway key has expired" },
-        { status: 400 }
-      )
-    }
-
     // Check if this specific license key is already in use
     const existingLicense = await LicenseUser.findOne({ licenseKey })
     if (existingLicense) {
@@ -51,32 +43,42 @@ export async function POST(request) {
       )
     }
 
-    // Calculate expiration date based on giveaway key's expiration days
-    const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + giveawayKey.expirationDays)
+    // Set up the license user data
+    const now = new Date()
+    let expiresAt = null
 
-    // Create new license user entry (always create new, never update existing)
+    // Calculate expiration for non-lifetime keys
+    if (!giveawayKey.isLifetime) {
+      expiresAt = new Date(now)
+      expiresAt.setDate(now.getDate() + giveawayKey.durationInDays)
+    }
+
+    // Create new license user entry
     const newLicenseUser = new LicenseUser({
       email,
       licenseKey,
-      plan: "giveaway",
+      plan: giveawayKey.isLifetime ? "lifetime" : "giveaway",
       expiresAt,
       isActive: true
     })
     await newLicenseUser.save()
 
-    // Mark giveaway key as redeemed
+    // Mark giveaway key as redeemed and set expiration
     giveawayKey.isRedeemed = true
+    giveawayKey.redeemedAt = now
+    giveawayKey.expiresAt = expiresAt
     giveawayKey.redeemedBy = {
       email,
-      redeemedAt: new Date()
+      userId: newLicenseUser._id
     }
     await giveawayKey.save()
 
     return NextResponse.json({
       success: true,
       message: "Giveaway key redeemed successfully",
-      expiresAt
+      isLifetime: giveawayKey.isLifetime,
+      expiresAt,
+      remainingDays: giveawayKey.isLifetime ? Infinity : giveawayKey.durationInDays
     })
   } catch (error) {
     console.error("Giveaway key redemption error:", error)

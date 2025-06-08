@@ -24,29 +24,32 @@ export async function POST(request) {
       const giveawayKey = await GiveawayLicenseKey.findOne({ licenseKey })
       
       if (giveawayKey) {
-        // Check if key is expired
-        if (new Date() > new Date(giveawayKey.expiresAt)) {
-          return NextResponse.json(
-            { message: "This giveaway key has expired" },
-            { status: 401 }
-          )
-        }
-
         // If key exists and is not redeemed, create a temporary auth response
         if (!giveawayKey.isRedeemed) {
           return NextResponse.json({
             isGiveawayKey: true,
             licenseKey: giveawayKey.licenseKey,
-            expirationDays: giveawayKey.expirationDays,
+            isLifetime: giveawayKey.isLifetime,
+            durationInDays: giveawayKey.durationInDays,
             hasActiveSubscription: false // Will become true after redeeming
           })
+        }
+
+        // For redeemed keys, check expiration only for non-lifetime keys
+        if (giveawayKey.isRedeemed && !giveawayKey.isLifetime && giveawayKey.expiresAt) {
+          if (new Date() > new Date(giveawayKey.expiresAt)) {
+            return NextResponse.json(
+              { message: "This giveaway key has expired" },
+              { status: 401 }
+            )
+          }
         }
 
         // If key is redeemed, get the associated license user
         if (giveawayKey.isRedeemed && giveawayKey.redeemedBy?.email) {
           user = await LicenseUser.findOne({ 
             email: giveawayKey.redeemedBy.email,
-            plan: "giveaway"
+            licenseKey: giveawayKey.licenseKey
           })
         }
       }
@@ -60,7 +63,7 @@ export async function POST(request) {
     }
 
     // Check if license is expired for non-lifetime plans
-    if (user.expiresAt && new Date() > new Date(user.expiresAt)) {
+    if (user.plan !== "lifetime" && user.expiresAt && new Date() > new Date(user.expiresAt)) {
       return NextResponse.json(
         { message: "License key has expired" },
         { status: 401 }
@@ -77,7 +80,8 @@ export async function POST(request) {
       plan: user.plan,
       expiresAt: user.expiresAt,
       isActive: user.isActive,
-      hasActiveSubscription: true
+      hasActiveSubscription: true,
+      isLifetime: user.plan === "lifetime"
     })
   } catch (error) {
     console.error("License login error:", error)

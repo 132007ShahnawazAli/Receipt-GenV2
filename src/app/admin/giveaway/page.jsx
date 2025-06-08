@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { Loader2, Download, Gift, Clock, Key, FileText, Infinity } from 'lucide-react';
+import { Loader2, Download, Gift, Clock, Key, FileText, Infinity, Calendar } from 'lucide-react';
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -211,10 +211,22 @@ export default function Page() {
                         ) : (
                           <>
                             <Clock className="w-4 h-4" />
-                            <span>Expires: {new Date(key.expiresAt).toLocaleDateString()}</span>
+                            <span>
+                              {!key.isRedeemed
+                                ? `Valid for ${key.durationInDays} days when redeemed`
+                                : key.isExpired
+                                ? 'Expired'
+                                : `Expires in ${key.remainingDays} days`}
+                            </span>
                           </>
                         )}
                       </div>
+                      {key.redeemedAt && (
+                        <div className="flex items-center space-x-2 text-sm text-[var(--secondary-text)]">
+                          <Calendar className="w-4 h-4" />
+                          <span>Redeemed on {new Date(key.redeemedAt).toLocaleDateString()}</span>
+                        </div>
+                      )}
                       {key.notes && (
                         <div className="flex items-center space-x-2 text-sm text-[var(--secondary-text)]">
                           <FileText className="w-4 h-4" />
@@ -225,11 +237,17 @@ export default function Page() {
                     <span
                       className={`px-2 py-1 text-xs rounded-full ${
                         key.isRedeemed
-                          ? 'bg-green-500/10 text-green-500'
+                          ? key.isExpired
+                            ? 'bg-red-500/10 text-red-500'
+                            : 'bg-green-500/10 text-green-500'
                           : 'bg-yellow-500/10 text-yellow-500'
                       }`}
                     >
-                      {key.isRedeemed ? 'Redeemed' : 'Available'}
+                      {key.isRedeemed
+                        ? key.isExpired
+                          ? 'Expired'
+                          : 'Redeemed'
+                        : 'Available'}
                     </span>
                   </div>
                 </div>
