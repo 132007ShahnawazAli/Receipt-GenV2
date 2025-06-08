@@ -2,21 +2,10 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { FileText, Gift, LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
+import { FileText, Gift } from 'lucide-react';
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
-  const router = useRouter();
-
-  const handleLogout = () => {
-    // Remove the admin token cookie
-    Cookies.remove('admin_token');
-    
-    // Redirect to admin login
-    router.push('/admin');
-  };
 
   const navigation = [
     {
@@ -59,15 +48,6 @@ export default function AdminLayout({ children }) {
                   </Link>
                 ))}
               </div>
-            </div>
-            <div className="hidden sm:ml-6 sm:flex sm:items-center">
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="rounded-md bg-zinc-800 p-2 text-[var(--secondary-text)] hover:text-[var(--primary-text)] cursor-pointer"
-              >
-                <LogOut className="h-5 w-5" aria-hidden="true" />
-              </button>
             </div>
           </div>
         </div>
