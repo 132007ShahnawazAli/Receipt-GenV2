@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { Loader2, Download, Gift, Clock, Key, FileText } from 'lucide-react';
+import { Loader2, Download, Gift, Clock, Key, FileText, Infinity } from 'lucide-react';
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [quantity, setQuantity] = useState(10);
   const [expirationDays, setExpirationDays] = useState(30);
+  const [isLifetime, setIsLifetime] = useState(false);
   const [notes, setNotes] = useState('');
   const [giveawayKeys, setGiveawayKeys] = useState([]);
   const [filterStatus, setFilterStatus] = useState('all');
@@ -40,20 +41,25 @@ export default function Page() {
       const response = await fetch('/api/admin/giveaway-keys', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ quantity, expirationDays, notes }),
+        body: JSON.stringify({ 
+          quantity, 
+          expirationDays: isLifetime ? null : expirationDays, 
+          isLifetime,
+          notes 
+        }),
       });
 
       if (!response.ok) throw new Error('Failed to generate keys');
       
       const data = await response.json();
-      toast.success(`Successfully generated ${quantity} giveaway keys`);
+      toast.success(`Successfully generated ${quantity} ${isLifetime ? 'lifetime' : 'timed'} giveaway keys`);
       
       // Download keys as txt file
-      const blob = new Blob([data.keys.join('\n')], { type: 'text/plain' });
+      const blob = new Blob([data.keys.map(k => k.licenseKey).join('\n')], { type: 'text/plain' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `giveaway-keys-${new Date().toISOString().split('T')[0]}.txt`;
+      a.download = `giveaway-keys-${isLifetime ? 'lifetime' : expirationDays + 'days'}-${new Date().toISOString().split('T')[0]}.txt`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -98,6 +104,34 @@ export default function Page() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-[var(--primary-text)] mb-2">
+                  Key Type
+                </label>
+                <div className="flex items-center space-x-4">
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      checked={!isLifetime}
+                      onChange={() => setIsLifetime(false)}
+                      className="form-radio text-[var(--accent-text)] h-4 w-4"
+                    />
+                    <span className="ml-2 text-[var(--primary-text)]">Timed</span>
+                  </label>
+                  <label className="inline-flex items-center">
+                    <input
+                      type="radio"
+                      checked={isLifetime}
+                      onChange={() => setIsLifetime(true)}
+                      className="form-radio text-[var(--accent-text)] h-4 w-4"
+                    />
+                    <span className="ml-2 text-[var(--primary-text)]">Lifetime</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            {!isLifetime && (
+              <div>
+                <label className="block text-sm font-medium text-[var(--primary-text)] mb-2">
                   Expiration (days)
                 </label>
                 <input
@@ -108,7 +142,8 @@ export default function Page() {
                   className="w-full px-4 py-2 bg-zinc-900/50 border border-zinc-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent-text)] text-[var(--primary-text)]"
                 />
               </div>
-            </div>
+            )}
+            
             <div>
               <label className="block text-sm font-medium text-[var(--primary-text)] mb-2">
                 Notes (optional)
@@ -130,7 +165,7 @@ export default function Page() {
               ) : (
                 <Gift className="w-4 h-4 mr-2" />
               )}
-              Generate Keys
+              Generate {isLifetime ? 'Lifetime' : 'Timed'} Keys
             </button>
           </form>
         </div>
@@ -168,8 +203,17 @@ export default function Page() {
                         <span className="font-mono text-[var(--primary-text)]">{key.licenseKey}</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-[var(--secondary-text)]">
-                        <Clock className="w-4 h-4" />
-                        <span>Expires: {new Date(key.expiresAt).toLocaleDateString()}</span>
+                        {key.isLifetime ? (
+                          <>
+                            <Infinity className="w-4 h-4" />
+                            <span>Lifetime License</span>
+                          </>
+                        ) : (
+                          <>
+                            <Clock className="w-4 h-4" />
+                            <span>Expires: {new Date(key.expiresAt).toLocaleDateString()}</span>
+                          </>
+                        )}
                       </div>
                       {key.notes && (
                         <div className="flex items-center space-x-2 text-sm text-[var(--secondary-text)]">

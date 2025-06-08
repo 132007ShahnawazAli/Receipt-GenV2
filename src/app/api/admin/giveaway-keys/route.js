@@ -5,12 +5,6 @@ import { generateLicenseKey } from "@/lib/utils"
 import { cookies } from 'next/headers'
 import { v4 as uuidv4 } from 'uuid'
 
-// Helper function to check admin authentication
-async function checkAdminAuth(request) {
-  const adminToken = request.cookies.get('admin_token')
-  return adminToken?.value === 'true'
-}
-
 // Helper function to generate a unique license key
 async function generateUniqueLicenseKey() {
   let licenseKey = generateLicenseKey()
@@ -27,43 +21,51 @@ async function generateUniqueLicenseKey() {
 // POST endpoint to generate new giveaway keys
 export async function POST(request) {
   try {
-    // Check admin authentication
-    const isAdmin = await checkAdminAuth(request)
-    if (!isAdmin) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
-    }
+    await connectToDatabase()
+    
+    const { quantity, expirationDays, notes, isLifetime } = await request.json()
 
-    const { quantity, expirationDays, notes } = await request.json()
-
-    if (!quantity || !expirationDays || quantity < 1 || expirationDays < 1) {
+    if (!quantity || quantity < 1) {
       return NextResponse.json(
-        { message: "Invalid quantity or expiration days" },
+        { message: "Invalid quantity" },
         { status: 400 }
       )
     }
 
-    await connectToDatabase()
+    // Validate based on lifetime flag
+    if (!isLifetime && (typeof expirationDays !== 'number' || expirationDays < 1)) {
+      return NextResponse.json(
+        { message: "For timed keys, expiration days must be a positive number" },
+        { status: 400 }
+      )
+    }
 
     const batchId = uuidv4()
     const generatedKeys = []
+    const currentDate = new Date()
 
     // Generate the specified number of license keys
     for (let i = 0; i < quantity; i++) {
       const licenseKey = await generateUniqueLicenseKey()
-      const expiresAt = new Date()
-      expiresAt.setDate(expiresAt.getDate() + expirationDays)
-
+      
       const giveawayKey = new GiveawayLicenseKey({
         licenseKey,
-        expirationDays,
-        expiresAt,
+        isLifetime: Boolean(isLifetime),
+        durationInDays: isLifetime ? -1 : expirationDays,
         batchId,
         createdBy: 'admin',
-        notes
+        notes,
+        createdAt: currentDate
       })
 
       await giveawayKey.save()
-      generatedKeys.push(licenseKey)
+      generatedKeys.push({
+        licenseKey,
+        batchId,
+        createdAt: currentDate,
+        isLifetime: Boolean(isLifetime),
+        expirationDays: isLifetime ? null : expirationDays
+      })
     }
 
     return NextResponse.json({
@@ -71,12 +73,19 @@ export async function POST(request) {
       batchId,
       keys: generatedKeys,
       quantity,
-      expirationDays
+      isLifetime: Boolean(isLifetime),
+      expirationDays: isLifetime ? null : expirationDays
     })
   } catch (error) {
     console.error("Giveaway key generation error:", error)
+    if (error.code === 11000) {
+      return NextResponse.json(
+        { message: "Duplicate key detected, please try again" },
+        { status: 409 }
+      )
+    }
     return NextResponse.json(
-      { message: "Failed to generate giveaway keys" },
+      { message: "Failed to generate giveaway keys", error: error.message },
       { status: 500 }
     )
   }
@@ -85,12 +94,6 @@ export async function POST(request) {
 // GET endpoint to retrieve giveaway keys
 export async function GET(request) {
   try {
-    // Check admin authentication
-    const isAdmin = await checkAdminAuth(request)
-    if (!isAdmin) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 })
-    }
-
     await connectToDatabase()
 
     const { searchParams } = new URL(request.url)
