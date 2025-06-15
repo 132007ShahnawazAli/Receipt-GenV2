@@ -38,6 +38,12 @@ export async function GET(request) {
     if (type === "monthly") {
       expiresAt = new Date()
       expiresAt.setDate(expiresAt.getDate() + 30) // 30 days from now
+    } else if (type === "7day") {
+      expiresAt = new Date()
+      expiresAt.setDate(expiresAt.getDate() + 7) // 7 days from now
+    } else if (type === "14day") {
+      expiresAt = new Date()
+      expiresAt.setDate(expiresAt.getDate() + 14) // 14 days from now
     }
 
     if (licenseUser) {
@@ -153,7 +159,6 @@ async function sendLicenseKeyEmail(email, licenseKey, planType) {
 
   try {
     await sendReceiptEmail(email, subject, html)
-    console.log(`License key email sent to ${email}`)
     return true
   } catch (error) {
     console.error("Error sending license key email:", error)

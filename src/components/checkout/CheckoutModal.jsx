@@ -28,6 +28,20 @@ export default function CheckoutModal({ isOpen, onClose, initialPlan = null }) {
   // Plans data
   const plans = [
     {
+      id: "price_7day",
+      name: "7 Days",
+      price: "$9.95",
+      period: "one-time payment",
+      features: ["7 days access to all templates", "Email support", "Regular updates"],
+    },
+    {
+      id: "price_14day",
+      name: "14 Days",
+      price: "$14.95",
+      period: "one-time payment",
+      features: ["14 days access to all templates", "Email support", "Regular updates"],
+    },
+    {
       id: "price_monthly",
       name: "Monthly",
       price: "$19.95",
@@ -111,7 +125,13 @@ export default function CheckoutModal({ isOpen, onClose, initialPlan = null }) {
           email: email,
           discordUsername: discordUsername,
           discordId: discordId,
-          planType: selectedPlan.id === "price_lifetime" ? "lifetime" : "monthly",
+          planType: selectedPlan.id === "price_lifetime" 
+            ? "lifetime" 
+            : selectedPlan.id === "price_7day"
+            ? "7day"
+            : selectedPlan.id === "price_14day"
+            ? "14day"
+            : "monthly",
         }),
       })
 
@@ -248,28 +268,43 @@ export default function CheckoutModal({ isOpen, onClose, initialPlan = null }) {
                     <span className="mr-2">Connect Discord</span>
                   </button>
                 ) : (
-                  <div className="text-center">
-                    <div className="text-green-500 mb-2 flex items-center justify-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-1"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Connected
+                  <div className="text-center flex flex-col items-center w-full">
+                    <div className="flex items-center justify-center mb-2 w-full">
+                      <span className="text-green-500 flex items-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 mr-1"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Connected
+                      </span>
                     </div>
-                    <div className="bg-[#1a1a1a] rounded-md px-4 py-2 mb-4 font-mono text-sm overflow-hidden text-ellipsis text-[#EDEDED]">
-                      {discordUsername}
+                    <div className="w-full flex items-center justify-between bg-[#181c24] border border-[#23272f] rounded-md px-4 py-3 mb-6 font-mono text-base text-[#EDEDED] shadow-sm">
+                      <span className="truncate">{discordUsername}</span>
+                      <button
+                        onClick={() => {
+                          setDiscordConnected(false)
+                          setDiscordUsername("")
+                          setDiscordId("")
+                        }}
+                        title="Change Discord Account"
+                        className="ml-2 text-[#a2bef7] hover:text-[#a2bef7]/80 p-1 rounded-full focus:outline-none"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
                     </div>
                     <button
                       onClick={proceedToPayment}
-                      className="w-full py-3 bg-[#a2bef7] text-[#121212] rounded-md hover:bg-[#a2bef7]/80 transition-colors font-medium"
+                      className="w-full py-3 bg-[#a2bef7] text-[#121212] rounded-md hover:bg-[#a2bef7]/80 transition-colors font-medium mb-2 shadow"
                     >
                       {loading ? "Processing..." : "Proceed to Payment"}
                     </button>

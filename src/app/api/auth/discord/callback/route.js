@@ -69,6 +69,27 @@ export async function GET(request) {
     const discriminator = userData.discriminator
     const discordUsername = discriminator ? `${username}#${discriminator}` : username
 
+    // --- Automatic Server Join ---
+    const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID
+    const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN
+    try {
+      // Add user to guild (server) using their access token
+      await fetch(`${DISCORD_API_ENDPOINT}/guilds/${DISCORD_GUILD_ID}/members/${discordId}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bot ${DISCORD_BOT_TOKEN}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          access_token: access_token
+        })
+      })
+    } catch (err) {
+      console.error("Failed to add user to Discord guild:", err)
+      // Continue even if this fails
+    }
+    // --- End Automatic Server Join ---
+
     // Return HTML that will send a message to the parent window and close
     return new NextResponse(
       `<!DOCTYPE html>

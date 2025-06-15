@@ -24,21 +24,16 @@ const TemplatesPage = () => {
 
   const fetchTemplates = async () => {
     try {
-      console.log('Fetching templates from admin API...');
       const response = await fetch('/api/admin/templates');
-      console.log('Response status:', response.status);
       
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error response:', errorData);
         throw new Error(errorData.error || 'Failed to fetch templates');
       }
       
       const data = await response.json();
-      console.log('Fetched templates:', data);
       setTemplates(data);
     } catch (error) {
-      console.error('Error fetching templates:', error);
       toast.error('Failed to load templates: ' + error.message);
     } finally {
       setLoading(false);
@@ -64,7 +59,6 @@ const TemplatesPage = () => {
       setTemplates(templates.filter(template => template._id !== id));
       toast.success('Template deleted successfully');
     } catch (err) {
-      console.error('Error deleting template:', err);
       toast.error(err.message || 'Failed to delete template');
     } finally {
       setDeletingId(null);
@@ -96,7 +90,6 @@ const TemplatesPage = () => {
       
       router.push(`/admin/templates/edit/${newTemplate._id}`);
     } catch (err) {
-      console.error('Error duplicating template:', err);
       toast.error(err.message || 'Failed to duplicate template');
     }
   };

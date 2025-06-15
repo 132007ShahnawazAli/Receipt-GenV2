@@ -7,6 +7,7 @@ import Link from "next/link"
 import { Home, Printer, Trophy, Crown, Menu, X, ChevronLeft, ChevronRight, Hourglass } from "lucide-react"
 import DashboardLoading from "@/components/dashboard/DashboardLoading"
 import OnboardingModal from "@/components/dashboard/OnboardingModal"
+import { FaDiscord } from "react-icons/fa"
 
 import Image from "next/image"
 
@@ -20,6 +21,8 @@ export default function DashboardLayout({ children }) {
   const [username, setUsername] = useState("User")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [planInfo, setPlanInfo] = useState({ plan: null, daysLeft: null, subscriptionStatus: null })
+  const [discordConnected, setDiscordConnected] = useState(false)
+  const [discordLoading, setDiscordLoading] = useState(false)
 
   // Determine active tab based on pathname
   const determineActiveTab = () => {
@@ -93,6 +96,26 @@ export default function DashboardLayout({ children }) {
     }
   }, [status])
 
+  // Fetch Discord connection status
+  useEffect(() => {
+    if (status === "authenticated") {
+      // Example: Assume session.user.discordId exists if connected
+      setDiscordConnected(!!session?.user?.discordId)
+    }
+
+    // Listen for Discord OAuth redirect (same as CheckoutModal)
+    const handleDiscordCallback = (event) => {
+      if (event.origin !== window.location.origin) return
+      if (event.data.type === "discord_auth_success") {
+        setDiscordConnected(true)
+        setDiscordLoading(false)
+        // Optionally, update session or fetch user info here
+      }
+    }
+    window.addEventListener("message", handleDiscordCallback)
+    return () => window.removeEventListener("message", handleDiscordCallback)
+  }, [status, session])
+
   const handleSignOut = async () => {
     try {
       await signOut({ redirect: false })
@@ -131,6 +154,25 @@ export default function DashboardLayout({ children }) {
       }
     } catch (error) {
       console.error("Failed to reset onboarding data:", error)
+    }
+  }
+
+  const handleConnectDiscord = () => {
+    setDiscordLoading(true)
+    // Open Discord OAuth in a popup (same as CheckoutModal)
+    const width = 600
+    const height = 800
+    const left = window.screenX + (window.outerWidth - width) / 2
+    const top = window.screenY + (window.outerHeight - height) / 2
+    const email = session?.user?.email || ""
+    const popup = window.open(
+      `/api/auth/discord${email ? `?email=${encodeURIComponent(email)}` : ""}`,
+      "Connect Discord",
+      `width=${width},height=${height},left=${left},top=${top}`,
+    )
+    if (!popup || popup.closed || typeof popup.closed === "undefined") {
+      alert("Please allow popups for this website to connect your Discord account.")
+      setDiscordLoading(false)
     }
   }
 
@@ -264,6 +306,38 @@ export default function DashboardLayout({ children }) {
               })}
             </nav>
           </div>
+
+          {/* Connect Discord Box - only show if sidebar is not collapsed */}
+          {!sidebarCollapsed && (
+            <div className="px-3 pb-0">
+              <div
+                className="mb-4 bg-zinc-900/80 rounded-xl shadow border border-zinc-800 flex flex-col items-center px-4 py-5 text-center"
+                style={{ boxShadow: "0 2px 16px 0 rgba(0,0,0,0.10)" }}
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-800 mb-3">
+                  <FaDiscord className="text-indigo-400 w-6 h-6" />
+                </div>
+                <div className="font-semibold text-base text-white mb-1">Connect your Discord</div>
+                <div className="text-xs text-zinc-400 mb-4">for news and product updates</div>
+                <button
+                  onClick={handleConnectDiscord}
+                  disabled={discordLoading}
+                  className={`w-full py-2 rounded-lg font-medium text-sm transition-all duration-150
+                    ${discordConnected ? "bg-zinc-800 text-indigo-400 border border-indigo-400 hover:bg-indigo-950" : "bg-indigo-500 hover:bg-indigo-600 text-white"}
+                    ${discordLoading ? "opacity-60 cursor-not-allowed" : ""}
+                  `}
+                  aria-label={discordConnected ? "Reconnect Discord" : "Connect Discord"}
+                >
+                  {discordLoading
+                    ? "Connecting..."
+                    : discordConnected
+                      ? "Reconnect"
+                      : "Connect"
+                  }
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Bottom section with plan info */}
           <div className="px-3 pb-4">

@@ -16,7 +16,7 @@ const LicenseUserSchema = new mongoose.Schema({
   },
   plan: {
     type: String,
-    enum: ["monthly", "lifetime", "giveaway"],
+    enum: ["monthly", "lifetime", "giveaway", "7day", "14day"],
     required: true,
   },
   purchasedAt: {

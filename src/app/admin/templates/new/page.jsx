@@ -587,7 +587,7 @@ const NewTemplatePage = () => {
                     {formData.logo && (
                       <div className="mt-2 p-2 border border-zinc-800 rounded-lg bg-zinc-900/50 flex items-center">
                         <div className="w-10 h-10 bg-zinc-800 rounded flex items-center justify-center overflow-hidden mr-3">
-                          <img src={formData.logo} alt="Logo preview" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.src = 'https://via.placeholder.com/40?text=Error'; console.log('Using direct logo URL:', formData.logo); }} />
+                          <img src={formData.logo} alt="Logo preview" className="max-w-full max-h-full object-contain" onError={(e) => { e.target.src = 'https://via.placeholder.com/40?text=Error'; }} />
                         </div>
                         <div className="text-xs text-[var(--secondary-text)]">Logo preview</div>
                       </div>

@@ -103,7 +103,6 @@ export default function ReceiptHistory() {
     try {
       const date = new Date(dateString)
       if (isNaN(date.getTime())) {
-        console.log("Invalid date string:", dateString)
         return "Invalid date"
       }
       return date.toLocaleDateString("en-US", {
@@ -380,7 +379,7 @@ export default function ReceiptHistory() {
               ) : (
                 recentReceipts.map((receipt, idx) => (
                   <button
-                    key={receipt.id || idx}
+                    key={receipt.id ? `receipt-${receipt.id}` : `receipt-${receipt.brandName}-${receipt.orderDate || receipt.createdAt}-${idx}`}
                     onClick={() => handleEditClick(receipt)}
                     className="flex flex-col items-start text-left py-2 border-b border-zinc-800 last:border-b-0 hover:bg-zinc-900/40 rounded transition-colors"
                   >

@@ -85,7 +85,7 @@ export default function Navbar() {
               </>
             ) : (
               <Link href="/login" className="cursor-pointer">
-                Dashboard Access
+                Login
               </Link>
             )}
             <Link href="https://www.instagram.com/resellora.store/" className="">
@@ -151,7 +151,7 @@ export default function Navbar() {
             </>
           ) : (
             <Link href="/login" className="text-5xl" onClick={() => setIsMenuOpen(false)}>
-              Dashboard Access
+              Login
             </Link>
           )}
           <div className="flex gap-4">

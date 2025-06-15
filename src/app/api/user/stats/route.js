@@ -7,16 +7,12 @@ import Receipt from "@/models/Receipt"
 
 export async function GET(request) {
   try {
-    console.log("User stats API called")
-
+    // Find the license user
     const session = await getServerSession(authOptions)
 
     if (!session) {
-      console.log("No session found")
       return NextResponse.json({ message: "You must be logged in" }, { status: 401 })
     }
-
-    console.log("Session user:", session.user)
 
     await connectToDatabase()
 
@@ -24,15 +20,11 @@ export async function GET(request) {
     const licenseUser = await LicenseUser.findOne({ licenseKey: session.user.licenseKey })
 
     if (!licenseUser) {
-      console.log("License user not found")
       return NextResponse.json({ message: "License not found" }, { status: 404 })
     }
 
-    console.log("License user found:", licenseUser._id)
-
     // Count receipts directly from the Receipt collection
     const receiptCount = await Receipt.countDocuments({ userId: licenseUser._id })
-    console.log("Receipt count from database:", receiptCount)
 
     // Calculate days left for subscription
     let daysLeft = 0
@@ -64,7 +56,6 @@ export async function GET(request) {
 
     // Update the receiptsGenerated field in the user document if it doesn't match
     if (licenseUser.receiptsGenerated !== receiptCount) {
-      console.log("Updating receiptsGenerated from", licenseUser.receiptsGenerated, "to", receiptCount)
       await LicenseUser.findByIdAndUpdate(licenseUser._id, {
         receiptsGenerated: receiptCount,
       })
@@ -80,7 +71,6 @@ export async function GET(request) {
       discordUsername: licenseUser.discordUsername || null,
     })
   } catch (error) {
-    console.error("Error fetching user stats:", error)
     return NextResponse.json({ message: "Error fetching user stats", error: error.message }, { status: 500 })
   }
 }

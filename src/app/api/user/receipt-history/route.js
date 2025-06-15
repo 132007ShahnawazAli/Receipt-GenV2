@@ -8,16 +8,11 @@ import mongoose from "mongoose"
 
 export async function GET(request) {
   try {
-    console.log("Receipt history API called")
-
     const session = await getServerSession(authOptions)
 
     if (!session) {
-      console.log("No session found")
       return NextResponse.json({ message: "You must be logged in" }, { status: 401 })
     }
-
-    console.log("Session user:", session.user)
 
     await connectToDatabase()
 
@@ -25,11 +20,8 @@ export async function GET(request) {
     const licenseUser = await LicenseUser.findOne({ licenseKey: session.user.licenseKey })
 
     if (!licenseUser) {
-      console.log("License user not found")
       return NextResponse.json({ message: "User not found" }, { status: 404 })
     }
-
-    console.log("License user found:", licenseUser._id)
 
     // Now find all receipts for this user
     const userId = licenseUser._id.toString()
@@ -38,8 +30,6 @@ export async function GET(request) {
     const receipts = await Receipt.find({
       $or: [{ userId: userId }, { userId: new mongoose.Types.ObjectId(userId) }],
     }).sort({ createdAt: -1 })
-
-    console.log(`Found ${receipts.length} receipts for user`)
 
     // Format receipts for the frontend
     const formattedReceipts = receipts.map((receipt) => {
@@ -77,10 +67,8 @@ export async function GET(request) {
       }
     })
 
-    console.log("Sending formatted receipts:", formattedReceipts.length)
     return NextResponse.json(formattedReceipts)
   } catch (error) {
-    console.error("Error fetching receipt history:", error)
     return NextResponse.json(
       { message: "Error fetching receipt history", error: error.message }, 
       { status: 500 }

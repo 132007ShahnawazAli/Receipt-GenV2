@@ -46,22 +46,40 @@ export default function PricingSection() {
 
   const pricingPlans = [
     {
-      title: "1 Month",
-      price: "$24.99",
-      originalPrice: "$34.99",
+      title: "Monthly",
+      price: "$19.95",
+      originalPrice: "$24.99",
       features: ["Unlimited Receipts", "70+ Stores", "Physical Receipts", "App Emulators", "View Bots"],
-      cta: "Get 1 Month",
+      cta: "Get Monthly",
       featured: true,
       priceId: process.env.NEXT_PUBLIC_MONTHLY_PLAN_ID,
     },
     {
       title: "Lifetime",
-      price: "$39.99",
-      originalPrice: "$59.99",
+      price: "$69.95",
+      originalPrice: "$99.99",
       features: ["Unlimited Receipts", "70+ Stores", "Physical Receipts", "App Emulators", "View Bots"],
       cta: "Get Lifetime",
       featured: false,
       priceId: process.env.NEXT_PUBLIC_LIFETIME_PLAN_ID,
+    },
+    {
+      title: "7 Days",
+      price: "$7.95",
+      originalPrice: "$9.95",
+      features: ["Unlimited Receipts", "70+ Stores", "Physical Receipts", "App Emulators", "View Bots"],
+      cta: "Get 7 Days",
+      featured: false,
+      priceId: process.env.NEXT_PUBLIC_7_DAYS_PLAN_ID,
+    },
+    {
+      title: "14 Days",
+      price: "$13.95",
+      originalPrice: "$14.95",
+      features: ["Unlimited Receipts", "70+ Stores", "Physical Receipts", "App Emulators", "View Bots"],
+      cta: "Get 14 Days",
+      featured: false,
+      priceId: process.env.NEXT_PUBLIC_14_DAYS_PLAN_ID,
     },
   ]
 

@@ -15,6 +15,14 @@ export default function UnlimitedGenerator() {
   const [loading, setLoading] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  // Price mapping for display
+  const priceMap = {
+    "7 Days": "$7.95",
+    "14 Days": "$13.95",
+    "1 Month": "$19.95",
+    "Lifetime": "$69.95"
+  }
+
   // Update the handlePurchase function to not require login
   const handlePurchase = async () => {
     // Show the checkout modal directly without checking login status
@@ -74,7 +82,7 @@ export default function UnlimitedGenerator() {
             <div className="md:w-2/3 flex flex-col gap-6">
               <AnimatedText delay={0.3}>
                 <p className="text-3xl font-semibold tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
-                  {selectedPeriod === "1 Month" ? "$19.95" : "$69.95"}
+                  {priceMap[selectedPeriod]}
                 </p>
               </AnimatedText>
 
@@ -123,7 +131,23 @@ export default function UnlimitedGenerator() {
                   <p className="text-xl font-light tracking-tight text-[var(--primary-text)] tablet:w-2xl w-full">
                     Period:
                   </p>
-                  <div className="grid grid-cols-2 gap-3 max-w-xl">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl">
+                    <button
+                      className={`py-4 rounded-lg tracking-tight text-[var(--accent-text)] text-center cursor-pointer ${
+                        selectedPeriod === "7 Days" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
+                      }`}
+                      onClick={() => setSelectedPeriod("7 Days")}
+                    >
+                      7 Days
+                    </button>
+                    <button
+                      className={`py-4 rounded-lg tracking-tight text-[var(--accent-text)] text-center cursor-pointer ${
+                        selectedPeriod === "14 Days" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
+                      }`}
+                      onClick={() => setSelectedPeriod("14 Days")}
+                    >
+                      14 Days
+                    </button>
                     <button
                       className={`py-4 rounded-lg tracking-tight text-[var(--accent-text)] text-center cursor-pointer ${
                         selectedPeriod === "1 Month" ? "border-1 border-[var(--accent-text)]" : "border border-gray-600"
@@ -166,7 +190,7 @@ export default function UnlimitedGenerator() {
             {/* Image for desktop - right side */}
             <div className="hidden md:flex md:w-1/3 justify-end items-start">
               <Image
-                src="https://images.squarespace-cdn.com/content/v1/6137d3d5942fc363decba711/234373ed-d8fa-4081-9ddd-a1fe498c90ba/GENERATOR-01.png?format=1000w"
+                src="/assets/unlimited-generator.png"
                 alt="Generator Logo"
                 width={500}
                 height={500}
@@ -256,7 +280,15 @@ export default function UnlimitedGenerator() {
       <CheckoutModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        initialPlan={selectedPeriod === "1 Month" ? "price_monthly" : "price_lifetime"}
+        initialPlan={
+          selectedPeriod === "7 Days"
+            ? "price_7day"
+            : selectedPeriod === "14 Days"
+            ? "price_14day"
+            : selectedPeriod === "1 Month"
+            ? "price_monthly"
+            : "price_lifetime"
+        }
       />
     </div>
   )
